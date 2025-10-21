@@ -1,0 +1,261 @@
+/**
+ * Charts Styles
+ *
+ * Styles for chart components (Bar, Line, Pie)
+ *
+ * @package ICT_Platform
+ * @since   1.0.0
+ */
+
+.chart {
+  background: white;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  &__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1.5rem 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  &__content {
+    position: relative;
+
+    &--pie {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+  }
+
+  &__empty {
+    text-align: center;
+    padding: 3rem;
+    color: #6b7280;
+  }
+
+  // Bar Chart Styles
+  &--bar {
+    &.chart--horizontal {
+      .bar-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+
+        &__label {
+          min-width: 120px;
+          font-weight: 600;
+          color: #374151;
+          font-size: 0.875rem;
+        }
+
+        &__bar-container {
+          flex: 1;
+          background: #f3f4f6;
+          border-radius: 0.25rem;
+          overflow: hidden;
+          height: 32px;
+        }
+
+        &__bar {
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          padding: 0 0.75rem;
+          transition: width 0.3s ease;
+          min-width: fit-content;
+        }
+
+        &__value {
+          color: white;
+          font-weight: 600;
+          font-size: 0.875rem;
+          white-space: nowrap;
+        }
+      }
+    }
+
+    &.chart--vertical {
+      .bars-container {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        height: 100%;
+        gap: 1rem;
+        padding: 1rem 0;
+      }
+
+      .bar-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+        max-width: 80px;
+
+        &__bar-wrapper {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: flex-end;
+        }
+
+        &__value {
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: #374151;
+          margin-bottom: 0.5rem;
+        }
+
+        &__bar {
+          width: 100%;
+          min-height: 4px;
+          border-radius: 0.25rem 0.25rem 0 0;
+          transition: height 0.3s ease;
+        }
+
+        &__label {
+          margin-top: 0.75rem;
+          font-size: 0.75rem;
+          color: #6b7280;
+          text-align: center;
+          word-break: break-word;
+        }
+      }
+    }
+  }
+
+  // Line Chart Styles
+  &--line {
+    .line-chart-svg {
+      width: 100%;
+      height: auto;
+
+      .line-chart-dot {
+        transition: r 0.2s;
+        cursor: pointer;
+
+        &:hover {
+          r: 6;
+        }
+      }
+    }
+  }
+
+  // Pie Chart Styles
+  &--pie {
+    .pie-chart-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .pie-chart-svg {
+      flex-shrink: 0;
+
+      .pie-slice__path {
+        transition: opacity 0.2s;
+        cursor: pointer;
+
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+
+      .pie-center-text {
+        pointer-events: none;
+      }
+    }
+
+    .pie-legend {
+      flex: 1;
+      min-width: 200px;
+      max-width: 300px;
+
+      &__item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f3f4f6;
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+
+      &__color {
+        width: 16px;
+        height: 16px;
+        border-radius: 0.25rem;
+        flex-shrink: 0;
+      }
+
+      &__label {
+        flex: 1;
+        font-size: 0.875rem;
+        color: #374151;
+        font-weight: 500;
+      }
+
+      &__value {
+        font-size: 0.875rem;
+        color: #6b7280;
+        font-weight: 600;
+      }
+
+      &__percentage {
+        color: #9ca3af;
+        font-weight: 400;
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .chart {
+    padding: 1rem;
+
+    &__title {
+      font-size: 1rem;
+    }
+
+    &--bar.chart--vertical {
+      .bar-item {
+        max-width: none;
+        min-width: 40px;
+
+        &__label {
+          font-size: 0.65rem;
+        }
+
+        &__value {
+          font-size: 0.75rem;
+        }
+      }
+    }
+
+    &--pie {
+      .pie-chart-wrapper {
+        flex-direction: column;
+      }
+
+      .pie-legend {
+        width: 100%;
+        max-width: none;
+      }
+    }
+  }
+}

@@ -1,0 +1,1481 @@
+/**
+ * Admin Styles
+ *
+ * @package ICT_Platform
+ * @since   1.0.0
+ */
+
+// Variables
+$primary-color: #2271b1;
+$success-color: #00a32a;
+$danger-color: #d63638;
+$warning-color: #dba617;
+$info-color: #72aee6;
+
+$border-radius: 4px;
+$box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+$transition: all 0.2s ease;
+
+// Import resource management styles
+@import 'resources';
+
+// Import inventory management styles
+@import 'inventory';
+
+// Import charts styles
+@import 'charts';
+
+// Import reports styles
+@import 'reports';
+
+// Layout
+.ict-platform-app {
+  padding: 20px;
+
+  h1 {
+    margin-bottom: 20px;
+  }
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+// Project Stats
+.project-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: $border-radius;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: $box-shadow;
+  transition: $transition;
+
+  &:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  .stat-icon {
+    font-size: 32px;
+  }
+
+  .stat-content {
+    flex: 1;
+  }
+
+  .stat-value {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: #646970;
+  }
+
+  &.stat-active {
+    border-left: 4px solid $primary-color;
+  }
+
+  &.stat-completed {
+    border-left: 4px solid $success-color;
+  }
+
+  &.stat-pending {
+    border-left: 4px solid $warning-color;
+  }
+}
+
+// Project List
+.ict-project-list {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: $border-radius;
+  padding: 20px;
+}
+
+.list-filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+
+  .search-input,
+  .status-filter {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: $border-radius;
+  }
+
+  .search-input {
+    flex: 1;
+    max-width: 400px;
+  }
+}
+
+.projects-table {
+  table {
+    width: 100%;
+
+    th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px;
+      border-bottom: 2px solid #ddd;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      vertical-align: middle;
+    }
+
+    .project-info {
+      strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .project-number {
+        color: #646970;
+        font-size: 12px;
+      }
+    }
+
+    .budget-info {
+      .budget-spent {
+        display: block;
+        color: #646970;
+        font-size: 12px;
+        margin-top: 2px;
+      }
+    }
+
+    .actions {
+      white-space: nowrap;
+
+      button {
+        margin-right: 8px;
+      }
+    }
+  }
+}
+
+// Badges
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 12px;
+  text-transform: capitalize;
+
+  &.badge-success {
+    background: #d7f0db;
+    color: #1e4620;
+  }
+
+  &.badge-info {
+    background: #d5e7f7;
+    color: #0c4a6e;
+  }
+
+  &.badge-warning {
+    background: #f7e6d5;
+    color: #674416;
+  }
+
+  &.badge-danger {
+    background: #f7d5d5;
+    color: #6e1414;
+  }
+
+  &.badge-secondary {
+    background: #f0f0f0;
+    color: #555;
+  }
+}
+
+// Progress Bar
+.progress-bar {
+  position: relative;
+  width: 100px;
+  height: 24px;
+  background: #f0f0f0;
+  border-radius: 12px;
+  overflow: hidden;
+
+  .progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, $primary-color, lighten($primary-color, 10%));
+    transition: width 0.3s ease;
+  }
+
+  .progress-text {
+    position: relative;
+    display: block;
+    text-align: center;
+    line-height: 24px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #333;
+    z-index: 1;
+  }
+}
+
+// Sync Status
+.sync-status {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  border-radius: 50%;
+  font-size: 14px;
+
+  &.sync-synced {
+    background: #d7f0db;
+    color: #1e4620;
+  }
+
+  &.sync-syncing {
+    background: #d5e7f7;
+    color: #0c4a6e;
+    animation: spin 1s linear infinite;
+  }
+
+  &.sync-error {
+    background: #f7d5d5;
+    color: #6e1414;
+  }
+
+  &.sync-pending {
+    background: #f0f0f0;
+    color: #646970;
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+// Modal
+.ict-project-form-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .modal-content {
+    position: relative;
+    background: #fff;
+    border-radius: $border-radius;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow: auto;
+    z-index: 1;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+
+    h2 {
+      margin: 0;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+      color: #646970;
+
+      &:hover {
+        color: #000;
+      }
+    }
+  }
+
+  .project-form {
+    padding: 20px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+
+    .form-group {
+      &.full-width {
+        grid-column: 1 / -1;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+
+        .required {
+          color: $danger-color;
+        }
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+  }
+}
+
+// Priority
+.priority-low { color: #646970; }
+.priority-medium { color: $info-color; }
+.priority-high { color: $warning-color; }
+.priority-urgent { color: $danger-color; font-weight: 600; }
+
+// Loading
+.loading-spinner {
+  text-align: center;
+  padding: 40px;
+  color: #646970;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .project-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .list-filters {
+    flex-direction: column;
+
+    .search-input {
+      max-width: 100%;
+    }
+  }
+}
+
+// ============================================
+// TIME TRACKING STYLES
+// ============================================
+
+// Time Tracker Component
+.ict-time-tracker {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: $border-radius;
+  padding: 30px;
+  box-shadow: $box-shadow;
+
+  &--loading,
+  &--idle {
+    text-align: center;
+  }
+
+  &__idle-message {
+    padding: 60px 20px;
+
+    .ict-time-tracker__idle-icon {
+      font-size: 64px;
+      color: #646970;
+      margin-bottom: 20px;
+
+      .dashicons {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+      }
+    }
+
+    h3 {
+      margin: 0 0 10px;
+      color: #1d2327;
+    }
+
+    p {
+      color: #646970;
+      margin: 0;
+    }
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+
+    h2 {
+      margin: 0;
+    }
+  }
+
+  &__status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__pulse {
+    width: 8px;
+    height: 8px;
+    background: $success-color;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  &__timer {
+    text-align: center;
+    margin: 40px 0;
+  }
+
+  &__timer-display {
+    font-size: 72px;
+    font-weight: 700;
+    line-height: 1;
+    color: $primary-color;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 10px;
+  }
+
+  &__timer-label {
+    font-size: 14px;
+    color: #646970;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  &__details {
+    background: #f6f7f7;
+    border-radius: $border-radius;
+    padding: 20px;
+    margin-bottom: 30px;
+  }
+
+  &__detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &--full {
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+
+  &__detail-label {
+    font-weight: 600;
+    color: #1d2327;
+  }
+
+  &__detail-value {
+    color: #646970;
+
+    &--currency {
+      font-weight: 700;
+      color: $success-color;
+      font-size: 18px;
+    }
+  }
+
+  &__notes-field {
+    margin-bottom: 20px;
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: $border-radius;
+      font-family: inherit;
+      resize: vertical;
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 1px $primary-color;
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .ict-button--large {
+      padding: 15px 30px;
+      font-size: 16px;
+      width: 100%;
+    }
+  }
+
+  &__gps {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #646970;
+    font-size: 12px;
+
+    .dashicons {
+      color: $info-color;
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+// Time Clock Component
+.ict-time-clock {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: $border-radius;
+  padding: 30px;
+  box-shadow: $box-shadow;
+  max-width: 600px;
+  margin: 0 auto;
+
+  &__header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  &__icon {
+    font-size: 64px;
+    color: $primary-color;
+    margin-bottom: 15px;
+
+    .dashicons {
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
+    }
+  }
+
+  &__title {
+    margin: 0 0 8px;
+  }
+
+  &__subtitle {
+    color: #646970;
+    margin: 0;
+  }
+
+  &__status {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  &__pulse {
+    width: 12px;
+    height: 12px;
+    background: $success-color;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+    animation: pulse 2s infinite;
+  }
+
+  &__status-text {
+    display: inline-block;
+    font-size: 18px;
+    font-weight: 600;
+    color: $success-color;
+  }
+
+  &__timer {
+    text-align: center;
+    font-size: 48px;
+    font-weight: 700;
+    color: $primary-color;
+    font-family: 'Courier New', monospace;
+    margin: 20px 0;
+  }
+
+  &__project-info {
+    background: #f6f7f7;
+    border-radius: $border-radius;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  &__project-name {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  &__task-type {
+    color: #646970;
+    margin-bottom: 8px;
+  }
+
+  &__clock-in-time {
+    color: #646970;
+    font-size: 13px;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__label {
+    font-weight: 600;
+    color: #1d2327;
+  }
+
+  &__select,
+  &__textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: $border-radius;
+    font-family: inherit;
+    font-size: 14px;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 1px $primary-color;
+    }
+  }
+
+  &__textarea {
+    resize: vertical;
+  }
+
+  &__notes-section {
+    margin-bottom: 20px;
+  }
+
+  &__button {
+    padding: 15px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: $border-radius;
+    cursor: pointer;
+    transition: $transition;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &--clock-in {
+      background: $success-color;
+      color: #fff;
+
+      &:hover:not(:disabled) {
+        background: darken($success-color, 5%);
+      }
+    }
+
+    &--clock-out {
+      background: $danger-color;
+      color: #fff;
+
+      &:hover:not(:disabled) {
+        background: darken($danger-color, 5%);
+      }
+    }
+
+    .dashicons {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__gps-status {
+    text-align: center;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+  }
+
+  &__gps-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #646970;
+
+    input[type="checkbox"] {
+      cursor: pointer;
+    }
+  }
+}
+
+// Timesheet List Component
+.ict-timesheet-list {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: $border-radius;
+  padding: 20px;
+  box-shadow: $box-shadow;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h2 {
+      margin: 0;
+    }
+  }
+
+  &__filters {
+    margin-bottom: 20px;
+  }
+
+  &__search {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  &__search-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: $border-radius;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 1px $primary-color;
+    }
+  }
+
+  &__filter-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  &__select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: $border-radius;
+    background: #fff;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 1px $primary-color;
+    }
+  }
+
+  &__empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #646970;
+
+    .dashicons {
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
+      margin-bottom: 15px;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+  &__table-wrapper {
+    overflow-x: auto;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px;
+      border-bottom: 2px solid #ddd;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      vertical-align: middle;
+    }
+  }
+
+  &__active {
+    color: $success-color;
+    font-weight: 600;
+  }
+
+  &__cost {
+    font-size: 11px;
+    color: #646970;
+    margin-top: 2px;
+  }
+
+  &__sync-status {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    border-radius: 50%;
+
+    &--pending {
+      background: #f0f0f0;
+      color: #646970;
+    }
+
+    &--syncing {
+      background: #d5e7f7;
+      color: #0c4a6e;
+
+      .dashicons {
+        animation: spin 1s linear infinite;
+      }
+    }
+
+    &--synced {
+      background: #d7f0db;
+      color: #1e4620;
+    }
+
+    &--error {
+      background: #f7d5d5;
+      color: #6e1414;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  &__pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+  }
+
+  &__page-info {
+    font-size: 14px;
+    color: #646970;
+  }
+}
+
+// Timesheet Approval Component
+.ict-approval {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: $border-radius;
+  padding: 20px;
+  box-shadow: $box-shadow;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+
+    h2 {
+      margin: 0;
+    }
+  }
+
+  &__stats {
+    display: flex;
+    gap: 20px;
+  }
+
+  &__stat {
+    text-align: right;
+  }
+
+  &__stat-label {
+    display: block;
+    font-size: 12px;
+    color: #646970;
+    margin-bottom: 4px;
+  }
+
+  &__stat-value {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1d2327;
+  }
+
+  &__empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #646970;
+
+    .dashicons {
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
+      color: $success-color;
+      margin-bottom: 15px;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+  &__groups {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  &__group {
+    border: 1px solid #ddd;
+    border-radius: $border-radius;
+    overflow: hidden;
+  }
+
+  &__group-header {
+    background: #f6f7f7;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+
+    h3 {
+      margin: 0;
+    }
+  }
+
+  &__group-totals {
+    display: flex;
+    gap: 15px;
+    font-size: 13px;
+    color: #646970;
+  }
+
+  &__cost {
+    font-weight: 700;
+    color: $success-color;
+  }
+
+  &__entries {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__entry {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  &__entry-date {
+    font-weight: 600;
+    color: #1d2327;
+  }
+
+  &__entry-project {
+    color: $primary-color;
+    font-weight: 600;
+  }
+
+  &__entry-details {
+    background: #f6f7f7;
+    border-radius: $border-radius;
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+
+  &__entry-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid #ddd;
+    }
+
+    &--notes {
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+
+  &__entry-label {
+    font-weight: 600;
+    color: #1d2327;
+  }
+
+  &__entry-value {
+    color: #646970;
+
+    &--hours {
+      font-weight: 700;
+      color: $primary-color;
+      font-size: 16px;
+    }
+
+    &--cost {
+      font-weight: 700;
+      color: $success-color;
+      font-size: 16px;
+    }
+
+    .dashicons {
+      vertical-align: middle;
+    }
+  }
+
+  &__billable {
+    font-size: 12px;
+    color: #646970;
+    margin-left: 8px;
+  }
+
+  &__entry-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+}
+
+// Status Badges
+.ict-status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 12px;
+  text-transform: capitalize;
+
+  &--success {
+    background: #d7f0db;
+    color: #1e4620;
+  }
+
+  &--info {
+    background: #d5e7f7;
+    color: #0c4a6e;
+  }
+
+  &--warning {
+    background: #f7e6d5;
+    color: #674416;
+  }
+
+  &--danger {
+    background: #f7d5d5;
+    color: #6e1414;
+  }
+}
+
+// Buttons
+.ict-button {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: $border-radius;
+  cursor: pointer;
+  transition: $transition;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    background: $primary-color;
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: darken($primary-color, 5%);
+    }
+  }
+
+  &--secondary {
+    background: #f6f7f7;
+    color: #1d2327;
+    border: 1px solid #ddd;
+
+    &:hover:not(:disabled) {
+      background: #fff;
+    }
+  }
+
+  &--success {
+    background: $success-color;
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: darken($success-color, 5%);
+    }
+  }
+
+  &--danger {
+    background: $danger-color;
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: darken($danger-color, 5%);
+    }
+  }
+
+  &--link {
+    background: none;
+    color: $primary-color;
+    padding: 4px 8px;
+
+    &:hover:not(:disabled) {
+      color: darken($primary-color, 10%);
+    }
+
+    &.ict-button--danger {
+      color: $danger-color;
+
+      &:hover:not(:disabled) {
+        color: darken($danger-color, 10%);
+      }
+    }
+  }
+
+  &--small {
+    padding: 4px 8px;
+    font-size: 12px;
+
+    .dashicons {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  &--large {
+    padding: 12px 24px;
+    font-size: 16px;
+
+    .dashicons {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+// Modal (generic)
+.ict-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  &--active {
+    display: flex;
+  }
+
+  &__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  &__content {
+    position: relative;
+    background: #fff;
+    border-radius: $border-radius;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow: auto;
+    z-index: 1;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+
+    h3 {
+      margin: 0;
+    }
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    color: #646970;
+    padding: 0;
+
+    &:hover {
+      color: #000;
+    }
+
+    .dashicons {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &__body {
+    padding: 20px;
+
+    p {
+      color: #646970;
+      line-height: 1.6;
+    }
+  }
+
+  &__field {
+    margin-top: 20px;
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: $border-radius;
+      font-family: inherit;
+      resize: vertical;
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 1px $primary-color;
+      }
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 20px;
+    border-top: 1px solid #ddd;
+  }
+}
+
+// Spinner
+.ict-spinner {
+  text-align: center;
+  padding: 40px;
+  color: #646970;
+
+  &:before {
+    content: '';
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border: 3px solid #f3f3f3;
+    border-top-color: $primary-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+  }
+}
+
+// Mobile Responsive
+@media (max-width: 768px) {
+  .ict-time-tracker {
+    padding: 20px;
+
+    &__timer-display {
+      font-size: 48px;
+    }
+  }
+
+  .ict-time-clock {
+    padding: 20px;
+
+    &__timer {
+      font-size: 36px;
+    }
+  }
+
+  .ict-timesheet-list {
+    &__table-wrapper {
+      overflow-x: scroll;
+    }
+
+    &__table {
+      font-size: 13px;
+
+      th, td {
+        padding: 8px;
+      }
+    }
+
+    &__filter-row {
+      flex-direction: column;
+      align-items: stretch;
+
+      .ict-timesheet-list__select {
+        width: 100%;
+      }
+    }
+  }
+
+  .ict-approval {
+    padding: 15px;
+
+    &__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    &__stats {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    &__entry-actions {
+      flex-direction: column;
+
+      .ict-button {
+        width: 100%;
+      }
+    }
+  }
+}

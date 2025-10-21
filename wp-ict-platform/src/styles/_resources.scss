@@ -1,0 +1,954 @@
+/**
+ * Resource Management Styles
+ *
+ * @package ICT_Platform
+ * @since   1.0.0
+ */
+
+// ============================================
+// RESOURCE MANAGEMENT STYLES
+// ============================================
+
+// Resource Calendar Component
+.ict-resource-calendar {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: $border-radius;
+  padding: 20px;
+  box-shadow: $box-shadow;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h2 {
+      margin: 0;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  &__view-switcher {
+    display: flex;
+    gap: 5px;
+  }
+
+  &__filters {
+    padding: 15px;
+    background: #f6f7f7;
+    border-radius: $border-radius;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  &__filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    label {
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    select {
+      padding: 6px 10px;
+      border: 1px solid #ddd;
+      border-radius: $border-radius;
+      background: #fff;
+    }
+  }
+
+  &__conflicts {
+    margin-bottom: 20px;
+  }
+
+  &__loading {
+    text-align: center;
+    padding: 40px;
+    color: #646970;
+  }
+
+  &__calendar {
+    margin-bottom: 20px;
+
+    .fc {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    }
+
+    .fc-button {
+      background: $primary-color;
+      border-color: $primary-color;
+      text-transform: capitalize;
+
+      &:hover {
+        background: darken($primary-color, 5%);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+      }
+    }
+
+    .fc-button-primary:not(:disabled).fc-button-active {
+      background: darken($primary-color, 10%);
+    }
+
+    .fc-event {
+      cursor: pointer;
+      border-radius: $border-radius;
+      padding: 2px 5px;
+    }
+
+    .fc-daygrid-event {
+      margin: 1px;
+    }
+  }
+
+  &__legend {
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+
+    h4 {
+      margin: 0 0 10px;
+      font-size: 14px;
+    }
+  }
+
+  &__legend-items {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  &__legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+  }
+
+  &__legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: $border-radius;
+  }
+}
+
+// Calendar Event
+.ict-calendar-event {
+  &__time {
+    font-size: 11px;
+    margin-bottom: 2px;
+  }
+
+  &__title {
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  &__status {
+    display: inline-block;
+    padding: 1px 4px;
+    font-size: 9px;
+    border-radius: 2px;
+    margin-top: 2px;
+    text-transform: uppercase;
+
+    &--scheduled {
+      background: #d5e7f7;
+      color: #0c4a6e;
+    }
+
+    &--active {
+      background: #d7f0db;
+      color: #1e4620;
+    }
+
+    &--completed {
+      background: #f0f0f0;
+      color: #555;
+    }
+
+    &--cancelled {
+      background: #f7d5d5;
+      color: #6e1414;
+    }
+  }
+}
+
+// Availability Matrix Component
+.ict-availability-matrix {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: $border-radius;
+  padding: 20px;
+  box-shadow: $box-shadow;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h2 {
+      margin: 0;
+    }
+  }
+
+  &__controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  &__control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    label {
+      font-weight: 600;
+      font-size: 13px;
+    }
+  }
+
+  &__presets {
+    display: flex;
+    gap: 5px;
+  }
+
+  &__loading {
+    text-align: center;
+    padding: 40px;
+    color: #646970;
+  }
+
+  &__grid-wrapper {
+    overflow-x: auto;
+    margin-bottom: 20px;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+  }
+
+  &__header-cell {
+    font-weight: 600;
+    text-align: center;
+    padding: 12px 8px;
+    border-bottom: 2px solid #ddd;
+    background: #f6f7f7;
+
+    &--resource {
+      text-align: left;
+      position: sticky;
+      left: 0;
+      background: #f6f7f7;
+      z-index: 2;
+      min-width: 150px;
+    }
+
+    &--date {
+      min-width: 80px;
+    }
+  }
+
+  &__date-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__day-name {
+    font-size: 11px;
+    color: #646970;
+    text-transform: uppercase;
+  }
+
+  &__day-number {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  &__row {
+    &:hover {
+      background: #f9f9f9;
+    }
+  }
+
+  &__cell {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    border-right: 1px solid #eee;
+    text-align: center;
+    cursor: pointer;
+    transition: $transition;
+
+    &:hover {
+      background: #f0f0f0;
+    }
+
+    &--resource {
+      text-align: left;
+      position: sticky;
+      left: 0;
+      background: #fff;
+      z-index: 1;
+      font-weight: 600;
+
+      .ict-availability-matrix__row:hover & {
+        background: #f9f9f9;
+      }
+    }
+
+    &--empty {
+      background: #f9f9f9;
+      color: #ccc;
+    }
+
+    &--high {
+      background: #d7f0db;
+      color: #1e4620;
+    }
+
+    &--medium {
+      background: #fef7e0;
+      color: #674416;
+    }
+
+    &--low {
+      background: #ffe6e6;
+      color: #6e1414;
+    }
+
+    &--none {
+      background: #f7d5d5;
+      color: #6e1414;
+    }
+  }
+
+  &__cell-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__percentage {
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  &__hours {
+    font-size: 11px;
+    opacity: 0.7;
+  }
+
+  &__resource-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__resource-id {
+    font-weight: 600;
+  }
+
+  &__no-data {
+    text-align: center;
+    padding: 40px;
+    color: #646970;
+  }
+
+  &__legend {
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+
+    h4 {
+      margin: 0 0 10px;
+      font-size: 14px;
+    }
+  }
+
+  &__legend-items {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  &__legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+  }
+
+  &__legend-color {
+    width: 30px;
+    height: 20px;
+    border-radius: $border-radius;
+    border: 1px solid #ddd;
+
+    &--high {
+      background: #d7f0db;
+    }
+
+    &--medium {
+      background: #fef7e0;
+    }
+
+    &--low {
+      background: #ffe6e6;
+    }
+
+    &--none {
+      background: #f7d5d5;
+    }
+  }
+
+  &__summary {
+    text-align: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+    font-size: 13px;
+    color: #646970;
+  }
+}
+
+// Resource Allocation Component
+.ict-resource-allocation {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: $border-radius;
+  padding: 20px;
+  box-shadow: $box-shadow;
+
+  &__header {
+    margin-bottom: 20px;
+
+    h2 {
+      margin: 0;
+    }
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__check-conflicts {
+    padding: 15px;
+    background: #f6f7f7;
+    border-radius: $border-radius;
+    text-align: center;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+  }
+}
+
+// Form Styles
+.ict-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ict-form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.ict-form-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #1d2327;
+
+  &--required::after {
+    content: ' *';
+    color: $danger-color;
+  }
+}
+
+.ict-form-error {
+  color: $danger-color;
+  font-size: 12px;
+}
+
+.ict-form-help {
+  font-size: 12px;
+  color: #646970;
+}
+
+.ict-input,
+.ict-select,
+.ict-textarea {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: $border-radius;
+  font-family: inherit;
+  font-size: 14px;
+  transition: $transition;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 1px $primary-color;
+  }
+
+  &--error {
+    border-color: $danger-color;
+
+    &:focus {
+      box-shadow: 0 0 0 1px $danger-color;
+    }
+  }
+}
+
+.ict-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+// Skill Matrix Component
+.ict-skill-matrix {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: $border-radius;
+  padding: 20px;
+  box-shadow: $box-shadow;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h2 {
+      margin: 0;
+    }
+  }
+
+  &__controls {
+    display: flex;
+    gap: 10px;
+  }
+
+  &__search {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: $border-radius;
+    min-width: 250px;
+  }
+
+  &__loading {
+    text-align: center;
+    padding: 40px;
+    color: #646970;
+  }
+
+  &__table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 20px;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+  }
+
+  &__header-cell {
+    font-weight: 600;
+    text-align: center;
+    padding: 12px 8px;
+    border-bottom: 2px solid #ddd;
+    background: #f6f7f7;
+    font-size: 12px;
+
+    &--technician {
+      text-align: left;
+      position: sticky;
+      left: 0;
+      background: #f6f7f7;
+      z-index: 2;
+      min-width: 150px;
+    }
+
+    &--skill {
+      min-width: 120px;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+    }
+
+    &--actions {
+      min-width: 80px;
+    }
+  }
+
+  &__skill-header {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__skill-name {
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  &__row {
+    &:hover {
+      background: #f9f9f9;
+    }
+  }
+
+  &__cell {
+    padding: 12px 8px;
+    border-bottom: 1px solid #eee;
+    border-right: 1px solid #eee;
+    text-align: center;
+
+    &--technician {
+      text-align: left;
+      position: sticky;
+      left: 0;
+      background: #fff;
+      z-index: 1;
+      font-weight: 600;
+
+      .ict-skill-matrix__row:hover & {
+        background: #f9f9f9;
+      }
+    }
+
+    &--has-skill {
+      background: #f0f9ff;
+      cursor: pointer;
+
+      &:hover {
+        background: #e0f2fe;
+      }
+    }
+
+    &--no-skill {
+      background: #f9f9f9;
+      color: #ccc;
+    }
+
+    &--actions {
+      background: #fff;
+
+      .ict-skill-matrix__row:hover & {
+        background: #f9f9f9;
+      }
+    }
+  }
+
+  &__technician-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__technician-name {
+    font-weight: 600;
+  }
+
+  &__skill-count {
+    font-size: 11px;
+    color: #646970;
+  }
+
+  &__skill-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__stars {
+    display: flex;
+    gap: 2px;
+  }
+
+  &__star--editable {
+    cursor: pointer;
+    transition: $transition;
+
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+
+  &__certified {
+    color: $success-color;
+    font-size: 14px;
+  }
+
+  &__no-skill-indicator {
+    color: #ccc;
+    font-size: 18px;
+  }
+
+  &__no-data {
+    text-align: center;
+    padding: 40px;
+    color: #646970;
+  }
+
+  &__legend {
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+
+    h4 {
+      margin: 0 0 10px;
+      font-size: 14px;
+    }
+  }
+
+  &__legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+  }
+
+  &__summary {
+    text-align: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+    font-size: 13px;
+    color: #646970;
+  }
+}
+
+// Notice component
+.ict-notice {
+  padding: 15px;
+  border-radius: $border-radius;
+  border-left: 4px solid;
+  margin-bottom: 20px;
+
+  &--error {
+    background: #f7d5d5;
+    border-color: $danger-color;
+    color: #6e1414;
+  }
+
+  &--warning {
+    background: #fef7e0;
+    border-color: $warning-color;
+    color: #674416;
+  }
+
+  &--success {
+    background: #d7f0db;
+    border-color: $success-color;
+    color: #1e4620;
+  }
+
+  &--info {
+    background: #d5e7f7;
+    border-color: $info-color;
+    color: #0c4a6e;
+  }
+
+  p {
+    margin: 0 0 10px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  ul {
+    margin: 10px 0 0;
+    padding-left: 20px;
+  }
+
+  li {
+    margin: 5px 0;
+  }
+
+  h4 {
+    margin: 0 0 10px;
+  }
+}
+
+// Modal overlay
+.ict-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+// Responsive styles for resource management
+@media (max-width: 768px) {
+  .ict-resource-calendar {
+    padding: 15px;
+
+    &__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    &__actions {
+      width: 100%;
+    }
+
+    &__view-switcher {
+      width: 100%;
+
+      .ict-button {
+        flex: 1;
+      }
+    }
+
+    &__filters {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  .ict-availability-matrix {
+    padding: 15px;
+
+    &__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    &__controls {
+      width: 100%;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__control-group {
+      width: 100%;
+
+      select, input {
+        flex: 1;
+      }
+    }
+
+    &__presets {
+      flex-direction: column;
+
+      .ict-button {
+        width: 100%;
+      }
+    }
+
+    &__table {
+      font-size: 12px;
+    }
+
+    &__header-cell {
+      padding: 8px 4px;
+    }
+
+    &__cell {
+      padding: 6px 4px;
+    }
+
+    &__percentage {
+      font-size: 12px;
+    }
+
+    &__hours {
+      font-size: 10px;
+    }
+  }
+
+  .ict-resource-allocation {
+    padding: 15px;
+
+    &__actions {
+      flex-direction: column;
+
+      .ict-button {
+        width: 100%;
+      }
+    }
+  }
+
+  .ict-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .ict-skill-matrix {
+    padding: 15px;
+
+    &__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    &__search {
+      width: 100%;
+    }
+
+    &__table {
+      font-size: 11px;
+    }
+
+    &__header-cell {
+      padding: 8px 4px;
+
+      &--skill {
+        font-size: 10px;
+      }
+    }
+
+    &__cell {
+      padding: 8px 4px;
+    }
+
+    &__stars {
+      .dashicons {
+        font-size: 12px;
+        width: 12px;
+        height: 12px;
+      }
+    }
+  }
+}

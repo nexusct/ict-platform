@@ -1,0 +1,52 @@
+{
+  "name": "ICT Platform",
+  "short_name": "ICT Platform",
+  "description": "ICT/electrical contracting operations platform with Zoho integration",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2271b1",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "categories": ["business", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Time Clock",
+      "short_name": "Clock In",
+      "description": "Quick time clock access",
+      "url": "/?ict-action=time-clock",
+      "icons": [
+        {
+          "src": "assets/images/clock-icon.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Projects",
+      "short_name": "Projects",
+      "description": "View projects",
+      "url": "/?ict-action=projects",
+      "icons": [
+        {
+          "src": "assets/images/project-icon.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}
