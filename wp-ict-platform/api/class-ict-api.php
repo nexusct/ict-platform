@@ -107,6 +107,12 @@ class ICT_API {
 			$reports_controller = new ICT_REST_Reports_Controller();
 			$reports_controller->register_routes();
 		}
+
+		// Health controller
+		if ( class_exists( 'ICT_REST_Health_Controller' ) ) {
+			$health_controller = new ICT_REST_Health_Controller();
+			$health_controller->register_routes();
+		}
 	}
 
 	/**

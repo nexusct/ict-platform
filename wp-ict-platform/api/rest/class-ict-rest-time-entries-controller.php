@@ -524,12 +524,21 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 			'billable_hours'  => 0,
 			'notes'           => sanitize_textarea_field( $request->get_param( 'notes' ) ?? '' ),
 			'status'          => 'in-progress',
-			'gps_latitude'    => $request->get_param( 'gps_latitude' ),
-			'gps_longitude'   => $request->get_param( 'gps_longitude' ),
+			'location_in'     => null,
 			'sync_status'     => 'pending',
 			'created_at'      => current_time( 'mysql' ),
 			'updated_at'      => current_time( 'mysql' ),
 		);
+
+		// Combine GPS into a single validated location string if provided
+		if ( null !== $request->get_param( 'gps_latitude' ) && null !== $request->get_param( 'gps_longitude' ) ) {
+			$coords = $request->get_param( 'gps_latitude' ) . ',' . $request->get_param( 'gps_longitude' );
+			$sanitized = ICT_Helper::sanitize_coordinates( $coords );
+			if ( null === $sanitized ) {
+				return new WP_Error( 'invalid_gps', __( 'Invalid coordinates.', 'ict-platform' ), array( 'status' => 400 ) );
+			}
+			$data['location_in'] = $sanitized;
+		}
 
 		$result = $wpdb->insert( ICT_TIME_ENTRIES_TABLE, $data );
 
@@ -610,10 +619,18 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 			'total_hours'     => $total_hours,
 			'billable_hours'  => $total_hours, // Default to same as total.
 			'status'          => 'submitted',
-			'gps_latitude_out' => $request->get_param( 'gps_latitude' ),
-			'gps_longitude_out' => $request->get_param( 'gps_longitude' ),
+			'location_out'    => null,
 			'updated_at'      => current_time( 'mysql' ),
 		);
+
+		if ( null !== $request->get_param( 'gps_latitude' ) && null !== $request->get_param( 'gps_longitude' ) ) {
+			$coords = $request->get_param( 'gps_latitude' ) . ',' . $request->get_param( 'gps_longitude' );
+			$sanitized = ICT_Helper::sanitize_coordinates( $coords );
+			if ( null === $sanitized ) {
+				return new WP_Error( 'invalid_gps', __( 'Invalid coordinates.', 'ict-platform' ), array( 'status' => 400 ) );
+			}
+			$data['location_out'] = $sanitized;
+		}
 
 		// Append notes if provided.
 		if ( $request->has_param( 'notes' ) ) {

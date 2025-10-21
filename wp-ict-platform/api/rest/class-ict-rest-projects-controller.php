@@ -176,20 +176,24 @@ class ICT_REST_Projects_Controller extends WP_REST_Controller {
 	public function create_item( $request ) {
 		global $wpdb;
 
-		$data = array(
-			'project_name'       => sanitize_text_field( $request->get_param( 'project_name' ) ),
-			'project_number'     => ICT_Helper::generate_project_number(),
-			'client_id'          => $request->get_param( 'client_id' ),
-			'site_address'       => sanitize_textarea_field( $request->get_param( 'site_address' ) ),
-			'status'             => sanitize_text_field( $request->get_param( 'status' ) ?? 'pending' ),
-			'priority'           => sanitize_text_field( $request->get_param( 'priority' ) ?? 'medium' ),
-			'start_date'         => $request->get_param( 'start_date' ),
-			'end_date'           => $request->get_param( 'end_date' ),
-			'estimated_hours'    => floatval( $request->get_param( 'estimated_hours' ) ?? 0 ),
-			'budget_amount'      => floatval( $request->get_param( 'budget_amount' ) ?? 0 ),
-			'project_manager_id' => $request->get_param( 'project_manager_id' ),
-			'notes'              => sanitize_textarea_field( $request->get_param( 'notes' ) ),
-		);
+		try {
+			$data = array(
+				'project_name'       => ICT_Data_Validator::required_string( $request->get_param( 'project_name' ) ),
+				'project_number'     => ICT_Helper::generate_project_number(),
+				'client_id'          => $request->get_param( 'client_id' ) ? ICT_Data_Validator::id( $request->get_param( 'client_id' ) ) : null,
+				'site_address'       => ICT_Data_Validator::optional_string( $request->get_param( 'site_address' ) ),
+				'status'             => ICT_Data_Validator::enum( $request->get_param( 'status' ), array( 'pending', 'active', 'on-hold', 'completed', 'cancelled' ), 'pending' ),
+				'priority'           => ICT_Data_Validator::enum( $request->get_param( 'priority' ), array( 'low', 'medium', 'high', 'urgent' ), 'medium' ),
+				'start_date'         => ICT_Data_Validator::iso_datetime( $request->get_param( 'start_date' ) ),
+				'end_date'           => ICT_Data_Validator::iso_datetime( $request->get_param( 'end_date' ) ),
+				'estimated_hours'    => ICT_Data_Validator::non_negative_decimal( $request->get_param( 'estimated_hours' ) ?? 0 ),
+				'budget_amount'      => ICT_Data_Validator::non_negative_decimal( $request->get_param( 'budget_amount' ) ?? 0, 2 ),
+				'project_manager_id' => $request->get_param( 'project_manager_id' ) ? ICT_Data_Validator::id( $request->get_param( 'project_manager_id' ) ) : null,
+				'notes'              => ICT_Data_Validator::optional_string( $request->get_param( 'notes' ) ),
+			);
+		} catch ( InvalidArgumentException $e ) {
+			return new WP_Error( 'invalid_params', $e->getMessage(), array( 'status' => 400 ) );
+		}
 
 		$result = $wpdb->insert(
 			ICT_PROJECTS_TABLE,
@@ -236,9 +240,30 @@ class ICT_REST_Projects_Controller extends WP_REST_Controller {
 
 		$data = array();
 
-		foreach ( array( 'project_name', 'site_address', 'status', 'priority', 'start_date', 'end_date', 'estimated_hours', 'budget_amount', 'notes' ) as $field ) {
-			if ( $request->has_param( $field ) ) {
-				$data[ $field ] = $request->get_param( $field );
+		$fields = array( 'project_name', 'site_address', 'status', 'priority', 'start_date', 'end_date', 'estimated_hours', 'budget_amount', 'project_manager_id', 'notes' );
+		foreach ( $fields as $field ) {
+			if ( ! $request->has_param( $field ) ) {
+				continue;
+			}
+			try {
+				$value = $request->get_param( $field );
+				if ( 'project_name' === $field ) {
+					$data[ $field ] = ICT_Data_Validator::required_string( $value );
+				} elseif ( 'site_address' === $field || 'notes' === $field ) {
+					$data[ $field ] = ICT_Data_Validator::optional_string( $value );
+				} elseif ( 'status' === $field ) {
+					$data[ $field ] = ICT_Data_Validator::enum( $value, array( 'pending', 'active', 'on-hold', 'completed', 'cancelled' ) );
+				} elseif ( 'priority' === $field ) {
+					$data[ $field ] = ICT_Data_Validator::enum( $value, array( 'low', 'medium', 'high', 'urgent' ) );
+				} elseif ( 'start_date' === $field || 'end_date' === $field ) {
+					$data[ $field ] = ICT_Data_Validator::iso_datetime( $value );
+				} elseif ( 'estimated_hours' === $field || 'budget_amount' === $field ) {
+					$data[ $field ] = ICT_Data_Validator::non_negative_decimal( $value );
+				} elseif ( 'project_manager_id' === $field ) {
+					$data[ $field ] = ICT_Data_Validator::id( $value );
+				}
+			} catch ( InvalidArgumentException $e ) {
+				return new WP_Error( 'invalid_params', $e->getMessage(), array( 'status' => 400 ) );
 			}
 		}
 

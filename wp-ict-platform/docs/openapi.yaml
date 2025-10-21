@@ -1,0 +1,246 @@
+openapi: 3.0.3
+info:
+  title: ICT Platform API
+  version: 1.0.0
+  description: REST API for Projects, Time, Inventory, POs, Resources, Sync, Reports.
+servers:
+  - url: https://your-site.com/wp-json/ict/v1
+paths:
+  /projects:
+    get:
+      summary: List projects
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+        - in: query
+          name: per_page
+          schema: { type: integer, default: 20 }
+        - in: query
+          name: status
+          schema: { type: string, description: "Comma-separated statuses" }
+        - in: query
+          name: search
+          schema: { type: string }
+      responses:
+        '200':
+          description: Paginated projects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProjects'
+    post:
+      summary: Create project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCreate'
+      responses:
+        '201': { $ref: '#/components/responses/ProjectResponse' }
+        '400': { $ref: '#/components/responses/Error' }
+
+  /projects/{id}:
+    get:
+      summary: Get project
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { $ref: '#/components/responses/ProjectResponse' }
+        '404': { $ref: '#/components/responses/Error' }
+    put:
+      summary: Update project
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectUpdate'
+      responses:
+        '200': { $ref: '#/components/responses/ProjectResponse' }
+        '400': { $ref: '#/components/responses/Error' }
+
+  /projects/{id}/sync:
+    post:
+      summary: Queue sync to Zoho CRM
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { $ref: '#/components/responses/BasicOk' }
+
+  /time-entries:
+    get:
+      summary: List time entries
+      responses:
+        '200':
+          description: Paginated time entries
+    post:
+      summary: Create time entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeEntryCreate'
+      responses:
+        '201': { $ref: '#/components/responses/TimeEntryResponse' }
+
+  /time/clock-in:
+    post:
+      summary: Clock in
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [project_id]
+              properties:
+                project_id: { type: integer }
+                task_type: { type: string }
+                notes: { type: string }
+                gps_latitude: { type: number }
+                gps_longitude: { type: number }
+      responses:
+        '200': { $ref: '#/components/responses/TimeEntryResponse' }
+        '400': { $ref: '#/components/responses/Error' }
+
+  /time/clock-out:
+    post:
+      summary: Clock out
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                entry_id: { type: integer }
+                notes: { type: string }
+                gps_latitude: { type: number }
+                gps_longitude: { type: number }
+      responses:
+        '200': { $ref: '#/components/responses/TimeEntryResponse' }
+        '400': { $ref: '#/components/responses/Error' }
+
+components:
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code: { type: string }
+              message: { type: string }
+    BasicOk:
+      description: Basic success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success: { type: boolean }
+              message: { type: string }
+    ProjectResponse:
+      description: Project wrapper response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success: { type: boolean }
+              data: { $ref: '#/components/schemas/Project' }
+    TimeEntryResponse:
+      description: Time entry wrapper response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success: { type: boolean }
+              data: { $ref: '#/components/schemas/TimeEntry' }
+
+  schemas:
+    PaginatedProjects:
+      type: object
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Project' }
+        total: { type: integer }
+        page: { type: integer }
+        per_page: { type: integer }
+        total_pages: { type: integer }
+
+    Project:
+      type: object
+      properties:
+        id: { type: integer }
+        project_name: { type: string }
+        project_number: { type: string }
+        client_id: { type: integer, nullable: true }
+        site_address: { type: string, nullable: true }
+        status: { type: string, enum: [pending, active, on-hold, completed, cancelled] }
+        priority: { type: string, enum: [low, medium, high, urgent] }
+        start_date: { type: string, format: date-time, nullable: true }
+        end_date: { type: string, format: date-time, nullable: true }
+        estimated_hours: { type: number }
+        budget_amount: { type: number }
+        project_manager_id: { type: integer, nullable: true }
+        notes: { type: string, nullable: true }
+
+    ProjectCreate:
+      allOf:
+        - $ref: '#/components/schemas/Project'
+      required: [project_name]
+
+    ProjectUpdate:
+      type: object
+      properties:
+        project_name: { type: string }
+        site_address: { type: string }
+        status: { type: string, enum: [pending, active, on-hold, completed, cancelled] }
+        priority: { type: string, enum: [low, medium, high, urgent] }
+        start_date: { type: string, format: date-time }
+        end_date: { type: string, format: date-time }
+        estimated_hours: { type: number }
+        budget_amount: { type: number }
+        project_manager_id: { type: integer }
+        notes: { type: string }
+
+    TimeEntry:
+      type: object
+      properties:
+        id: { type: integer }
+        project_id: { type: integer }
+        technician_id: { type: integer }
+        task_type: { type: string }
+        clock_in: { type: string, format: date-time }
+        clock_out: { type: string, format: date-time, nullable: true }
+        total_hours: { type: number }
+        billable_hours: { type: number }
+        status: { type: string }
+        location_in: { type: string, nullable: true, description: 'lat,lng' }
+        location_out: { type: string, nullable: true, description: 'lat,lng' }
+        notes: { type: string, nullable: true }
+
+    TimeEntryCreate:
+      type: object
+      required: [project_id]
+      properties:
+        project_id: { type: integer }
+        task_type: { type: string }
+        notes: { type: string }

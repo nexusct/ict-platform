@@ -1,0 +1,95 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths-ignore:
+      - '**.md' # Ignore markdown changes for CI
+  pull_request:
+    branches:
+      - main
+      - develop
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # --- Setup PHP Environment (Backend) ---
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2' # Or your target PHP version, e.g., '8.2'
+          extensions: mbstring, pdo_mysql, curl, json, gd, xml # Common extensions
+          ini-values: post_max_size=256M, upload_max_filesize=256M
+          coverage: none # xdebug or pcov if needed for coverage reports
+
+      - name: Install PHP Dependencies
+        run: composer install --no-dev --prefer-dist # Use --no-dev for production builds, --dev for testing
+        working-directory: ./backend # Assumes PHP backend is in a 'backend' directory
+
+      - name: Run PHP Linters (PHP-CS-Fixer)
+        # This command will check for coding standard violations without fixing them.
+        # Use `fix` instead of `fix --dry-run` if you want to auto-fix on CI (less common).
+        run: ./vendor/bin/php-cs-fixer fix --dry-run --diff --verbose
+        working-directory: ./backend
+        continue-on-error: true # Allow other steps to run, but mark job as failed if issues found
+
+      - name: Run PHP Unit Tests
+        run: ./vendor/bin/phpunit
+        working-directory: ./backend
+
+      # --- Setup Node.js Environment (Frontend) ---
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Or your target Node.js version, e.g., '18'
+          cache: 'npm'
+
+      - name: Install Node.js Dependencies
+        run: npm ci # 'ci' is preferred over 'install' in CI environments for reproducibility
+        working-directory: ./frontend # Assumes frontend is in a 'frontend' directory
+
+      - name: Run ESLint
+        # Assumes you have an 'lint' script in your frontend package.json
+        run: npm run lint
+        working-directory: ./frontend
+
+      - name: Run Prettier Check
+        # Assumes you have a 'format:check' script in your frontend package.json
+        # Example: "format:check": "prettier --check ."
+        run: npm run format:check
+        working-directory: ./frontend
+
+      - name: Run Frontend Unit Tests
+        # Example for Jest/Vitest. Adjust command based on your test runner.
+        # `--coverage` is optional but good for tracking code coverage.
+        run: npm test -- --coverage
+        working-directory: ./frontend
+
+      - name: Build Frontend Assets
+        # Assumes you have a 'build' script in your frontend package.json
+        run: npm run build
+        working-directory: ./frontend
+
+      # --- Optional: SQL Linting (if you have separate SQL files) ---
+      # - name: Install SQLFluff
+      #   run: pip install sqlfluff
+      # - name: Run SQLFluff Lint
+      #   # Adjust path to your SQL files.
+      #   run: sqlfluff lint ./sql
+      #   continue-on-error: true
+
+      # --- Optional: End-to-End (E2E) Tests ---
+      # - name: Run E2E Tests
+      #   # This step typically requires your application to be running.
+      #   # You might need to add steps to start your backend and frontend services.
+      #   run: npm run e2e # e.g., Cypress, Playwright
+      #   working-directory: ./e2e-tests # Or wherever your E2E tests reside
+      #   env:
+      #     BASE_URL: http://localhost:3000 # Your application's URL for E2E tests
