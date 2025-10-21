@@ -1,0 +1,346 @@
+/**
+ * QuoteWerks Admin Styles
+ *
+ * @package ICT_Platform
+ * @since   1.0.0
+ */
+
+/* Header Section */
+.ict-quotewerks-settings .ict-quotewerks-header {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 20px;
+	margin: 20px 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 20px;
+}
+
+/* Connection Status */
+.ict-quotewerks-settings .connection-status {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 14px;
+}
+
+.ict-quotewerks-settings .connection-status .status-indicator {
+	display: inline-block;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background: #ddd;
+}
+
+.ict-quotewerks-settings .connection-status.connected .status-indicator {
+	background: #46b450;
+	box-shadow: 0 0 8px rgba(70, 180, 80, 0.5);
+	animation: pulse 2s infinite;
+}
+
+.ict-quotewerks-settings .connection-status.error .status-indicator {
+	background: #dc3232;
+}
+
+.ict-quotewerks-settings .connection-status.not-configured .status-indicator,
+.ict-quotewerks-settings .connection-status.unknown .status-indicator {
+	background: #f0b849;
+}
+
+@keyframes pulse {
+	0%, 100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.5;
+	}
+}
+
+/* Quick Actions */
+.ict-quotewerks-settings .quick-actions {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.ict-quotewerks-settings .quick-actions .button {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.ict-quotewerks-settings .quick-actions .dashicons {
+	font-size: 16px;
+	height: 16px;
+	width: 16px;
+}
+
+/* Sync Stats Grid */
+.ict-quotewerks-settings .sync-stats-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: 15px;
+	margin: 20px 0;
+}
+
+.ict-quotewerks-settings .stat-box {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 20px;
+	text-align: center;
+	transition: all 0.3s ease;
+}
+
+.ict-quotewerks-settings .stat-box:hover {
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	transform: translateY(-2px);
+}
+
+.ict-quotewerks-settings .stat-box .stat-value {
+	font-size: 32px;
+	font-weight: 600;
+	color: #1d2327;
+	line-height: 1.2;
+	margin-bottom: 5px;
+}
+
+.ict-quotewerks-settings .stat-box .stat-label {
+	font-size: 13px;
+	color: #646970;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.ict-quotewerks-settings .stat-box.success .stat-value {
+	color: #46b450;
+}
+
+.ict-quotewerks-settings .stat-box.error .stat-value {
+	color: #dc3232;
+}
+
+/* Webhook Events Info */
+.ict-quotewerks-settings .webhook-events-info {
+	background: #f0f0f1;
+	border-left: 4px solid #2271b1;
+	padding: 15px 20px;
+	margin: 20px 0;
+	border-radius: 4px;
+}
+
+.ict-quotewerks-settings .webhook-events-info h4 {
+	margin-top: 0;
+	margin-bottom: 10px;
+	font-size: 14px;
+	color: #1d2327;
+}
+
+.ict-quotewerks-settings .webhook-events-info ul {
+	margin: 0;
+	padding-left: 20px;
+}
+
+.ict-quotewerks-settings .webhook-events-info li {
+	margin-bottom: 8px;
+	color: #50575e;
+}
+
+.ict-quotewerks-settings .webhook-events-info code {
+	background: #fff;
+	padding: 2px 6px;
+	border-radius: 3px;
+	font-size: 12px;
+	color: #d63638;
+}
+
+/* Field Mapping Table */
+.ict-quotewerks-settings .field-mapping-table {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	margin-top: 10px;
+}
+
+.ict-quotewerks-settings .field-mapping-table thead th {
+	background: #f6f7f7;
+	font-weight: 600;
+	padding: 12px;
+	border-bottom: 2px solid #c3c4c7;
+}
+
+.ict-quotewerks-settings .field-mapping-table tbody td {
+	padding: 10px 12px;
+	border-bottom: 1px solid #f0f0f1;
+}
+
+.ict-quotewerks-settings .field-mapping-table select {
+	min-width: 200px;
+}
+
+.ict-quotewerks-settings .field-mapping-table .button-link-delete {
+	color: #b32d2e;
+	text-decoration: none;
+}
+
+.ict-quotewerks-settings .field-mapping-table .button-link-delete:hover {
+	color: #dc3232;
+}
+
+/* Recent Activity Table */
+.ict-quotewerks-settings .ict-quotewerks-recent {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 20px;
+	margin: 20px 0;
+}
+
+.ict-quotewerks-settings .ict-quotewerks-recent h2 {
+	margin-top: 0;
+	padding-bottom: 15px;
+	border-bottom: 1px solid #c3c4c7;
+}
+
+.ict-quotewerks-settings .status-badge {
+	display: inline-block;
+	padding: 3px 8px;
+	border-radius: 3px;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.ict-quotewerks-settings .status-badge.status-success {
+	background: #d7f0db;
+	color: #1e5429;
+}
+
+.ict-quotewerks-settings .status-badge.status-error {
+	background: #f9dddc;
+	color: #8a2424;
+}
+
+/* Copy Buttons */
+.ict-quotewerks-settings .copy-webhook-url,
+.ict-quotewerks-settings .copy-webhook-secret {
+	margin-left: 5px;
+	vertical-align: middle;
+}
+
+/* Spin Animation */
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.dashicons.spin {
+	animation: spin 1s linear infinite;
+}
+
+/* Stats Section */
+.ict-quotewerks-settings .ict-quotewerks-stats {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 20px;
+	margin: 20px 0;
+}
+
+.ict-quotewerks-settings .ict-quotewerks-stats h2 {
+	margin-top: 0;
+	padding-bottom: 15px;
+	border-bottom: 1px solid #c3c4c7;
+}
+
+/* Form Table Overrides */
+.ict-quotewerks-settings .form-table th {
+	width: 220px;
+	padding: 20px 10px 20px 0;
+}
+
+.ict-quotewerks-settings .form-table td {
+	padding: 15px 10px;
+}
+
+.ict-quotewerks-settings .form-table input[type="text"],
+.ict-quotewerks-settings .form-table input[type="url"],
+.ict-quotewerks-settings .form-table input[type="password"] {
+	width: 100%;
+	max-width: 500px;
+}
+
+.ict-quotewerks-settings .form-table .large-text {
+	max-width: 600px;
+}
+
+/* Responsive */
+@media screen and (max-width: 782px) {
+	.ict-quotewerks-settings .ict-quotewerks-header {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.ict-quotewerks-settings .quick-actions {
+		width: 100%;
+	}
+
+	.ict-quotewerks-settings .quick-actions .button {
+		flex: 1;
+		justify-content: center;
+	}
+
+	.ict-quotewerks-settings .sync-stats-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.ict-quotewerks-settings .field-mapping-table {
+		display: block;
+		overflow-x: auto;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.ict-quotewerks-settings .connection-status {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 8px;
+	}
+
+	.ict-quotewerks-settings .form-table input[type="text"],
+	.ict-quotewerks-settings .form-table input[type="url"],
+	.ict-quotewerks-settings .form-table input[type="password"],
+	.ict-quotewerks-settings .form-table .large-text {
+		max-width: 100%;
+	}
+}
+
+/* Loading State */
+.ict-quotewerks-settings .button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+/* Notice Styles */
+.ict-admin-notice {
+	animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}

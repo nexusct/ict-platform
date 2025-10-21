@@ -77,6 +77,7 @@ class ICT_Core {
 		require_once ICT_PLATFORM_PLUGIN_DIR . 'admin/class-ict-admin.php';
 		require_once ICT_PLATFORM_PLUGIN_DIR . 'admin/class-ict-admin-settings.php';
 		require_once ICT_PLATFORM_PLUGIN_DIR . 'admin/class-ict-admin-menu.php';
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'admin/class-ict-admin-quotewerks.php';
 
 		// Load public classes
 		require_once ICT_PLATFORM_PLUGIN_DIR . 'public/class-ict-public.php';
@@ -126,6 +127,10 @@ class ICT_Core {
 		// Settings
 		$admin_settings = new ICT_Admin_Settings();
 		$this->loader->add_action( 'admin_init', $admin_settings, 'register_settings' );
+
+		// QuoteWerks Settings
+		// Note: ICT_Admin_QuoteWerks registers its own hooks in constructor
+		$admin_quotewerks = new ICT_Admin_QuoteWerks();
 
 		// Register post types
 		$project_post_type = new ICT_PostType_Project();

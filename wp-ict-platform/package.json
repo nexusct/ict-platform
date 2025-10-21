@@ -13,7 +13,9 @@
     "type-check": "tsc --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "api:validate": "swagger-cli validate docs/openapi.yaml",
+    "api:types": "openapi-typescript ./docs/openapi.yaml -o ./src/types/api.ts"
   },
   "keywords": [
     "wordpress",
@@ -58,7 +60,9 @@
     "typescript": "^5.2.2",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
-    "workbox-webpack-plugin": "^7.0.0"
+    "workbox-webpack-plugin": "^7.0.0",
+    "openapi-typescript": "^6.7.5",
+    "swagger-cli": "^4.0.4"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.9",

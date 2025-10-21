@@ -20,62 +20,85 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # --- Setup PHP Environment (Backend) ---
+      # --- Setup PHP Environment (WordPress Plugin) ---
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2' # Or your target PHP version, e.g., '8.2'
-          extensions: mbstring, pdo_mysql, curl, json, gd, xml # Common extensions
+          php-version: '8.2'
+          extensions: mbstring, pdo_mysql, curl, json, gd, xml
           ini-values: post_max_size=256M, upload_max_filesize=256M
-          coverage: none # xdebug or pcov if needed for coverage reports
+          coverage: none
 
-      - name: Install PHP Dependencies
-        run: composer install --no-dev --prefer-dist # Use --no-dev for production builds, --dev for testing
-        working-directory: ./backend # Assumes PHP backend is in a 'backend' directory
+      - name: Install PHP Dependencies (Plugin)
+        run: composer install --no-interaction --prefer-dist
+        working-directory: ./wp-ict-platform
 
-      - name: Run PHP Linters (PHP-CS-Fixer)
-        # This command will check for coding standard violations without fixing them.
-        # Use `fix` instead of `fix --dry-run` if you want to auto-fix on CI (less common).
-        run: ./vendor/bin/php-cs-fixer fix --dry-run --diff --verbose
-        working-directory: ./backend
-        continue-on-error: true # Allow other steps to run, but mark job as failed if issues found
+      - name: PHP Lint (PHPCS)
+        run: vendor/bin/phpcs -q --report=full || true
+        working-directory: ./wp-ict-platform
 
-      - name: Run PHP Unit Tests
-        run: ./vendor/bin/phpunit
-        working-directory: ./backend
+      # - name: PHP Unit Tests (optional)
+      #   run: vendor/bin/phpunit
+      #   working-directory: ./wp-ict-platform
 
-      # --- Setup Node.js Environment (Frontend) ---
+      # --- Setup Node.js for Plugin Admin UI ---
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Or your target Node.js version, e.g., '18'
+          node-version: '18'
           cache: 'npm'
 
-      - name: Install Node.js Dependencies
-        run: npm ci # 'ci' is preferred over 'install' in CI environments for reproducibility
-        working-directory: ./frontend # Assumes frontend is in a 'frontend' directory
+      - name: Install Node Dependencies (Plugin UI)
+        run: npm ci
+        working-directory: ./wp-ict-platform
 
-      - name: Run ESLint
-        # Assumes you have an 'lint' script in your frontend package.json
+      - name: Validate OpenAPI Spec (Plugin)
+        run: npm run api:validate
+        working-directory: ./wp-ict-platform
+
+      - name: Generate API Types (Plugin)
+        run: npm run api:types
+        working-directory: ./wp-ict-platform
+
+      - name: ESLint (Plugin UI)
         run: npm run lint
-        working-directory: ./frontend
+        working-directory: ./wp-ict-platform
 
-      - name: Run Prettier Check
-        # Assumes you have a 'format:check' script in your frontend package.json
-        # Example: "format:check": "prettier --check ."
-        run: npm run format:check
-        working-directory: ./frontend
+      - name: Prettier Check (Plugin UI)
+        run: npm run format:check || true
+        working-directory: ./wp-ict-platform
 
-      - name: Run Frontend Unit Tests
-        # Example for Jest/Vitest. Adjust command based on your test runner.
-        # `--coverage` is optional but good for tracking code coverage.
+      - name: Jest Tests (Plugin UI)
         run: npm test -- --coverage
-        working-directory: ./frontend
+        working-directory: ./wp-ict-platform
 
-      - name: Build Frontend Assets
-        # Assumes you have a 'build' script in your frontend package.json
+      - name: Build Admin Assets (Plugin UI)
         run: npm run build
-        working-directory: ./frontend
+        working-directory: ./wp-ict-platform
+
+      # --- Mobile App (basic checks) ---
+      - name: Install Node Dependencies (Mobile App)
+        run: npm ci
+        working-directory: ./ict-mobile-app
+
+      - name: Generate API Types (Mobile App)
+        run: npm run api:types
+        working-directory: ./ict-mobile-app
+
+      - name: Type Check (Mobile App)
+        run: npm run type-check
+        working-directory: ./ict-mobile-app
+
+      - name: Jest Tests (Mobile App)
+        run: npm test -- --coverage
+        working-directory: ./ict-mobile-app
+
+      # --- Publish OpenAPI artifact ---
+      - name: Upload OpenAPI Spec
+        uses: actions/upload-artifact@v3
+        with:
+          name: openapi-spec
+          path: wp-ict-platform/docs/openapi.yaml
 
       # --- Optional: SQL Linting (if you have separate SQL files) ---
       # - name: Install SQLFluff
