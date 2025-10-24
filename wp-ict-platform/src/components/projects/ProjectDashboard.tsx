@@ -7,7 +7,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/useAppDispatch';
-import { fetchProjects, setFilters, setCurrentProject } from '../../store/slices/projectsSlice';
+import { fetchProjects, setCurrentProject } from '../../store/slices/projectsSlice';
 import { ProjectList } from './ProjectList';
 import { ProjectForm } from './ProjectForm';
 import { ProjectStats } from './ProjectStats';

@@ -18,7 +18,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   fetchCalendarEvents,
   updateResourceAllocation,
-  deleteResourceAllocation,
+  // deleteResourceAllocation, // TODO: Implement delete via calendar
   checkResourceConflicts,
   clearConflicts,
   selectCalendarEvents,
@@ -26,16 +26,16 @@ import {
   selectResourceConflicts,
   selectHasConflicts,
 } from '../../store/slices/resourcesSlice';
-import { ResourceType, CalendarEvent } from '../../types';
+import { ResourceType } from '../../types';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
+// import resourceTimelinePlugin from '@fullcalendar/resource-timeline'; // TODO: Install package
 import interactionPlugin from '@fullcalendar/interaction';
 import type { EventClickArg, EventDropArg, DateSelectArg, EventContentArg } from '@fullcalendar/core';
 
 interface ResourceCalendarProps {
-  projectId?: number;
+  // projectId?: number; // TODO: Use for filtering
   resourceType?: ResourceType;
   resourceId?: number;
   editable?: boolean;
@@ -44,7 +44,7 @@ interface ResourceCalendarProps {
 }
 
 const ResourceCalendar: React.FC<ResourceCalendarProps> = ({
-  projectId,
+  // projectId, // TODO: Use for filtering
   resourceType,
   resourceId,
   editable = false,

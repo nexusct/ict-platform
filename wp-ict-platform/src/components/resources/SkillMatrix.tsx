@@ -21,7 +21,7 @@ import {
   fetchTechnicianSkills,
   updateTechnicianSkills,
   selectTechnicianSkills,
-  selectTechnicianSkillsById,
+  // selectTechnicianSkillsById, // TODO: Use for individual technician view
   selectResourcesLoading,
   selectResourcesError,
 } from '../../store/slices/resourcesSlice';

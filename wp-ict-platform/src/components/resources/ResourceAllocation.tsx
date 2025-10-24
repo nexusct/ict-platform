@@ -27,12 +27,11 @@ import {
   selectResourcesError,
   selectHasConflicts,
 } from '../../store/slices/resourcesSlice';
-import { fetchProjects } from '../../store/slices/projectsSlice';
+// import { fetchProjects } from '../../store/slices/projectsSlice'; // TODO: Use for project dropdown
 import {
   ProjectResource,
   ResourceFormData,
   ResourceType,
-  ResourceStatus,
 } from '../../types';
 
 interface ResourceAllocationProps {

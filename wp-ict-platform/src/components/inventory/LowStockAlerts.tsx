@@ -66,6 +66,7 @@ const LowStockAlerts: React.FC<LowStockAlertsProps> = ({
 
       return () => clearInterval(interval);
     }
+    return undefined; // Return undefined when autoRefresh is false
   }, [autoRefresh, refreshInterval, dispatch]);
 
   const calculatePriority = (item: InventoryItem): AlertPriority => {
