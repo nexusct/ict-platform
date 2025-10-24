@@ -77,13 +77,20 @@ class ICT_Core {
 		require_once ICT_PLATFORM_PLUGIN_DIR . 'admin/class-ict-admin.php';
 		require_once ICT_PLATFORM_PLUGIN_DIR . 'admin/class-ict-admin-settings.php';
 		require_once ICT_PLATFORM_PLUGIN_DIR . 'admin/class-ict-admin-menu.php';
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'admin/class-ict-admin-teams-settings.php';
 		require_once ICT_PLATFORM_PLUGIN_DIR . 'admin/class-ict-admin-quotewerks.php';
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'admin/class-ict-admin-ai.php';
 
 		// Load public classes
 		require_once ICT_PLATFORM_PLUGIN_DIR . 'public/class-ict-public.php';
 
 		// Load API classes
 		require_once ICT_PLATFORM_PLUGIN_DIR . 'api/class-ict-api.php';
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'api/rest/class-ict-rest-ocr-controller.php';
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'api/rest/class-ict-rest-routing-controller.php';
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'api/rest/class-ict-rest-signatures-controller.php';
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'api/rest/class-ict-rest-data-health-controller.php';
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'api/class-ict-extra-api.php';
 
 		// Load post type and taxonomy classes
 		require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/post-types/class-ict-posttype-project.php';
@@ -91,6 +98,8 @@ class ICT_Core {
 
 		// Load integration classes
 		require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/integrations/class-ict-integration-manager.php';
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/integrations/class-ict-teams-integration.php';
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/integrations/class-ict-openai-adapter.php';
 
 		// Load sync engine
 		require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/sync/class-ict-sync-engine.php';
@@ -128,9 +137,16 @@ class ICT_Core {
 		$admin_settings = new ICT_Admin_Settings();
 		$this->loader->add_action( 'admin_init', $admin_settings, 'register_settings' );
 
+		$teams_settings = new ICT_Admin_Teams_Settings();
+		$this->loader->add_action( 'admin_init', $teams_settings, 'register_settings' );
+
 		// QuoteWerks Settings
 		// Note: ICT_Admin_QuoteWerks registers its own hooks in constructor
 		$admin_quotewerks = new ICT_Admin_QuoteWerks();
+
+		// AI Assistant Settings
+		// Note: ICT_Admin_AI registers its own hooks in constructor
+		$admin_ai = new ICT_Admin_AI();
 
 		// Register post types
 		$project_post_type = new ICT_PostType_Project();
@@ -142,6 +158,9 @@ class ICT_Core {
 
 		// Custom cron schedules
 		$this->loader->add_filter( 'cron_schedules', $this, 'add_custom_cron_schedules' );
+
+		// Bootstrap Teams integration hooks
+		ICT_Teams_Integration::bootstrap();
 	}
 
 	/**
@@ -170,6 +189,8 @@ class ICT_Core {
 	private function define_api_hooks() {
 		$api = new ICT_API();
 		$this->loader->add_action( 'rest_api_init', $api, 'register_routes' );
+		// Register extra controllers
+		$this->loader->add_action( 'rest_api_init', 'ICT_Extra_API', 'register' );
 	}
 
 	/**

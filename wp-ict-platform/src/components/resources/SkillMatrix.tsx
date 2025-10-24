@@ -21,7 +21,7 @@ import {
   fetchTechnicianSkills,
   updateTechnicianSkills,
   selectTechnicianSkills,
-  selectTechnicianSkillsById,
+  // selectTechnicianSkillsById, // TODO: Use for individual technician view
   selectResourcesLoading,
   selectResourcesError,
 } from '../../store/slices/resourcesSlice';
@@ -76,10 +76,12 @@ const SkillMatrix: React.FC<SkillMatrixProps> = ({
   const getAllSkillNames = (): string[] => {
     const skillNames = new Set<string>();
 
-    Object.values(allSkills).forEach((techSkills) => {
-      techSkills.forEach((skill) => {
-        skillNames.add(skill.skill_name);
-      });
+    Object.values(allSkills).forEach((techSkills: unknown) => {
+      if (Array.isArray(techSkills)) {
+        techSkills.forEach((skill: any) => {
+          skillNames.add(skill.skill_name);
+        });
+      }
     });
 
     return Array.from(skillNames).sort();
@@ -88,7 +90,7 @@ const SkillMatrix: React.FC<SkillMatrixProps> = ({
   // Get skill for specific technician
   const getTechnicianSkill = (technicianId: number, skillName: string): TechnicianSkill | undefined => {
     const techSkills = allSkills[technicianId] || [];
-    return techSkills.find((s) => s.skill_name === skillName);
+    return techSkills.find((s: any) => s.skill_name === skillName);
   };
 
   // Render proficiency stars
@@ -110,13 +112,13 @@ const SkillMatrix: React.FC<SkillMatrixProps> = ({
   // Handle skill update
   const handleUpdateSkill = async (technicianId: number, skill: Partial<TechnicianSkill>) => {
     const currentSkills = allSkills[technicianId] || [];
-    const existingSkillIndex = currentSkills.findIndex((s) => s.skill_name === skill.skill_name);
+    const existingSkillIndex = currentSkills.findIndex((s: any) => s.skill_name === skill.skill_name);
 
     let updatedSkills: Partial<TechnicianSkill>[];
 
     if (existingSkillIndex >= 0) {
       // Update existing skill
-      updatedSkills = currentSkills.map((s, index) =>
+      updatedSkills = currentSkills.map((s: Partial<TechnicianSkill>, index: number) =>
         index === existingSkillIndex ? { ...s, ...skill } : s
       );
     } else {
@@ -136,26 +138,27 @@ const SkillMatrix: React.FC<SkillMatrixProps> = ({
     }
   };
 
+  // TODO: Implement delete skill functionality in UI
   // Handle delete skill
-  const handleDeleteSkill = async (technicianId: number, skillName: string) => {
-    if (!confirm(`Are you sure you want to remove the skill "${skillName}"?`)) {
-      return;
-    }
+  // const handleDeleteSkill = async (technicianId: number, skillName: string) => {
+  //   if (!confirm(`Are you sure you want to remove the skill "${skillName}"?`)) {
+  //     return;
+  //   }
 
-    const currentSkills = allSkills[technicianId] || [];
-    const updatedSkills = currentSkills.filter((s) => s.skill_name !== skillName);
+  //   const currentSkills = allSkills[technicianId] || [];
+  //   const updatedSkills = currentSkills.filter((s: Partial<TechnicianSkill>) => s.skill_name !== skillName);
 
-    try {
-      await dispatch(
-        updateTechnicianSkills({
-          technicianId,
-          skills: updatedSkills,
-        })
-      ).unwrap();
-    } catch (err) {
-      console.error('Failed to delete skill:', err);
-    }
-  };
+  //   try {
+  //     await dispatch(
+  //       updateTechnicianSkills({
+  //         technicianId,
+  //         skills: updatedSkills,
+  //       })
+  //     ).unwrap();
+  //   } catch (err) {
+  //     console.error('Failed to delete skill:', err);
+  //   }
+  // };
 
   // Handle add skill modal
   const handleAddSkill = async (technicianId: number) => {
@@ -196,7 +199,7 @@ const SkillMatrix: React.FC<SkillMatrixProps> = ({
   };
 
   const skillNames = getAllSkillNames();
-  const filteredTechnicianIds = technicianIds.filter((id) => {
+  const filteredTechnicianIds = technicianIds.filter((_id) => {
     if (!searchTerm) return true;
     // In real implementation, would filter by technician name
     return true;

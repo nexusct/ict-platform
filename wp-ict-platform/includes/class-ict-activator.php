@@ -255,6 +255,37 @@ class ICT_Activator {
 			KEY synced_at (synced_at)
 		) $charset_collate;";
 
+		// Signatures table
+		$signatures_table = "CREATE TABLE " . ICT_SIGNATURES_TABLE . " (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			entity_type varchar(50) NOT NULL,
+			entity_id bigint(20) UNSIGNED NOT NULL,
+			signer_name varchar(255) DEFAULT NULL,
+			signed_at datetime DEFAULT CURRENT_TIMESTAMP,
+			file_url varchar(500) DEFAULT NULL,
+			file_path varchar(500) DEFAULT NULL,
+			hash varchar(128) DEFAULT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY  (id),
+			KEY entity (entity_type, entity_id),
+			KEY signed_at (signed_at)
+		) $charset_collate;";
+
+		// AI usage tracking table
+		$ai_usage_table = "CREATE TABLE {$wpdb->prefix}ict_ai_usage (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			endpoint varchar(100) NOT NULL,
+			model varchar(50) NOT NULL,
+			prompt_tokens int(11) DEFAULT 0,
+			completion_tokens int(11) DEFAULT 0,
+			total_tokens int(11) DEFAULT 0,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY  (id),
+			KEY endpoint (endpoint),
+			KEY model (model),
+			KEY created_at (created_at)
+		) $charset_collate;";
+
 		// Execute table creation
 		dbDelta( $projects_table );
 		dbDelta( $time_entries_table );
@@ -263,6 +294,8 @@ class ICT_Activator {
 		dbDelta( $project_resources_table );
 		dbDelta( $sync_queue_table );
 		dbDelta( $sync_log_table );
+		dbDelta( $signatures_table );
+		dbDelta( $ai_usage_table );
 
 		// Save database version
 		update_option( 'ict_platform_db_version', '1.0.0' );

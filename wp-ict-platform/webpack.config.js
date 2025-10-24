@@ -1,7 +1,7 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const { WorkboxPlugin } = require('workbox-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
@@ -9,10 +9,11 @@ module.exports = (env, argv) => {
   return {
     entry: {
       admin: './src/admin/index.tsx',
-      public: './src/public/index.tsx',
-      'time-tracker': './src/apps/time-tracker/index.tsx',
-      'project-dashboard': './src/apps/project-dashboard/index.tsx',
-      'inventory-manager': './src/apps/inventory-manager/index.tsx',
+      // TODO: Add these entry points when implementing respective features
+      // public: './src/public/index.tsx',
+      // 'time-tracker': './src/apps/time-tracker/index.tsx',
+      // 'project-dashboard': './src/apps/project-dashboard/index.tsx',
+      // 'inventory-manager': './src/apps/inventory-manager/index.tsx',
     },
     output: {
       path: path.resolve(__dirname, 'assets/js/dist'),

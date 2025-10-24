@@ -50,15 +50,18 @@ const initialState: ResourcesState = {
 /**
  * Fetch resource allocations with filtering and pagination
  */
-export const fetchResources = createAsyncThunk(
+export const fetchResources = createAsyncThunk<
+  PaginatedResponse<ProjectResource>,
+  { filters?: ResourceFilters; page?: number; per_page?: number } | undefined
+>(
   'resources/fetchResources',
-  async (params?: { filters?: ResourceFilters; page?: number; per_page?: number }) => {
+  async (params) => {
     const response = await resourceAPI.getAll({
       ...params?.filters,
       page: params?.page,
       per_page: params?.per_page,
     });
-    return response.data!;
+    return response;
   }
 );
 
@@ -205,7 +208,7 @@ export const batchUpdateAllocations = createAsyncThunk(
 export const batchDeleteAllocations = createAsyncThunk(
   'resources/batchDelete',
   async (ids: number[]) => {
-    const response = await resourceAPI.batchDelete(ids);
+    await resourceAPI.batchDelete(ids);
     return ids;
   }
 );

@@ -1,0 +1,277 @@
+/**
+ * AI Admin Styles
+ *
+ * @package ICT_Platform
+ * @since   1.0.0
+ */
+
+/* Header Section */
+.ict-ai-settings .ict-ai-header {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 20px;
+	margin: 20px 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 20px;
+}
+
+/* Connection Status */
+.ict-ai-settings .connection-status {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 14px;
+}
+
+.ict-ai-settings .connection-status .status-indicator {
+	display: inline-block;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background: #ddd;
+}
+
+.ict-ai-settings .connection-status.connected .status-indicator {
+	background: #46b450;
+	box-shadow: 0 0 8px rgba(70, 180, 80, 0.5);
+	animation: pulse 2s infinite;
+}
+
+.ict-ai-settings .connection-status.error .status-indicator {
+	background: #dc3232;
+}
+
+.ict-ai-settings .connection-status.not-configured .status-indicator,
+.ict-ai-settings .connection-status.unknown .status-indicator {
+	background: #f0b849;
+}
+
+@keyframes pulse {
+	0%, 100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.5;
+	}
+}
+
+/* Usage Stats Grid */
+.ict-ai-settings .usage-stats-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 15px;
+	margin: 20px 0;
+}
+
+.ict-ai-settings .stat-box {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 20px;
+	text-align: center;
+	transition: all 0.3s ease;
+}
+
+.ict-ai-settings .stat-box:hover {
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	transform: translateY(-2px);
+}
+
+.ict-ai-settings .stat-box .stat-value {
+	font-size: 32px;
+	font-weight: 600;
+	color: #1d2327;
+	line-height: 1.2;
+	margin-bottom: 5px;
+}
+
+.ict-ai-settings .stat-box .stat-label {
+	font-size: 13px;
+	color: #646970;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+/* Demo Section */
+.ict-ai-settings .ict-ai-demo {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 20px;
+	margin: 20px 0;
+}
+
+.ict-ai-settings .ict-ai-demo h2 {
+	margin-top: 0;
+	padding-bottom: 15px;
+	border-bottom: 1px solid #c3c4c7;
+}
+
+.ict-ai-settings .ai-demo-container {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+	gap: 20px;
+	margin-top: 20px;
+}
+
+.ict-ai-settings .demo-item {
+	background: #f6f7f7;
+	padding: 20px;
+	border-radius: 4px;
+	border: 1px solid #dcdcde;
+}
+
+.ict-ai-settings .demo-item h3 {
+	margin-top: 0;
+	margin-bottom: 10px;
+	color: #1d2327;
+}
+
+.ict-ai-settings .demo-item p {
+	color: #50575e;
+	margin-bottom: 15px;
+}
+
+.ict-ai-settings .demo-item textarea,
+.ict-ai-settings .demo-item input[type="text"],
+.ict-ai-settings .demo-item select {
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.ict-ai-settings .demo-item .button {
+	width: 100%;
+}
+
+.ict-ai-settings .demo-result {
+	margin-top: 15px;
+	min-height: 40px;
+}
+
+.ict-ai-settings .ai-result-box {
+	background: #fff;
+	padding: 15px;
+	border-left: 4px solid #2271b1;
+	border-radius: 4px;
+	margin-top: 10px;
+	white-space: pre-wrap;
+	line-height: 1.6;
+}
+
+.ict-ai-settings .ai-result-box strong {
+	display: block;
+	margin-bottom: 10px;
+	color: #1d2327;
+}
+
+.ict-ai-settings .ai-result-box ul {
+	margin: 10px 0;
+	padding-left: 20px;
+}
+
+.ict-ai-settings .ai-result-box li {
+	margin-bottom: 5px;
+}
+
+/* Usage Section */
+.ict-ai-settings .ict-ai-usage {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 20px;
+	margin: 20px 0;
+}
+
+.ict-ai-settings .ict-ai-usage h2 {
+	margin-top: 0;
+	padding-bottom: 15px;
+	border-bottom: 1px solid #c3c4c7;
+}
+
+/* Form Table Overrides */
+.ict-ai-settings .form-table th {
+	width: 220px;
+	padding: 20px 10px 20px 0;
+}
+
+.ict-ai-settings .form-table td {
+	padding: 15px 10px;
+}
+
+.ict-ai-settings .form-table input[type="text"],
+.ict-ai-settings .form-table input[type="password"],
+.ict-ai-settings .form-table input[type="number"] {
+	width: 100%;
+	max-width: 500px;
+}
+
+.ict-ai-settings .form-table .small-text {
+	width: 100px;
+}
+
+.ict-ai-settings .form-table select {
+	min-width: 250px;
+}
+
+/* Spinner Animation */
+.spinner.is-active {
+	visibility: visible;
+	margin: 10px auto;
+	display: block;
+}
+
+/* Loading State */
+.ict-ai-settings .button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+/* Notice Styles */
+.ict-admin-notice {
+	animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Responsive */
+@media screen and (max-width: 782px) {
+	.ict-ai-settings .ict-ai-header {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.ict-ai-settings .ai-demo-container {
+		grid-template-columns: 1fr;
+	}
+
+	.ict-ai-settings .usage-stats-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.ict-ai-settings .connection-status {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 8px;
+	}
+
+	.ict-ai-settings .form-table input[type="text"],
+	.ict-ai-settings .form-table input[type="password"],
+	.ict-ai-settings .form-table input[type="number"] {
+		max-width: 100%;
+	}
+}
