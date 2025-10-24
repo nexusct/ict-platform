@@ -23,6 +23,7 @@ import StockAdjustment from '../components/inventory/StockAdjustment';
 import PurchaseOrderForm from '../components/inventory/PurchaseOrderForm';
 import LowStockAlerts from '../components/inventory/LowStockAlerts';
 import ReportsDashboard from '../components/reports/ReportsDashboard';
+import DataHealthDashboard from '../components/reports/DataHealthDashboard';
 import '../styles/admin.scss';
 
 // Dashboard root
@@ -244,6 +245,18 @@ if (reportsDashboardRoot) {
     <React.StrictMode>
       <Provider store={store}>
         <ReportsDashboard />
+      </Provider>
+    </React.StrictMode>
+  );
+}
+
+// Data Health root
+const dataHealthRoot = document.getElementById('ict-data-health-root');
+if (dataHealthRoot) {
+  createRoot(dataHealthRoot).render(
+    <React.StrictMode>
+      <Provider store={store}>
+        <DataHealthDashboard />
       </Provider>
     </React.StrictMode>
   );

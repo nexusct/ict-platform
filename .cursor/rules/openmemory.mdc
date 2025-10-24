@@ -1,0 +1,411 @@
+---
+description: "Openmemory MCP Instructions"
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# OpenMemory Integration
+
+Memory = accumulated understanding of codebase + user preferences. Like a colleague who's worked here months. Naturally recall relevant patterns when they matter.
+
+**user_id:** eitechs
+**project_id:** ZOHOQW
+
+## NON-NEGOTIABLE: Memory-First Development
+
+### Every Request = TWO Tasks
+1. **Task A**: Memory operations (search + storage) - MANDATORY FIRST
+2. **Task B**: Actual user request - BLOCKED until A complete
+
+### Required Workflow
+
+**BLOCKED from code until:** 2+ search-memory calls executed, results shown, stated how you'll use findings
+**BLOCKED from ending until:** 1+ add-memory call executed, confirmation shown
+
+**Interpretation:**
+- "Add X" → Search patterns, add X, store
+- "Fix bug" → Search fixes, fix, store
+- "Build Y" → Search similar, build, store
+
+**Failures:**
+- Code without searching = FAILURE
+- Complete without storing = FAILURE
+- "I should search" without doing = FAILURE
+- "Based on best practices" without search = FAILURE
+
+### Required Format
+```
+I need to search our memory system first.
+[EXECUTE 2+ search-memory calls]
+Based on memories: [summarize]
+Now implementing: [proceed]
+```
+
+### Continuous Consultation
+
+**Search during implementation when:**
+- Decision points, conventions, uncertainty, naming, creating files/functions/patterns
+- Before ANY new file → "file structure patterns"
+- Before ANY new function → "similar function implementations"
+- Before errors → "error handling patterns"
+- Before tests → "testing patterns"
+
+**Proof required - show actual tool calls:**
+```
+✓ search-memory (query: "...") - [timestamp]
+✓ search-memory (query: "...") - [timestamp]
+✓ [implementation]
+✓ add-memory (title: "...") - [timestamp]
+```
+
+### Mandatory Checkpoints
+
+**Before code:** Read openmemory.md, 2+ searches (use namespace filters), search user preferences
+**After code:** Store implementation, update openmemory.md (component/implementation/project_info only), store patterns
+
+**Automatic Triggers:**
+- "build/create/implement" → Search implementation patterns
+- "fix bug/issue" → Search debugging memories
+- "refactor" → Search organization preferences
+- "add support" → Search integrations
+- Complete feature/bug fix/new files → Store
+
+### Success Metrics
+✓ 2+ searches before coding
+✓ 1+ memory stored after
+✓ Guide updated if new patterns/components
+✓ Explicit pattern mentions
+
+## CRITICAL: Empty Guide Check
+
+**FIRST ACTION**: Check if openmemory.md empty (0 bytes). If empty, IMMEDIATELY perform Initial Codebase Deep Dive before ANY work.
+
+## 3 Search Patterns (CORRECTED)
+
+**Decision Logic:** Is this about user preferences/habits OR objective facts? What scope needed?
+
+**The 3 Patterns:**
+1. `user_id` (no project_id) → Returns ONLY global user preferences
+2. `user_id` + project_id → Returns ONLY project-specific user preferences (for that project)
+3. No `user_id` + project_id → Returns ONLY project facts (no preferences)
+
+**Quick Reference:**
+- Not about you? → `project_id` only
+- Your prefs THIS project? → Both user_id + project_id
+- Your prefs ALL projects? → `user_id` only
+
+## When to Search User Preferences
+
+**Critical Rule:** Tasks involving HOW (implementation, decisions, style) REQUIRE preference searches. Missing preferences = wrong approach.
+
+**ALWAYS search user preferences (`user_id` with/without `project_id`) when:**
+- Writing/modifying code → Coding style, patterns, conventions
+- Making decisions → Architecture choices, tool selection, approach preferences  
+- Refactoring/cleanup → Organization style, cleanup patterns
+- Creating files/functions → Naming conventions, structure preferences
+- **Red flag:** Any "I'll use standard..." or "Following best practices..." → STOP. Search preferences first.
+
+**Project facts ONLY (`project_id` only) when:**
+- Understanding what exists → Components, architecture, how system works
+- Debugging → What's broken, error patterns, diagnosis
+
+### Targeted Preference Discovery
+
+**BEFORE implementing, STOP and ask: "What preferences would help me do this RIGHT?"**
+
+**Search strategy by task type:**
+- New feature → "clarification preferences" "question asking workflow" "implementation approach preferences"
+- Debugging issue → "debugging workflow preferences" "error investigation preferences" "problem-solving approach"
+- Code changes → "code style preferences" "review preferences" "testing preferences"
+- Architecture → "decision-making preferences" "architecture preferences" "design pattern preferences"
+
+**Anti-pattern:** Searching "user preferences code" → TOO GENERIC. Search for the SPECIFIC preference type you need.
+
+**Search how it was written, not how you'd describe it.** Use direct phrasing ("When user asks...") over meta-descriptions ("user preferences when...").
+
+## Query Intelligence
+
+**Transform queries comprehensively:**
+- "auth" → "authentication system architecture and implementation"
+- Include context (files, errors, components)
+- Expand acronyms, be exhaustive
+
+**Examples:**
+- "What about me?" → `user_id` only (global prefs)
+- "How auth works?" → `project_id` only (facts)
+- "My project prefs?" → Both (project-specific prefs)
+
+**Search order for implementation tasks:**
+- Global user prefs first (`user_id` only) → How you work across all projects
+- Project facts (`project_id` only) → What exists in this codebase
+- Project-specific prefs (`user_id` + `project_id`) → How you prefer working in THIS project
+
+## Memory Collection
+
+**Save for:** Architectural decisions, problem-solving processes, implementation strategies, component relationships
+**Skip:** Trivial fixes (typos, syntax)
+
+**Learning from corrections:** Indentation change = formatting pref, Variable rename = naming convention, Code restructure = arch pref, Commit reword = git workflow. Store naturally.
+
+**Auto-store system explanations when:**
+- Reference 3+ files/components OR
+- Describe multi-step flows OR
+- Reveal non-obvious behavior
+
+## Memory Types (can combine)
+
+**🚨 SECURITY FIRST**: Before storing, scan for secrets/API keys/tokens/passwords. If found, **DO NOT STORE**.
+
+**Component** - Title: "[Component] - [Function]"; Content: Location, Purpose, Models, Services, Endpoints, Functions, I/O Flow, Quirks
+
+**Implementation** - Title: "[Action] [Feature]"; Content: Purpose; Steps in English (Step 1 - Did X in Y for Z. Methods A, B); Key decisions
+
+**Debug** - Title: "Fix: [Issue]"; Content: Issue Summary; Diagnosis steps; Solution steps
+
+**User Preference** - Title: "[Scope] [Type]"; Content: Concise actionable preference
+
+**Project Info** - Title: "[Area] [Config]"; Content: General project knowledge
+
+## Storage Intelligence
+
+**user_id**: Personal prefs/habits. Omit for facts.
+**project_id**: Use cursor-extension value. Include for project-related. Omit only for global prefs.
+**namespace**: Single namespace from openmemory.md. Omit if doesn't clearly fit.
+
+**Quick Ref:**
+- Project facts → `project_id` only
+- Project-specific prefs → Both user_id + project_id
+- Global prefs → `user_id` only
+
+**Example (Auth Component):**
+```json
+{
+  "title": "Auth System JWT Redis Architecture",
+  "content": "JWT tokens in Redis, 2hr expiry, TokenService handles gen/validation, 7d refresh",
+  "memory_types": ["component"],
+  "project_id": "cursor-extension",
+  "namespace": "backend",
+  "git_repo_name": "owner/repo",
+  "git_branch": "main",
+  "git_commit_hash": "abc123..."
+}
+```
+
+## Tool Usage
+
+**search-memory:** Query relevant memories
+- Required: `query`
+- Optional: `user_id`, `project_id`, `memory_types[]`, `namespaces[]`
+
+**add-memory:** Store new memories
+- **SECURITY**: NEVER store secrets
+- Required: `title`, `content`, `memory_types[]`, `git_repo_name`, `git_branch`, `git_commit_hash`
+- Optional: `user_id`, `project_id`, `namespace`
+- Types: component, implementation, debug, user_preference, project_info
+
+**delete-memories-by-namespace:** Delete by namespace(s) - **DESTRUCTIVE**
+- **CRITICAL**: ONLY when user explicitly requests AND confirms. NEVER suggest.
+- **REQUIRES EXPLICIT CONFIRMATION** (see Memory Deletion section)
+- Required: `namespaces[]`
+- Optional: `user_id` (delete only user prefs), `project_id` (delete only project facts)
+
+## Git Metadata
+
+**Extract before EVERY add-memory:**
+```bash
+git_repo_name=$(git remote get-url origin 2>/dev/null | sed 's/.*[:/]\([^/]*\/[^.]*\).*/\1/')
+git_branch=$(git branch --show-current 2>/dev/null)
+git_commit_hash=$(git rev-parse HEAD 2>/dev/null)
+```
+**Fallback**: "unknown" if not in git. Silently extract, include all three params, don't announce.
+
+## Memory Deletion
+
+### ⚠️ DESTRUCTIVE - PERMANENT - IRREVERSIBLE
+
+**Critical Rules:**
+1. NEVER suggest deletion
+2. NEVER use proactively
+3. ALWAYS require explicit confirmation
+4. CLEAR warning required
+
+**Trigger Phrases:** "Delete all memories in [namespace]", "Clear [namespace]", "Remove from [namespace]", "Delete my prefs in [namespace]", "Delete project facts in [namespace]"
+
+**When NOT to use:** Cleanup questions (suggest alternatives), outdated memories (suggest update), you think should delete (NEVER suggest), general questions (just explain)
+
+### Confirmation Workflow (MANDATORY)
+
+1. **Show Warning:**
+```
+⚠️ PERMANENT DELETION WARNING
+
+This will delete [what] from '[namespace]'.
+
+Confirm by typing 'yes' or 'confirm'.
+```
+
+2. **Wait for confirmation** - Do NOT proceed without it
+
+3. **If confirmed:** Execute tool call
+4. **If declined:** "Deletion cancelled. No memories deleted."
+
+### Deletion Scope - Interpret User Intent
+
+**Intent Analysis:**
+1. "Delete ALL in X" → `{"namespaces": ["X"]}` (no user_id, no project_id)
+2. "Delete MY prefs in X" → `{"namespaces": ["X"], "user_id": "vikramiyer"}` (no project_id)
+3. "Delete project facts in X" → `{"namespaces": ["X"], "project_id": "cursor-extension"}` (no user_id)
+4. "Delete my project prefs in X" → `{"namespaces": ["X"], "user_id": "vikramiyer", "project_id": "cursor-extension"}`
+
+**Keywords:**
+- "all", "everything" → No user_id, no project_id
+- "my", "my preferences", "my settings" → user_id
+- "project", "project-level", "project facts" → project_id
+- "my project prefs" → Both
+
+**Multiple namespaces:** Same scope → one call. Different scopes → separate calls.
+
+**Example 1:**
+```
+User: "Delete all in backend"
+Assistant: "⚠️ PERMANENT DELETION WARNING - This will delete all memories from 'backend'. Confirm?"
+User: "Yes"
+Tool call: {"namespaces": ["backend"]}
+```
+
+**Example 2:**
+```
+User: "Delete my prefs in frontend"
+Assistant: "⚠️ PERMANENT DELETION WARNING - This will delete your user preferences from 'frontend'. Confirm?"
+User: "Confirm"
+Tool call: {"namespaces": ["frontend"], "user_id": "vikramiyer"}
+```
+
+## Operating Principles
+
+1. When MCP tools unavailable, mention once and continue
+2. Retrieve before implement - prevents repetition
+3. Store after discover - preserves insights
+4. Be detailed in storage - benefits future
+5. Trust natural boundaries
+6. Capture reasoning > code (why > what)
+
+## Session Patterns
+
+**New project:** Check openmemory.md empty? If yes → Deep Dive (search memories, analyze codebase, document in guide, store discoveries)
+
+**Existing project:** Read openmemory.md; Let task guide: Major feature → Architecture + prefs; Bug fix → Components + debugging; Quick fix → Maybe skip
+
+**Remember:** Early sessions need more searches. Later internalize patterns.
+
+## OpenMemory Guide (openmemory.md)
+
+Living project index (shareable/committable). Auto-created empty in workspace root.
+
+### Initial Codebase Deep Dive (if empty)
+
+1. Search existing memories (`project_id` only)
+2. Analyze: dirs, configs, frameworks, entry points, patterns
+3. Find architecture: auth, DB, APIs, testing, CI/CD, deployment
+4. Document in guide: Overview (description, tech, features); Architecture (design, technologies); User Defined Namespaces (blank initially); Components (modules, responsibilities); Implementation Patterns (coding patterns)
+5. Store discoveries: component/project_info/implementation memories with namespaces only if clearly fit
+
+### User Defined Namespaces
+
+**Format:**
+```markdown
+## User Defined Namespaces
+- [Leave blank - user populates]
+```
+
+**Examples:** frontend (UI components, React patterns, CSS, client state), backend (API endpoints, server logic, DB queries, auth), database (schema, migrations, optimization)
+
+### Namespace Workflow
+
+**Before any memory operation:** ALWAYS read User Defined Namespaces from openmemory.md
+
+**When Storing:**
+1. Review content/type
+2. Check user-defined namespaces
+3. **THINK**: "What domain? Where useful again?"
+4. Clearly fits one? → Assign it
+5. Unclear? → Omit (valid)
+
+**Rules:** Max ONE namespace; Can have NONE; Only use explicitly defined; No namespaces defined → omit
+
+**Examples (guide has: frontend, backend, database):**
+- React component → "UI" → `namespace: "frontend"`
+- JWT auth → "Backend logic" → `namespace: "backend"`
+- DB migration → "Database" → `namespace: "database"`
+- Backend bug → "Backend" → `namespace: "backend"`
+- Frontend bug → "Frontend" → `namespace: "frontend"`
+- CI/CD → "Doesn't fit" → No namespace
+- Feature spanning areas → "Not one category" → No namespace
+- User pref → "Not domain-specific" → No namespace
+
+**When Searching:**
+1. What searching for?
+2. Read namespaces from guide
+3. **THINK**: "Which namespaces COULD contain this?"
+4. Cast wide net
+5. Use `namespaces[]` for multiple
+6. Unsure → broad or omit
+
+**Examples (guide has: frontend, backend, database):**
+- "Auth works?" → "Backend" → `["backend"]`
+- "Login flow?" → "UI + API" → `["frontend", "backend"]`
+- "DB schema?" → "DB + backend" → `["database", "backend"]`
+- "React patterns?" → `["frontend"]`
+- "Auth bugs?" → `["backend"]`
+- "Overview?" → No filter (broad)
+
+**Strategy:** Specific → Targeted; Cross-cutting → Multiple; Broad → Omit
+
+### Guide Discipline
+
+- Treat as project index - edit directly
+- POPULATE AS YOU GO after deep dive
+- Keep in sync with memories
+- Before storing component/implementation/project_info, update guide
+- Read regularly
+
+### Guide Update Workflow
+
+When discovering project info/components/architecture:
+1. Open openmemory.md
+2. Update section
+3. Save
+4. Store memory via MCP
+
+**Integration:**
+- Component → Components section
+- Implementation → Implementation Patterns
+- Project info → Overview/Architecture
+- Debug/user pref → Memory only, NOT guide
+
+## Security Guardrails
+
+### CRITICAL: Never Store Secrets
+
+**NEVER store:**
+- API keys/tokens (`Token om-...`, `sk-proj-...`, `ghp-...`)
+- Passwords, hashes, private keys, certificates
+- Env vars with secrets (`DATABASE_URL`, `API_SECRET`)
+- OAuth/session tokens, connection strings with credentials
+- AWS keys, webhook secrets, SSH/GPG keys
+
+**Detection:** Patterns `Token abc...`, `Bearer xyz...`, `key=...`, `password=...` → **DO NOT STORE**; Base64 in auth → **DO NOT STORE**; `=` + long alphanumeric → **VERIFY**; Doubt → **DO NOT STORE**, ask
+
+**Store instead:** Command without secret: `--header 'Authorization: Token <YOUR_TOKEN>'`; Patterns: "API uses bearer token"; Instructions: "Set TOKEN env var"
+
+**Example:** ❌ `"token om-abc123"` ✅ `"token <YOUR_TOKEN>"`
+
+### Other Guardrails
+
+- NO destructive ops without approval
+- Memories = durable knowledge only
+- User says "save/remember" → IMMEDIATE storage
+- Believe deserves storage → ASK FIRST for preferences
+- User asks to store secrets → REFUSE, explain risk
+
+**Remember:** Memory system makes you effective over time. Rich reasoning memories > code snippets. When doubt, store it. Guide = shareable team index.

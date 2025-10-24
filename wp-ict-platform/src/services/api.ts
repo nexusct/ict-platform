@@ -468,6 +468,9 @@ export const reportsAPI = {
   // Get dashboard summary
   getDashboardSummary: () => api.get<APIResponse<any>>('/reports/dashboard'),
 
+  // Data Health report
+  getDataHealth: () => api.get<APIResponse<any>>('/reports/data-health'),
+
   // Export report
   exportReport: (
     report_type: 'projects' | 'time' | 'budget' | 'inventory',
@@ -482,6 +485,12 @@ export const reportsAPI = {
         ...filters,
       }
     ),
+};
+
+// Routing API (optimize route)
+export const routingAPI = {
+  optimize: (start: { lat: number; lng: number }, waypoints: Array<{ id?: string|number; lat: number; lng: number }>) =>
+    api.post<APIResponse<{ ordered: Array<{ id?: string|number; lat: number; lng: number }> }>>('/route/optimize', { start, waypoints }),
 };
 
 export default api;

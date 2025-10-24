@@ -46,6 +46,7 @@ define( 'ICT_PURCHASE_ORDERS_TABLE', $wpdb->prefix . 'ict_purchase_orders' );
 define( 'ICT_PROJECT_RESOURCES_TABLE', $wpdb->prefix . 'ict_project_resources' );
 define( 'ICT_SYNC_QUEUE_TABLE', $wpdb->prefix . 'ict_sync_queue' );
 define( 'ICT_SYNC_LOG_TABLE', $wpdb->prefix . 'ict_sync_log' );
+define( 'ICT_SIGNATURES_TABLE', $wpdb->prefix . 'ict_signatures' );
 
 /**
  * Autoloader for plugin classes
