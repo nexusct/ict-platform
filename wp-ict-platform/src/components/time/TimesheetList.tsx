@@ -17,7 +17,7 @@ import {
   setPage,
   clearFilters,
 } from '../../store/slices/timeEntriesSlice';
-import type { TimeEntry, TimeEntryStatus } from '../../types';
+import type { TimeEntryStatus } from '../../types';
 
 export const TimesheetList: React.FC = () => {
   const dispatch = useAppDispatch();

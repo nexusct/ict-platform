@@ -43,9 +43,9 @@ const initialState: InventoryState = {
 /**
  * Fetch inventory items with filtering
  */
-export const fetchInventory = createAsyncThunk(
-  'inventory/fetchInventory',
-  async (params?: {
+export const fetchInventory = createAsyncThunk<
+  PaginatedResponse<InventoryItem>,
+  {
     page?: number;
     per_page?: number;
     search?: string;
@@ -53,9 +53,12 @@ export const fetchInventory = createAsyncThunk(
     location?: string;
     is_active?: boolean;
     low_stock?: boolean;
-  }) => {
+  } | undefined
+>(
+  'inventory/fetchInventory',
+  async (params) => {
     const response = await inventoryAPI.getAll(params);
-    return response.data!;
+    return response;
   }
 );
 

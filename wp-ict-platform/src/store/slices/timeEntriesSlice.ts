@@ -6,7 +6,7 @@
  */
 
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import type { TimeEntriesState, TimeEntry, TimeEntryFormData, TimeEntryFilters } from '../../types';
+import type { TimeEntriesState, TimeEntryFormData, TimeEntryFilters } from '../../types';
 import { timeEntryAPI } from '../../services/api';
 
 const initialState: TimeEntriesState = {
@@ -26,7 +26,7 @@ const initialState: TimeEntriesState = {
 // Async thunks
 export const fetchTimeEntries = createAsyncThunk(
   'timeEntries/fetchAll',
-  async (params?: Record<string, any>, { getState }: any) => {
+  async (params: Record<string, any> | undefined, { getState }: any) => {
     const { filters, pagination } = getState().timeEntries;
     const response = await timeEntryAPI.getAll({
       page: pagination.page,

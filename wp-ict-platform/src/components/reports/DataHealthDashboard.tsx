@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { reportsAPI } from '../../src/services/api';
+import { reportsAPI } from '../../services/api';
 
 type HealthData = {
   duplicates: { projects_by_name: number };
