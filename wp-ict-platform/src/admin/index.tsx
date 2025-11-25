@@ -1,6 +1,8 @@
 /**
  * Admin App Entry Point
  *
+ * Enhanced with ErrorBoundary, ToastContainer, and OfflineBanner for reliability
+ *
  * @package ICT_Platform
  * @since   1.0.0
  */
@@ -23,258 +25,129 @@ import StockAdjustment from '../components/inventory/StockAdjustment';
 import PurchaseOrderForm from '../components/inventory/PurchaseOrderForm';
 import LowStockAlerts from '../components/inventory/LowStockAlerts';
 import ReportsDashboard from '../components/reports/ReportsDashboard';
+import { ErrorBoundary, ToastContainer, OfflineBanner, SessionTimeoutWarning } from '../components/common';
 import '../styles/admin.scss';
 
-// Dashboard root
-const dashboardRoot = document.getElementById('ict-dashboard-root');
-if (dashboardRoot) {
-  createRoot(dashboardRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <div className="ict-platform-app">
-          <h1>ICT Platform Dashboard</h1>
-          <p>Welcome to the ICT Platform management system.</p>
-        </div>
-      </Provider>
-    </React.StrictMode>
-  );
+/**
+ * AppWrapper provides common functionality for all app roots:
+ * - Error boundary for crash protection
+ * - Redux store provider
+ * - Offline status banner
+ * - Toast notifications
+ * - Session timeout warning
+ */
+interface AppWrapperProps {
+  children: React.ReactNode;
+  showSessionWarning?: boolean;
 }
+
+const AppWrapper: React.FC<AppWrapperProps> = ({ children, showSessionWarning = true }) => (
+  <ErrorBoundary showDetails={process.env.NODE_ENV !== 'production'}>
+    <Provider store={store}>
+      <OfflineBanner position="top" />
+      {children}
+      <ToastContainer position="top-right" />
+      {showSessionWarning && <SessionTimeoutWarning />}
+    </Provider>
+  </ErrorBoundary>
+);
+
+/**
+ * Helper function to render a React root with common wrapper
+ */
+function renderApp(elementId: string, Component: React.ReactNode, options?: { showSessionWarning?: boolean }) {
+  const root = document.getElementById(elementId);
+  if (root) {
+    createRoot(root).render(
+      <React.StrictMode>
+        <AppWrapper showSessionWarning={options?.showSessionWarning}>
+          {Component}
+        </AppWrapper>
+      </React.StrictMode>
+    );
+  }
+}
+
+// Dashboard root
+renderApp('ict-dashboard-root', (
+  <div className="ict-platform-app">
+    <h1>ICT Platform Dashboard</h1>
+    <p>Welcome to the ICT Platform management system.</p>
+  </div>
+));
 
 // Projects root
-const projectsRoot = document.getElementById('ict-projects-root');
-if (projectsRoot) {
-  createRoot(projectsRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <ProjectDashboard />
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-projects-root', <ProjectDashboard />);
 
 // Time Tracking root
-const timeTrackingRoot = document.getElementById('ict-time-tracking-root');
-if (timeTrackingRoot) {
-  createRoot(timeTrackingRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <TimesheetList />
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-time-tracking-root', <TimesheetList />);
 
 // Time Clock root (separate mobile-friendly page)
-const timeClockRoot = document.getElementById('ict-time-clock-root');
-if (timeClockRoot) {
-  createRoot(timeClockRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <div className="ict-platform-app ict-platform-app--time-clock">
-          <TimeTracker />
-          <TimeClock />
-        </div>
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-time-clock-root', (
+  <div className="ict-platform-app ict-platform-app--time-clock">
+    <TimeTracker />
+    <TimeClock />
+  </div>
+));
 
 // Timesheet Approval root (for managers)
-const timesheetApprovalRoot = document.getElementById('ict-timesheet-approval-root');
-if (timesheetApprovalRoot) {
-  createRoot(timesheetApprovalRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <TimesheetApproval />
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-timesheet-approval-root', <TimesheetApproval />);
 
 // Resources root - Main resource management page
-const resourcesRoot = document.getElementById('ict-resources-root');
-if (resourcesRoot) {
-  createRoot(resourcesRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <div className="ict-platform-app">
-          <ResourceCalendar editable={true} />
-        </div>
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-resources-root', (
+  <div className="ict-platform-app">
+    <ResourceCalendar editable={true} />
+  </div>
+));
 
 // Resource Calendar root (separate page for calendar view)
-const resourceCalendarRoot = document.getElementById('ict-resource-calendar-root');
-if (resourceCalendarRoot) {
-  createRoot(resourceCalendarRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <ResourceCalendar editable={true} />
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-resource-calendar-root', <ResourceCalendar editable={true} />);
 
 // Availability Matrix root
-const availabilityMatrixRoot = document.getElementById('ict-availability-matrix-root');
-if (availabilityMatrixRoot) {
-  createRoot(availabilityMatrixRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <AvailabilityMatrix />
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-availability-matrix-root', <AvailabilityMatrix />);
 
 // Resource Allocation root (for creating/editing allocations)
-const resourceAllocationRoot = document.getElementById('ict-resource-allocation-root');
-if (resourceAllocationRoot) {
-  createRoot(resourceAllocationRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <ResourceAllocation />
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-resource-allocation-root', <ResourceAllocation />);
 
 // Skill Matrix root
-const skillMatrixRoot = document.getElementById('ict-skill-matrix-root');
-if (skillMatrixRoot) {
-  createRoot(skillMatrixRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <SkillMatrix editable={true} />
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-skill-matrix-root', <SkillMatrix editable={true} />);
 
 // Inventory root - Main inventory dashboard
-const inventoryRoot = document.getElementById('ict-inventory-root');
-if (inventoryRoot) {
-  createRoot(inventoryRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <InventoryDashboard />
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-inventory-root', <InventoryDashboard />);
 
 // Inventory Dashboard root (separate page)
-const inventoryDashboardRoot = document.getElementById('ict-inventory-dashboard-root');
-if (inventoryDashboardRoot) {
-  createRoot(inventoryDashboardRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <InventoryDashboard />
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-inventory-dashboard-root', <InventoryDashboard />);
 
 // Stock Adjustment root
-const stockAdjustmentRoot = document.getElementById('ict-stock-adjustment-root');
-if (stockAdjustmentRoot) {
-  createRoot(stockAdjustmentRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <StockAdjustment />
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-stock-adjustment-root', <StockAdjustment />);
 
 // Purchase Order Form root
-const purchaseOrderFormRoot = document.getElementById('ict-purchase-order-form-root');
-if (purchaseOrderFormRoot) {
-  createRoot(purchaseOrderFormRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <PurchaseOrderForm />
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-purchase-order-form-root', <PurchaseOrderForm />);
 
 // Low Stock Alerts root (widget)
-const lowStockAlertsRoot = document.getElementById('ict-low-stock-alerts-root');
-if (lowStockAlertsRoot) {
-  createRoot(lowStockAlertsRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <LowStockAlerts maxItems={10} autoRefresh={true} />
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-low-stock-alerts-root', <LowStockAlerts maxItems={10} autoRefresh={true} />);
 
 // Low Stock Alerts Widget (compact version for dashboard)
-const lowStockAlertsWidgetRoot = document.getElementById('ict-low-stock-alerts-widget-root');
-if (lowStockAlertsWidgetRoot) {
-  createRoot(lowStockAlertsWidgetRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <LowStockAlerts maxItems={5} compact={true} showHeader={true} />
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-low-stock-alerts-widget-root', <LowStockAlerts maxItems={5} compact={true} showHeader={true} />);
 
 // Reports root - Main reports dashboard
-const reportsRoot = document.getElementById('ict-reports-root');
-if (reportsRoot) {
-  createRoot(reportsRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <ReportsDashboard />
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-reports-root', <ReportsDashboard />);
 
 // Reports Dashboard root (separate page)
-const reportsDashboardRoot = document.getElementById('ict-reports-dashboard-root');
-if (reportsDashboardRoot) {
-  createRoot(reportsDashboardRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <ReportsDashboard />
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-reports-dashboard-root', <ReportsDashboard />);
 
 // Sync root
-const syncRoot = document.getElementById('ict-sync-root');
-if (syncRoot) {
-  createRoot(syncRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <div className="ict-platform-app">
-          <h1>Zoho Sync</h1>
-          <p>Sync management module coming soon...</p>
-        </div>
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-sync-root', (
+  <div className="ict-platform-app">
+    <h1>Zoho Sync</h1>
+    <p>Sync management module coming soon...</p>
+  </div>
+));
 
 // Settings root
-const settingsRoot = document.getElementById('ict-settings-root');
-if (settingsRoot) {
-  createRoot(settingsRoot).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <div className="ict-platform-app">
-          <h1>Settings</h1>
-          <p>Settings module coming soon...</p>
-        </div>
-      </Provider>
-    </React.StrictMode>
-  );
-}
+renderApp('ict-settings-root', (
+  <div className="ict-platform-app">
+    <h1>Settings</h1>
+    <p>Settings module coming soon...</p>
+  </div>
+));
