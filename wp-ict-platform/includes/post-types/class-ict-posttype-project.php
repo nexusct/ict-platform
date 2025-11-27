@@ -79,5 +79,48 @@ class ICT_PostType_Project {
 		);
 
 		register_post_type( 'ict_project', $args );
+
+		// Disable Divi Builder for ICT projects - they use custom React admin UI
+		add_filter( 'et_builder_post_types', array( $this, 'exclude_from_divi_builder' ) );
+		add_filter( 'et_builder_enabled_for_post', array( $this, 'disable_divi_for_ict_projects' ), 10, 2 );
+	}
+
+	/**
+	 * Exclude ICT post types from Divi Builder post types.
+	 *
+	 * @since  1.0.0
+	 * @param  array $post_types Array of post types.
+	 * @return array
+	 */
+	public function exclude_from_divi_builder( $post_types ) {
+		// Remove ict_project from Divi builder-enabled post types
+		$exclude = array( 'ict_project' );
+
+		return array_diff( $post_types, $exclude );
+	}
+
+	/**
+	 * Disable Divi builder for individual ICT project posts.
+	 *
+	 * @since  1.0.0
+	 * @param  bool     $enabled  Whether builder is enabled.
+	 * @param  int|null $post_id  Post ID.
+	 * @return bool
+	 */
+	public function disable_divi_for_ict_projects( $enabled, $post_id ) {
+		if ( ! $post_id ) {
+			return $enabled;
+		}
+
+		$post_type = get_post_type( $post_id );
+
+		// Disable for all ICT Platform post types
+		$ict_post_types = array( 'ict_project' );
+
+		if ( in_array( $post_type, $ict_post_types, true ) ) {
+			return false;
+		}
+
+		return $enabled;
 	}
 }

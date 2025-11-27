@@ -351,10 +351,52 @@ class ICT_API {
 	}
 
 	/**
+	 * Check if request is coming from Divi Visual Builder.
+	 *
+	 * @since  1.0.0
+	 * @return bool
+	 */
+	private function is_divi_builder_request() {
+		// Check for Divi Visual Builder context
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only detection
+		if ( isset( $_GET['et_fb'] ) && '1' === $_GET['et_fb'] ) {
+			return true;
+		}
+
+		// Check for Divi AJAX request
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Read-only detection
+		if ( isset( $_POST['action'] ) && strpos( $_POST['action'], 'et_fb_' ) === 0 ) {
+			return true;
+		}
+
+		// Check for Divi Builder header
+		if ( isset( $_SERVER['HTTP_X_DIVI_BUILDER'] ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if Divi theme or builder plugin is active.
+	 *
+	 * @since  1.0.0
+	 * @return bool
+	 */
+	private function is_divi_active() {
+		return defined( 'ET_CORE_VERSION' ) || defined( 'ET_BUILDER_PLUGIN_DIR' );
+	}
+
+	/**
 	 * Permission callbacks.
 	 */
 
 	public function check_projects_permission() {
+		// In Divi Visual Builder context, use elevated permissions check
+		if ( $this->is_divi_builder_request() ) {
+			return current_user_can( 'edit_posts' );
+		}
+
 		return current_user_can( 'manage_ict_projects' ) || current_user_can( 'view_ict_projects' );
 	}
 

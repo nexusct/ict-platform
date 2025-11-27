@@ -6,6 +6,36 @@
  */
 
 // ============================================
+// CSS CUSTOM PROPERTIES (Divi Compatible)
+// ============================================
+// Use lower z-index values to avoid conflicts with Divi's
+// visual builder (which uses 999999+) and modals
+
+:root {
+  // Base z-index - below Divi's admin bar and builder
+  --ict-zindex-base: 89000;
+
+  // Stacking order for ICT components
+  --ict-zindex-dropdown: calc(var(--ict-zindex-base) + 100);
+  --ict-zindex-sticky: calc(var(--ict-zindex-base) + 200);
+  --ict-zindex-fixed: calc(var(--ict-zindex-base) + 300);
+  --ict-zindex-banner: calc(var(--ict-zindex-base) + 400);
+  --ict-zindex-modal-backdrop: calc(var(--ict-zindex-base) + 500);
+  --ict-zindex-modal: calc(var(--ict-zindex-base) + 600);
+  --ict-zindex-popover: calc(var(--ict-zindex-base) + 700);
+  --ict-zindex-tooltip: calc(var(--ict-zindex-base) + 800);
+  --ict-zindex-toast: calc(var(--ict-zindex-base) + 900);
+  --ict-zindex-critical: calc(var(--ict-zindex-base) + 1000);
+}
+
+// Divi Builder detection - lower z-index when builder is active
+.et-fb-iframe-ancestor,
+.et-fb-preview--wireframe,
+.et_pb_pagebuilder_layout {
+  --ict-zindex-base: 88000;
+}
+
+// ============================================
 // ERROR BOUNDARY
 // ============================================
 
@@ -77,7 +107,7 @@
 
 .ict-toast-container {
   position: fixed;
-  z-index: 100001;
+  z-index: var(--ict-zindex-toast);
   pointer-events: none;
 
   &--top-right {
@@ -231,7 +261,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100002;
+  z-index: var(--ict-zindex-modal);
   animation: fadeIn 0.15s ease;
 }
 
@@ -474,7 +504,7 @@
   border-radius: 6px;
   font-size: 13px;
   max-width: 300px;
-  z-index: 100003;
+  z-index: var(--ict-zindex-tooltip);
   animation: tooltipFadeIn 0.15s ease;
 
   &__content {
@@ -1034,7 +1064,7 @@
   position: fixed;
   left: 0;
   right: 0;
-  z-index: 100000;
+  z-index: var(--ict-zindex-banner);
   padding: 12px 20px;
   animation: slideDown 0.3s ease;
 
@@ -1103,7 +1133,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 100004;
+  z-index: var(--ict-zindex-critical);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1206,7 +1236,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 99999;
+    z-index: var(--ict-zindex-modal-backdrop);
   }
 
   &__panel {
@@ -1218,7 +1248,7 @@
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-    z-index: 100000;
+    z-index: var(--ict-zindex-popover);
     overflow: hidden;
     animation: slideDown 0.2s ease;
   }

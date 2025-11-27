@@ -53,11 +53,56 @@ const AppWrapper: React.FC<AppWrapperProps> = ({ children, showSessionWarning = 
 );
 
 /**
+ * Check if Divi Builder is active
+ */
+function isDiviBuilderActive(): boolean {
+  // Check for Divi Visual Builder iframe
+  if (window.parent !== window && window.parent.document.querySelector('.et-fb-iframe')) {
+    return true;
+  }
+
+  // Check for Divi Builder classes on body
+  if (document.body.classList.contains('et-fb-preview--wireframe') ||
+      document.body.classList.contains('et-fb-preview--desktop')) {
+    return true;
+  }
+
+  // Check for Divi builder in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('et_fb') === '1') {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * Helper function to render a React root with common wrapper
+ * Includes error handling and Divi compatibility checks
  */
 function renderApp(elementId: string, Component: React.ReactNode, options?: { showSessionWarning?: boolean }) {
   const root = document.getElementById(elementId);
-  if (root) {
+
+  if (!root) {
+    // Element not found - this is expected on pages without this component
+    return;
+  }
+
+  // Check if element is already rendered
+  if (root.dataset.ictRendered === 'true') {
+    console.warn(`ICT Platform: Element #${elementId} already rendered, skipping.`);
+    return;
+  }
+
+  try {
+    // Warn if Divi builder is active
+    if (isDiviBuilderActive()) {
+      console.info(`ICT Platform: Divi Builder detected. Component #${elementId} may have limited functionality.`);
+    }
+
+    // Mark element as rendered to prevent double-rendering
+    root.dataset.ictRendered = 'true';
+
     createRoot(root).render(
       <React.StrictMode>
         <AppWrapper showSessionWarning={options?.showSessionWarning}>
@@ -65,6 +110,16 @@ function renderApp(elementId: string, Component: React.ReactNode, options?: { sh
         </AppWrapper>
       </React.StrictMode>
     );
+  } catch (error) {
+    console.error(`ICT Platform: Failed to render component in #${elementId}:`, error);
+
+    // Show fallback error message in the element
+    root.innerHTML = `
+      <div class="ict-render-error" style="padding: 20px; background: #fee; border: 1px solid #c00; border-radius: 4px; margin: 10px 0;">
+        <strong>ICT Platform Error:</strong> Failed to load this component.
+        <br><small>Please refresh the page or contact support if the issue persists.</small>
+      </div>
+    `;
   }
 }
 

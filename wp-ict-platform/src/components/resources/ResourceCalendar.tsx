@@ -93,7 +93,14 @@ const ResourceCalendar: React.FC<ResourceCalendarProps> = ({
   };
 
   // Handle event click
+  // Stop propagation to prevent Divi from capturing the event
   const handleEventClick = (clickInfo: EventClickArg) => {
+    // Prevent Divi's event handlers from interfering
+    if (clickInfo.jsEvent) {
+      clickInfo.jsEvent.stopPropagation();
+      clickInfo.jsEvent.preventDefault();
+    }
+
     if (onEventClick) {
       onEventClick(Number(clickInfo.event.id));
     }
@@ -195,7 +202,14 @@ const ResourceCalendar: React.FC<ResourceCalendarProps> = ({
   };
 
   // Handle date selection for creating new allocation
+  // Stop propagation to prevent Divi from capturing the event
   const handleDateSelect = (selectInfo: DateSelectArg) => {
+    // Prevent Divi's event handlers from interfering
+    if (selectInfo.jsEvent) {
+      selectInfo.jsEvent.stopPropagation();
+      selectInfo.jsEvent.preventDefault();
+    }
+
     if (onEventCreate) {
       onEventCreate(
         selectInfo.start.toISOString(),
