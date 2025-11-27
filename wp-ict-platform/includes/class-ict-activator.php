@@ -266,6 +266,211 @@ class ICT_Activator {
 
 		// Save database version
 		update_option( 'ict_platform_db_version', '1.0.0' );
+
+		// Create additional tables for new features
+		self::create_additional_tables();
+	}
+
+	/**
+	 * Create additional database tables for new features.
+	 *
+	 * @since 1.1.0
+	 * @return void
+	 */
+	private static function create_additional_tables() {
+		global $wpdb;
+
+		$charset_collate = $wpdb->get_charset_collate();
+
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+		// Custom fields definition table
+		$custom_fields_table = "CREATE TABLE {$wpdb->prefix}ict_custom_fields (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			entity_type varchar(50) NOT NULL,
+			field_key varchar(100) NOT NULL,
+			field_name varchar(255) NOT NULL,
+			field_label varchar(255) NOT NULL,
+			field_type varchar(50) NOT NULL,
+			description text DEFAULT NULL,
+			placeholder varchar(255) DEFAULT NULL,
+			default_value text DEFAULT NULL,
+			options longtext DEFAULT NULL,
+			settings longtext DEFAULT NULL,
+			validation_rules longtext DEFAULT NULL,
+			field_group varchar(100) DEFAULT 'default',
+			sort_order int(11) DEFAULT 0,
+			is_required tinyint(1) DEFAULT 0,
+			is_active tinyint(1) DEFAULT 1,
+			show_in_list tinyint(1) DEFAULT 0,
+			show_in_form tinyint(1) DEFAULT 1,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+			PRIMARY KEY (id),
+			UNIQUE KEY entity_field (entity_type, field_key),
+			KEY entity_type (entity_type),
+			KEY field_group (field_group)
+		) $charset_collate;";
+
+		// Custom field values table
+		$custom_field_values_table = "CREATE TABLE {$wpdb->prefix}ict_custom_field_values (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			entity_type varchar(50) NOT NULL,
+			entity_id bigint(20) UNSIGNED NOT NULL,
+			field_id bigint(20) UNSIGNED NOT NULL,
+			field_value longtext DEFAULT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+			PRIMARY KEY (id),
+			UNIQUE KEY entity_field (entity_type, entity_id, field_id),
+			KEY entity (entity_type, entity_id),
+			KEY field_id (field_id)
+		) $charset_collate;";
+
+		// Notifications log table
+		$notifications_log_table = "CREATE TABLE {$wpdb->prefix}ict_notifications_log (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			notification_type varchar(100) NOT NULL,
+			recipients longtext DEFAULT NULL,
+			data longtext DEFAULT NULL,
+			results longtext DEFAULT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY (id),
+			KEY notification_type (notification_type),
+			KEY created_at (created_at)
+		) $charset_collate;";
+
+		// SMS log table
+		$sms_log_table = "CREATE TABLE {$wpdb->prefix}ict_sms_log (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			recipient varchar(50) NOT NULL,
+			message text NOT NULL,
+			status varchar(20) NOT NULL,
+			error text DEFAULT NULL,
+			twilio_sid varchar(100) DEFAULT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY (id),
+			KEY status (status),
+			KEY created_at (created_at)
+		) $charset_collate;";
+
+		// Email queue table
+		$email_queue_table = "CREATE TABLE {$wpdb->prefix}ict_email_queue (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			notification_type varchar(100) NOT NULL,
+			recipients longtext NOT NULL,
+			data longtext NOT NULL,
+			status varchar(20) DEFAULT 'pending',
+			result longtext DEFAULT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			sent_at datetime DEFAULT NULL,
+			PRIMARY KEY (id),
+			KEY status (status),
+			KEY created_at (created_at)
+		) $charset_collate;";
+
+		// Sync conflicts table
+		$sync_conflicts_table = "CREATE TABLE {$wpdb->prefix}ict_sync_conflicts (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			entity_type varchar(50) NOT NULL,
+			entity_id bigint(20) UNSIGNED NOT NULL,
+			client_data longtext NOT NULL,
+			client_time datetime NOT NULL,
+			server_data longtext NOT NULL,
+			user_id bigint(20) UNSIGNED NOT NULL,
+			status varchar(20) DEFAULT 'pending',
+			resolution varchar(20) DEFAULT NULL,
+			resolved_at datetime DEFAULT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY (id),
+			KEY entity (entity_type, entity_id),
+			KEY user_id (user_id),
+			KEY status (status)
+		) $charset_collate;";
+
+		// Offline queue table
+		$offline_queue_table = "CREATE TABLE {$wpdb->prefix}ict_offline_queue (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			entity_type varchar(50) NOT NULL,
+			entity_id bigint(20) UNSIGNED DEFAULT NULL,
+			action varchar(20) NOT NULL,
+			client_id varchar(100) DEFAULT NULL,
+			user_id bigint(20) UNSIGNED NOT NULL,
+			data longtext NOT NULL,
+			status varchar(20) DEFAULT 'pending',
+			result longtext DEFAULT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			processed_at datetime DEFAULT NULL,
+			PRIMARY KEY (id),
+			KEY entity (entity_type, entity_id),
+			KEY user_id (user_id),
+			KEY status (status)
+		) $charset_collate;";
+
+		// Tasks table
+		$tasks_table = "CREATE TABLE {$wpdb->prefix}ict_tasks (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			project_id bigint(20) UNSIGNED NOT NULL,
+			parent_id bigint(20) UNSIGNED DEFAULT NULL,
+			title varchar(255) NOT NULL,
+			description text DEFAULT NULL,
+			status varchar(50) DEFAULT 'pending',
+			priority varchar(20) DEFAULT 'medium',
+			assigned_to bigint(20) UNSIGNED DEFAULT NULL,
+			due_date datetime DEFAULT NULL,
+			estimated_hours decimal(10,2) DEFAULT 0.00,
+			actual_hours decimal(10,2) DEFAULT 0.00,
+			completed_at datetime DEFAULT NULL,
+			completed_by bigint(20) UNSIGNED DEFAULT NULL,
+			sort_order int(11) DEFAULT 0,
+			created_by bigint(20) UNSIGNED DEFAULT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+			PRIMARY KEY (id),
+			KEY project_id (project_id),
+			KEY parent_id (parent_id),
+			KEY assigned_to (assigned_to),
+			KEY status (status),
+			KEY due_date (due_date)
+		) $charset_collate;";
+
+		// Expenses table
+		$expenses_table = "CREATE TABLE {$wpdb->prefix}ict_expenses (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			project_id bigint(20) UNSIGNED DEFAULT NULL,
+			user_id bigint(20) UNSIGNED NOT NULL,
+			expense_date date NOT NULL,
+			category varchar(100) NOT NULL,
+			description text DEFAULT NULL,
+			amount decimal(15,2) NOT NULL,
+			receipt_url varchar(500) DEFAULT NULL,
+			status varchar(20) DEFAULT 'pending',
+			approved_by bigint(20) UNSIGNED DEFAULT NULL,
+			approved_at datetime DEFAULT NULL,
+			zoho_expense_id varchar(100) DEFAULT NULL,
+			sync_status varchar(20) DEFAULT 'pending',
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+			PRIMARY KEY (id),
+			KEY project_id (project_id),
+			KEY user_id (user_id),
+			KEY status (status),
+			KEY expense_date (expense_date)
+		) $charset_collate;";
+
+		// Execute table creation
+		dbDelta( $custom_fields_table );
+		dbDelta( $custom_field_values_table );
+		dbDelta( $notifications_log_table );
+		dbDelta( $sms_log_table );
+		dbDelta( $email_queue_table );
+		dbDelta( $sync_conflicts_table );
+		dbDelta( $offline_queue_table );
+		dbDelta( $tasks_table );
+		dbDelta( $expenses_table );
+
+		// Update database version
+		update_option( 'ict_platform_db_version', '1.1.0' );
 	}
 
 	/**
@@ -276,6 +481,7 @@ class ICT_Activator {
 	 */
 	private static function set_default_options() {
 		$defaults = array(
+			// Core settings
 			'ict_sync_interval'          => 15, // minutes
 			'ict_sync_rate_limit'        => 60, // requests per minute
 			'ict_time_rounding'          => 15, // minutes
@@ -285,10 +491,29 @@ class ICT_Activator {
 			'ict_currency'               => 'USD',
 			'ict_date_format'            => 'Y-m-d',
 			'ict_time_format'            => 'H:i:s',
+			'ict_working_hours_per_day'  => 8,
+
+			// Feature flags
 			'ict_enable_offline_mode'    => true,
 			'ict_enable_gps_tracking'    => true,
 			'ict_enable_notifications'   => true,
+			'ict_enable_biometric_auth'  => true,
 			'ict_notification_types'     => array( 'low_stock', 'overdue_tasks', 'time_approval' ),
+
+			// Email notification settings
+			'ict_enable_email_notifications' => true,
+			'ict_email_from_name'        => get_bloginfo( 'name' ),
+			'ict_email_from_address'     => get_option( 'admin_email' ),
+			'ict_email_primary_color'    => '#0073aa',
+
+			// SMS notification settings
+			'ict_enable_sms_notifications' => false,
+
+			// Microsoft Teams settings
+			'ict_enable_teams_notifications' => false,
+
+			// Push notification settings
+			'ict_enable_push_notifications' => true,
 		);
 
 		foreach ( $defaults as $key => $value ) {
@@ -306,19 +531,61 @@ class ICT_Activator {
 		// Get administrator role
 		$admin = get_role( 'administrator' );
 
-		// Add capabilities to administrator
+		// Add all capabilities to administrator
 		$capabilities = array(
+			// Platform management
 			'manage_ict_platform',
+			'manage_ict_integrations',
+			'manage_ict_sync',
+
+			// Projects
 			'manage_ict_projects',
 			'edit_ict_projects',
 			'delete_ict_projects',
+			'view_ict_projects',
+			'create_ict_projects',
+			'assign_ict_projects',
+
+			// Time tracking
 			'manage_ict_time_entries',
+			'edit_ict_time_entry',
 			'approve_ict_time_entries',
+			'view_all_time_entries',
+
+			// Inventory
 			'manage_ict_inventory',
+			'edit_ict_inventory',
+			'view_ict_inventory',
+
+			// Purchase orders
 			'manage_ict_purchase_orders',
+			'create_ict_purchase_orders',
 			'approve_ict_purchase_orders',
+			'view_ict_purchase_orders',
+
+			// Resources
+			'manage_ict_resources',
+			'view_ict_resources',
+
+			// Reports
 			'view_ict_reports',
-			'manage_ict_sync',
+			'export_ict_reports',
+			'manage_ict_reports',
+
+			// Tasks
+			'manage_ict_tasks',
+			'view_ict_tasks',
+			'edit_ict_tasks',
+
+			// Users
+			'manage_ict_users',
+			'view_ict_users',
+
+			// Custom fields
+			'manage_custom_fields',
+
+			// Notifications
+			'manage_notifications',
 		);
 
 		foreach ( $capabilities as $cap ) {

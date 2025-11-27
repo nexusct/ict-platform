@@ -57,6 +57,7 @@ class ICT_Core {
 		$this->define_public_hooks();
 		$this->define_api_hooks();
 		$this->define_cron_hooks();
+		$this->define_feature_hooks();
 	}
 
 	/**
@@ -93,6 +94,30 @@ class ICT_Core {
 
 		// Load sync engine
 		require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/sync/class-ict-sync-engine.php';
+
+		// Load notification classes
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/notifications/class-ict-notification-manager.php';
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/notifications/class-ict-email-notification.php';
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/notifications/class-ict-twilio-sms-adapter.php';
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/notifications/class-ict-push-notification.php';
+
+		// Load Microsoft Teams integration
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/integrations/class-ict-microsoft-teams-adapter.php';
+
+		// Load offline mode manager
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/class-ict-offline-manager.php';
+
+		// Load advanced reporting
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/class-ict-advanced-reporting.php';
+
+		// Load biometric authentication
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/class-ict-biometric-auth.php';
+
+		// Load advanced role manager
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/class-ict-advanced-role-manager.php';
+
+		// Load custom field builder
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/class-ict-custom-field-builder.php';
 	}
 
 	/**
@@ -184,6 +209,93 @@ class ICT_Core {
 
 		// Stock check job
 		$this->loader->add_action( 'ict_platform_stock_check', $this, 'check_low_stock' );
+	}
+
+	/**
+	 * Register all feature-specific hooks for new modules.
+	 *
+	 * @since  1.1.0
+	 * @return void
+	 */
+	private function define_feature_hooks() {
+		// Initialize notification manager (singleton)
+		if ( get_option( 'ict_enable_notifications', true ) ) {
+			$notification_manager = ICT_Notification_Manager::get_instance();
+			$this->loader->add_action( 'init', $notification_manager, 'init' );
+
+			// Email notification cron jobs
+			$this->loader->add_action( 'ict_process_email_queue', 'ICT_Email_Notification', 'process_queue' );
+			$this->loader->add_action( 'ict_send_email_digest', 'ICT_Email_Notification', 'send_digests' );
+		}
+
+		// Microsoft Teams integration
+		if ( get_option( 'ict_teams_enabled', false ) ) {
+			$teams_adapter = ICT_Microsoft_Teams_Adapter::get_instance();
+			$this->loader->add_action( 'init', $teams_adapter, 'init' );
+		}
+
+		// Offline mode manager
+		if ( get_option( 'ict_offline_enabled', true ) ) {
+			$offline_manager = ICT_Offline_Manager::get_instance();
+			$this->loader->add_action( 'rest_api_init', $offline_manager, 'register_routes' );
+		}
+
+		// Advanced reporting
+		$reporting = ICT_Advanced_Reporting::get_instance();
+		$this->loader->add_action( 'rest_api_init', $reporting, 'register_routes' );
+		$this->loader->add_action( 'ict_process_scheduled_reports', $reporting, 'process_scheduled_reports' );
+		$this->loader->add_action( 'ict_cleanup_old_reports', $reporting, 'cleanup_old_reports' );
+
+		// Biometric authentication
+		if ( get_option( 'ict_biometric_enabled', false ) ) {
+			$biometric_auth = ICT_Biometric_Auth::get_instance();
+			$this->loader->add_action( 'rest_api_init', $biometric_auth, 'register_routes' );
+		}
+
+		// Advanced role manager
+		if ( get_option( 'ict_role_management_enabled', true ) ) {
+			$role_manager = ICT_Advanced_Role_Manager::get_instance();
+			$this->loader->add_action( 'init', $role_manager, 'init' );
+			$this->loader->add_action( 'rest_api_init', $role_manager, 'register_routes' );
+		}
+
+		// Custom field builder
+		if ( get_option( 'ict_custom_fields_enabled', true ) ) {
+			$custom_fields = ICT_Custom_Field_Builder::get_instance();
+			$this->loader->add_action( 'init', $custom_fields, 'init' );
+			$this->loader->add_action( 'rest_api_init', $custom_fields, 'register_routes' );
+		}
+
+		// Schedule cron events for new features
+		$this->loader->add_action( 'init', $this, 'schedule_feature_cron_events' );
+	}
+
+	/**
+	 * Schedule cron events for feature modules.
+	 *
+	 * @since  1.1.0
+	 * @return void
+	 */
+	public function schedule_feature_cron_events() {
+		// Email queue processing (every 5 minutes)
+		if ( ! wp_next_scheduled( 'ict_process_email_queue' ) ) {
+			wp_schedule_event( time(), 'ict_five_minutes', 'ict_process_email_queue' );
+		}
+
+		// Email digest (daily)
+		if ( ! wp_next_scheduled( 'ict_send_email_digest' ) ) {
+			wp_schedule_event( strtotime( 'tomorrow 8:00am' ), 'daily', 'ict_send_email_digest' );
+		}
+
+		// Scheduled reports processing (hourly)
+		if ( ! wp_next_scheduled( 'ict_process_scheduled_reports' ) ) {
+			wp_schedule_event( time(), 'hourly', 'ict_process_scheduled_reports' );
+		}
+
+		// Report cleanup (daily)
+		if ( ! wp_next_scheduled( 'ict_cleanup_old_reports' ) ) {
+			wp_schedule_event( time(), 'daily', 'ict_cleanup_old_reports' );
+		}
 	}
 
 	/**
