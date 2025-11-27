@@ -1,0 +1,20 @@
+# ICT Platform Mobile App - Fastlane Appfile
+# For more information about the Appfile, see:
+# https://docs.fastlane.tools/advanced/#appfile
+
+# App Store Connect
+app_identifier("com.ictplatform.mobile")
+apple_id(ENV["APPLE_ID"] || "your-apple-id@email.com")
+team_id(ENV["TEAM_ID"] || "YOUR_TEAM_ID")
+itc_team_id(ENV["ITC_TEAM_ID"] || "YOUR_ITC_TEAM_ID")
+
+# For Apple Developer Portal
+# team_id "YOUR_TEAM_ID"
+
+# For App Store Connect
+# itc_team_id "YOUR_ITC_TEAM_ID"
+
+# Specify the bundle identifier for the app
+for_platform :ios do
+  app_identifier "com.ictplatform.mobile"
+end

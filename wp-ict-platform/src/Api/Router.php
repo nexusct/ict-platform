@@ -12,6 +12,18 @@ use ICT_Platform\Api\Controllers\PurchaseOrderController;
 use ICT_Platform\Api\Controllers\ResourceController;
 use ICT_Platform\Api\Controllers\SyncController;
 use ICT_Platform\Api\Controllers\ReportController;
+// New feature controllers (v2.1.0)
+use ICT_Platform\Api\Controllers\DocumentController;
+use ICT_Platform\Api\Controllers\EquipmentController;
+use ICT_Platform\Api\Controllers\ExpenseController;
+use ICT_Platform\Api\Controllers\SignatureController;
+use ICT_Platform\Api\Controllers\VoiceNoteController;
+use ICT_Platform\Api\Controllers\FleetController;
+use ICT_Platform\Api\Controllers\NotificationController;
+use ICT_Platform\Api\Controllers\QrCodeController;
+use ICT_Platform\Api\Controllers\ActivityController;
+use ICT_Platform\Api\Controllers\WeatherController;
+use ICT_Platform\Api\Controllers\ClientPortalController;
 
 /**
  * REST API Router
@@ -40,6 +52,7 @@ class Router
      * @var array<string, string>
      */
     private array $controllers = [
+        // Core controllers
         'projects'        => ProjectController::class,
         'time-entries'    => TimeEntryController::class,
         'inventory'       => InventoryController::class,
@@ -47,6 +60,18 @@ class Router
         'resources'       => ResourceController::class,
         'sync'            => SyncController::class,
         'reports'         => ReportController::class,
+        // New feature controllers (v2.1.0)
+        'documents'       => DocumentController::class,
+        'equipment'       => EquipmentController::class,
+        'expenses'        => ExpenseController::class,
+        'signatures'      => SignatureController::class,
+        'voice-notes'     => VoiceNoteController::class,
+        'fleet'           => FleetController::class,
+        'notifications'   => NotificationController::class,
+        'qr-codes'        => QrCodeController::class,
+        'activity'        => ActivityController::class,
+        'weather'         => WeatherController::class,
+        'client-portal'   => ClientPortalController::class,
     ];
 
     /**

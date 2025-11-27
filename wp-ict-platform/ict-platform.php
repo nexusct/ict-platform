@@ -51,6 +51,18 @@ define('ICT_PROJECT_RESOURCES_TABLE', $wpdb->prefix . 'ict_project_resources');
 define('ICT_SYNC_QUEUE_TABLE', $wpdb->prefix . 'ict_sync_queue');
 define('ICT_SYNC_LOG_TABLE', $wpdb->prefix . 'ict_sync_log');
 
+// New feature tables (v2.1.0)
+define('ICT_DOCUMENTS_TABLE', $wpdb->prefix . 'ict_documents');
+define('ICT_EQUIPMENT_TABLE', $wpdb->prefix . 'ict_equipment');
+define('ICT_EXPENSES_TABLE', $wpdb->prefix . 'ict_expenses');
+define('ICT_SIGNATURES_TABLE', $wpdb->prefix . 'ict_signatures');
+define('ICT_VOICE_NOTES_TABLE', $wpdb->prefix . 'ict_voice_notes');
+define('ICT_ACTIVITY_LOG_TABLE', $wpdb->prefix . 'ict_activity_log');
+define('ICT_FLEET_TABLE', $wpdb->prefix . 'ict_fleet');
+define('ICT_FLEET_LOCATIONS_TABLE', $wpdb->prefix . 'ict_fleet_locations');
+define('ICT_NOTIFICATIONS_TABLE', $wpdb->prefix . 'ict_notifications');
+define('ICT_QR_CODES_TABLE', $wpdb->prefix . 'ict_qr_codes');
+
 /**
  * Load Composer autoloader for PSR-4 namespaced classes
  */

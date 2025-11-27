@@ -1,0 +1,169 @@
+# ICT Platform Mobile App - Fastlane Configuration
+# This file contains the fastlane.tools configuration for iOS App Store deployment
+
+default_platform(:ios)
+
+platform :ios do
+  # =====================
+  # Code Signing
+  # =====================
+  desc "Fetch development certificates and provisioning profiles"
+  lane :certificates_dev do
+    match(
+      type: "development",
+      app_identifier: "com.ictplatform.mobile",
+      readonly: true
+    )
+  end
+
+  desc "Fetch App Store certificates and provisioning profiles"
+  lane :certificates_appstore do
+    match(
+      type: "appstore",
+      app_identifier: "com.ictplatform.mobile",
+      readonly: true
+    )
+  end
+
+  # =====================
+  # Build Lanes
+  # =====================
+  desc "Build the iOS app for development"
+  lane :build_dev do
+    certificates_dev
+
+    gym(
+      scheme: "ICTPlatform",
+      workspace: "ios/ICTPlatform.xcworkspace",
+      configuration: "Debug",
+      export_method: "development",
+      output_directory: "./build",
+      output_name: "ICTPlatform-dev.ipa"
+    )
+  end
+
+  desc "Build the iOS app for App Store"
+  lane :build_release do
+    # Increment build number
+    increment_build_number(
+      xcodeproj: "ios/ICTPlatform.xcodeproj"
+    )
+
+    certificates_appstore
+
+    gym(
+      scheme: "ICTPlatform",
+      workspace: "ios/ICTPlatform.xcworkspace",
+      configuration: "Release",
+      export_method: "app-store",
+      output_directory: "./build",
+      output_name: "ICTPlatform.ipa",
+      include_bitcode: false,
+      include_symbols: true
+    )
+  end
+
+  # =====================
+  # Deploy Lanes
+  # =====================
+  desc "Submit to TestFlight"
+  lane :beta do
+    build_release
+
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true,
+      apple_id: ENV["APPLE_ID"],
+      app_identifier: "com.ictplatform.mobile",
+      ipa: "./build/ICTPlatform.ipa"
+    )
+
+    # Notify team
+    slack(
+      message: "ICT Platform iOS beta uploaded to TestFlight!",
+      success: true,
+      slack_url: ENV["SLACK_WEBHOOK_URL"]
+    ) if ENV["SLACK_WEBHOOK_URL"]
+  end
+
+  desc "Submit to App Store for review"
+  lane :release do
+    build_release
+
+    upload_to_app_store(
+      app_identifier: "com.ictplatform.mobile",
+      ipa: "./build/ICTPlatform.ipa",
+      skip_screenshots: true,
+      skip_metadata: false,
+      submit_for_review: true,
+      automatic_release: false,
+      submission_information: {
+        add_id_info_serves_ads: false,
+        add_id_info_tracks_action: false,
+        add_id_info_tracks_install: false,
+        add_id_info_uses_idfa: false,
+        content_rights_has_rights: true,
+        content_rights_contains_third_party_content: false,
+        export_compliance_platform: "ios",
+        export_compliance_compliance_required: false,
+        export_compliance_encryption_updated: false,
+        export_compliance_app_type: nil,
+        export_compliance_uses_encryption: false,
+        export_compliance_is_exempt: false,
+        export_compliance_contains_third_party_cryptography: false,
+        export_compliance_contains_proprietary_cryptography: false,
+        export_compliance_available_on_french_store: true
+      }
+    )
+
+    # Notify team
+    slack(
+      message: "ICT Platform iOS submitted to App Store for review!",
+      success: true,
+      slack_url: ENV["SLACK_WEBHOOK_URL"]
+    ) if ENV["SLACK_WEBHOOK_URL"]
+  end
+
+  # =====================
+  # Utility Lanes
+  # =====================
+  desc "Run iOS tests"
+  lane :test do
+    run_tests(
+      workspace: "ios/ICTPlatform.xcworkspace",
+      scheme: "ICTPlatform",
+      devices: ["iPhone 15"],
+      clean: true
+    )
+  end
+
+  desc "Take App Store screenshots"
+  lane :screenshots do
+    capture_screenshots(
+      workspace: "ios/ICTPlatform.xcworkspace",
+      scheme: "ICTPlatformUITests",
+      devices: [
+        "iPhone 15 Pro Max",
+        "iPhone 15",
+        "iPhone SE (3rd generation)",
+        "iPad Pro (12.9-inch) (6th generation)"
+      ],
+      languages: ["en-US"],
+      output_directory: "./fastlane/screenshots"
+    )
+
+    frame_screenshots(
+      path: "./fastlane/screenshots"
+    )
+  end
+
+  # =====================
+  # Error Handling
+  # =====================
+  error do |lane, exception|
+    slack(
+      message: "Error in lane #{lane}: #{exception.message}",
+      success: false,
+      slack_url: ENV["SLACK_WEBHOOK_URL"]
+    ) if ENV["SLACK_WEBHOOK_URL"]
+  end
+end

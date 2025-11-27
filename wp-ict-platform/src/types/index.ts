@@ -509,3 +509,427 @@ export interface TableColumn<T> {
   sortable?: boolean;
   render?: (item: T) => React.ReactNode;
 }
+
+// ============================================
+// NEW FEATURE TYPES (v2.1.0)
+// ============================================
+
+// Document types
+export interface Document {
+  id: number;
+  project_id?: number;
+  entity_type: string;
+  entity_id?: number;
+  document_name: string;
+  original_filename: string;
+  file_path: string;
+  file_type?: string;
+  file_size: number;
+  mime_type?: string;
+  category: DocumentCategory;
+  description?: string;
+  version: number;
+  is_public: boolean;
+  uploaded_by: number;
+  tags?: string;
+  created_at: string;
+  updated_at: string;
+  url?: string;
+}
+
+export type DocumentCategory =
+  | 'general' | 'contract' | 'permit' | 'invoice'
+  | 'photo' | 'drawing' | 'report' | 'safety'
+  | 'warranty' | 'manual';
+
+// Equipment types
+export interface Equipment {
+  id: number;
+  equipment_name: string;
+  equipment_number?: string;
+  equipment_type: EquipmentType;
+  manufacturer?: string;
+  model?: string;
+  serial_number?: string;
+  purchase_date?: string;
+  purchase_price: number;
+  current_value: number;
+  status: EquipmentStatus;
+  condition_rating: number;
+  location?: string;
+  assigned_to?: number;
+  assigned_project?: number;
+  last_maintenance?: string;
+  next_maintenance?: string;
+  maintenance_interval_days: number;
+  qr_code?: string;
+  notes?: string;
+  specifications?: object;
+  created_at: string;
+  updated_at: string;
+}
+
+export type EquipmentType =
+  | 'power-tool' | 'hand-tool' | 'testing' | 'safety'
+  | 'lifting' | 'cable' | 'diagnostic' | 'measurement'
+  | 'communication' | 'other';
+
+export type EquipmentStatus = 'available' | 'in-use' | 'maintenance' | 'retired';
+
+// Expense types
+export interface Expense {
+  id: number;
+  project_id?: number;
+  technician_id: number;
+  expense_date: string;
+  category: ExpenseCategory;
+  vendor?: string;
+  description?: string;
+  amount: number;
+  currency: string;
+  receipt_path?: string;
+  receipt_url?: string;
+  status: ExpenseStatus;
+  approved_by?: number;
+  approved_at?: string;
+  reimbursed_at?: string;
+  payment_method?: string;
+  is_billable: boolean;
+  notes?: string;
+  technician_name?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export type ExpenseCategory =
+  | 'fuel' | 'materials' | 'tools' | 'meals' | 'travel'
+  | 'accommodation' | 'parking' | 'communication'
+  | 'training' | 'safety' | 'office' | 'other';
+
+export type ExpenseStatus = 'pending' | 'approved' | 'rejected' | 'reimbursed';
+
+// Signature types
+export interface Signature {
+  id: number;
+  entity_type: string;
+  entity_id: number;
+  signer_name: string;
+  signer_email?: string;
+  signer_role?: string;
+  signature_data: string;
+  signature_image?: string;
+  signature_url?: string;
+  ip_address?: string;
+  location_latitude?: number;
+  location_longitude?: number;
+  signed_at: string;
+  created_at: string;
+}
+
+// Voice Note types
+export interface VoiceNote {
+  id: number;
+  project_id?: number;
+  entity_type: string;
+  entity_id?: number;
+  recorded_by: number;
+  recorded_by_name?: string;
+  audio_path: string;
+  audio_url?: string;
+  duration_seconds: number;
+  file_size: number;
+  transcription?: string;
+  transcription_status: TranscriptionStatus;
+  location_latitude?: number;
+  location_longitude?: number;
+  tags?: string;
+  created_at: string;
+}
+
+export type TranscriptionStatus = 'pending' | 'processing' | 'completed' | 'failed';
+
+// Fleet/Vehicle types
+export interface Vehicle {
+  id: number;
+  vehicle_name: string;
+  vehicle_number?: string;
+  vehicle_type: VehicleType;
+  make?: string;
+  model?: string;
+  year?: number;
+  vin?: string;
+  license_plate?: string;
+  color?: string;
+  status: VehicleStatus;
+  current_mileage: number;
+  fuel_type?: string;
+  fuel_capacity: number;
+  assigned_driver?: number;
+  driver_name?: string;
+  assigned_project?: number;
+  insurance_expiry?: string;
+  registration_expiry?: string;
+  last_service_date?: string;
+  next_service_date?: string;
+  service_interval_miles: number;
+  gps_device_id?: string;
+  qr_code?: string;
+  notes?: string;
+  last_location?: VehicleLocation;
+  created_at: string;
+  updated_at: string;
+}
+
+export type VehicleType =
+  | 'van' | 'truck' | 'pickup' | 'suv' | 'sedan'
+  | 'box-truck' | 'trailer' | 'specialty';
+
+export type VehicleStatus = 'available' | 'in-use' | 'maintenance' | 'retired';
+
+export interface VehicleLocation {
+  latitude: number;
+  longitude: number;
+  speed: number;
+  heading?: number;
+  recorded_at: string;
+  address?: string;
+}
+
+// Notification types
+export interface Notification {
+  id: number;
+  user_id: number;
+  type: NotificationType;
+  title: string;
+  message: string;
+  data?: object;
+  priority: 'low' | 'normal' | 'high' | 'urgent';
+  is_read: boolean;
+  read_at?: string;
+  action_url?: string;
+  entity_type?: string;
+  entity_id?: number;
+  push_sent: boolean;
+  created_at: string;
+}
+
+export type NotificationType =
+  | 'general' | 'announcement' | 'time_approval' | 'expense_submitted'
+  | 'expense_approved' | 'expense_rejected' | 'expense_reimbursed'
+  | 'project_update' | 'low_stock' | 'sync_error' | 'client_approval'
+  | 'support_request';
+
+export interface NotificationPreferences {
+  email_notifications: boolean;
+  push_notifications: boolean;
+  time_approval: boolean;
+  expense_updates: boolean;
+  project_updates: boolean;
+  inventory_alerts: boolean;
+  sync_errors: boolean;
+  daily_digest: boolean;
+  quiet_hours_start?: string;
+  quiet_hours_end?: string;
+}
+
+// QR Code types
+export interface QrCode {
+  id: number;
+  code: string;
+  entity_type: string;
+  entity_id: number;
+  label?: string;
+  description?: string;
+  qr_image_path?: string;
+  qr_image_url?: string;
+  scan_url?: string;
+  is_active: boolean;
+  scan_count: number;
+  last_scanned_at?: string;
+  last_scanned_by?: number;
+  created_by: number;
+  created_at: string;
+  updated_at: string;
+}
+
+// Activity Log types
+export interface ActivityLogEntry {
+  id: number;
+  user_id: number;
+  user_name?: string;
+  user_avatar?: string;
+  action: string;
+  entity_type: string;
+  entity_id?: number;
+  entity_name?: string;
+  description?: string;
+  old_values?: object;
+  new_values?: object;
+  ip_address?: string;
+  created_at: string;
+}
+
+// Weather types
+export interface WeatherCurrent {
+  temperature: number;
+  feels_like: number;
+  humidity: number;
+  precipitation: number;
+  rain: number;
+  snow: number;
+  cloud_cover: number;
+  wind_speed: number;
+  wind_gusts: number;
+  weather_code: number;
+  weather_description: string;
+}
+
+export interface WeatherForecastDay {
+  date: string;
+  temp_high: number;
+  temp_low: number;
+  feels_like_high: number;
+  feels_like_low: number;
+  precipitation: number;
+  rain: number;
+  snow: number;
+  precip_probability: number;
+  wind_speed: number;
+  wind_gusts: number;
+  weather_code: number;
+  weather_description: string;
+}
+
+export interface WeatherAlert {
+  date: string;
+  alerts: string[];
+  severity: 'low' | 'medium' | 'high';
+  work_safe: boolean;
+  conditions: WeatherForecastDay;
+}
+
+export interface WorkSafetyAssessment {
+  safe_to_work: boolean;
+  warnings: string[];
+  recommendations: string[];
+  risk_level: 'low' | 'medium' | 'high';
+}
+
+// Client Portal types
+export interface ClientProject {
+  id: number;
+  project_name: string;
+  project_number?: string;
+  status: ProjectStatus;
+  status_label: string;
+  priority: ProjectPriority;
+  priority_label: string;
+  start_date?: string;
+  end_date?: string;
+  progress_percentage: number;
+  site_address?: string;
+}
+
+export interface ClientDashboard {
+  project_stats: { status: string; count: number }[];
+  active_projects: ClientProject[];
+  recent_documents: Document[];
+  welcome_message: string;
+}
+
+// ============================================
+// IMPROVEMENT TYPES (v2.1.0)
+// ============================================
+
+// Gantt Chart types
+export interface GanttTask {
+  id: string;
+  name: string;
+  start: string;
+  end: string;
+  progress: number;
+  dependencies?: string[];
+  assignee?: number;
+  color?: string;
+  type: 'task' | 'milestone' | 'project';
+  parent?: string;
+}
+
+// Advanced Time Tracking types
+export interface TimeBreak {
+  id: number;
+  time_entry_id: number;
+  start: string;
+  end?: string;
+  duration_minutes: number;
+  type: 'lunch' | 'rest' | 'other';
+}
+
+export interface MultipleRate {
+  id: number;
+  name: string;
+  rate: number;
+  multiplier: number;
+  applies_to: 'overtime' | 'weekend' | 'holiday' | 'night';
+}
+
+// Bulk Operations types
+export interface BulkOperation {
+  entity_type: string;
+  entity_ids: number[];
+  action: 'update' | 'delete' | 'approve' | 'sync';
+  data?: object;
+}
+
+export interface BulkOperationResult {
+  success_count: number;
+  error_count: number;
+  errors: { id: number; error: string }[];
+}
+
+// Search types
+export interface GlobalSearchResult {
+  type: string;
+  id: number;
+  title: string;
+  subtitle?: string;
+  url: string;
+  highlight?: string;
+}
+
+export interface SavedFilter {
+  id: number;
+  name: string;
+  entity_type: string;
+  filters: object;
+  is_default: boolean;
+  created_at: string;
+}
+
+// Theme types
+export interface ThemeSettings {
+  mode: 'light' | 'dark' | 'system';
+  primaryColor?: string;
+  accentColor?: string;
+  fontSize: 'small' | 'medium' | 'large';
+  compactMode: boolean;
+}
+
+// Offline types
+export interface OfflineQueueItem {
+  id: string;
+  action: string;
+  endpoint: string;
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  data?: object;
+  timestamp: number;
+  retries: number;
+  status: 'pending' | 'syncing' | 'failed';
+}
+
+export interface OfflineState {
+  isOnline: boolean;
+  lastSyncAt?: string;
+  queuedActions: number;
+  syncInProgress: boolean;
+}

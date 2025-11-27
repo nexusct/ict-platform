@@ -1,0 +1,30 @@
+# ICT Platform Mobile App - Fastlane Match Configuration
+# For more information about match, see:
+# https://docs.fastlane.tools/actions/match/
+
+# Git repo for storing certificates
+git_url(ENV["MATCH_GIT_URL"] || "git@github.com:your-org/certificates.git")
+
+# Storage mode (git or google_cloud)
+storage_mode("git")
+
+# Default type
+type("appstore")
+
+# App identifier(s)
+app_identifier(["com.ictplatform.mobile"])
+
+# Apple ID email
+username(ENV["APPLE_ID"] || "your-apple-id@email.com")
+
+# Team ID
+team_id(ENV["TEAM_ID"] || "YOUR_TEAM_ID")
+
+# Readonly mode for CI
+readonly(is_ci)
+
+# Clone branch
+git_branch("main")
+
+# Keychain name for CI
+keychain_name(ENV["MATCH_KEYCHAIN_NAME"] || "login.keychain")
