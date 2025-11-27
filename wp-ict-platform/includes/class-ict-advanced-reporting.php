@@ -18,6 +18,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 class ICT_Advanced_Reporting {
 
 	/**
+	 * Singleton instance.
+	 *
+	 * @var ICT_Advanced_Reporting
+	 */
+	private static $instance = null;
+
+	/**
+	 * Get singleton instance.
+	 *
+	 * @return ICT_Advanced_Reporting
+	 */
+	public static function get_instance() {
+		if ( null === self::$instance ) {
+			self::$instance = new self();
+		}
+		return self::$instance;
+	}
+
+	/**
 	 * Supported export formats.
 	 *
 	 * @var array
@@ -47,19 +66,18 @@ class ICT_Advanced_Reporting {
 	 *
 	 * @since 1.1.0
 	 */
-	public function __construct() {
-		$this->init_hooks();
+	private function __construct() {
+		// Private constructor for singleton
 	}
 
 	/**
-	 * Initialize hooks.
+	 * Register REST API routes (alias for register_endpoints).
 	 *
 	 * @since 1.1.0
 	 * @return void
 	 */
-	private function init_hooks() {
-		add_action( 'rest_api_init', array( $this, 'register_endpoints' ) );
-		add_action( 'ict_generate_scheduled_report', array( $this, 'generate_scheduled_report' ), 10, 2 );
+	public function register_routes() {
+		$this->register_endpoints();
 	}
 
 	/**

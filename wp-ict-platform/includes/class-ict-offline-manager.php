@@ -56,17 +56,17 @@ class ICT_Offline_Manager {
 	 * @since 1.1.0
 	 */
 	private function __construct() {
-		$this->init_hooks();
+		// Private constructor for singleton
 	}
 
 	/**
-	 * Initialize hooks.
+	 * Register REST API routes.
 	 *
 	 * @since 1.1.0
 	 * @return void
 	 */
-	private function init_hooks() {
-		add_action( 'rest_api_init', array( $this, 'register_sync_endpoints' ) );
+	public function register_routes() {
+		$this->register_sync_endpoints();
 		add_action( 'ict_process_offline_queue', array( $this, 'process_offline_queue' ) );
 	}
 

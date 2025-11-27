@@ -18,6 +18,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 class ICT_Biometric_Auth {
 
 	/**
+	 * Singleton instance.
+	 *
+	 * @var ICT_Biometric_Auth
+	 */
+	private static $instance = null;
+
+	/**
 	 * Relying party ID (domain).
 	 *
 	 * @var string
@@ -32,25 +39,35 @@ class ICT_Biometric_Auth {
 	private $rp_name;
 
 	/**
+	 * Get singleton instance.
+	 *
+	 * @return ICT_Biometric_Auth
+	 */
+	public static function get_instance() {
+		if ( null === self::$instance ) {
+			self::$instance = new self();
+		}
+		return self::$instance;
+	}
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.1.0
 	 */
-	public function __construct() {
+	private function __construct() {
 		$this->rp_id   = wp_parse_url( home_url(), PHP_URL_HOST );
 		$this->rp_name = get_bloginfo( 'name' );
-
-		$this->init_hooks();
 	}
 
 	/**
-	 * Initialize hooks.
+	 * Register REST API routes.
 	 *
 	 * @since 1.1.0
 	 * @return void
 	 */
-	private function init_hooks() {
-		add_action( 'rest_api_init', array( $this, 'register_endpoints' ) );
+	public function register_routes() {
+		$this->register_endpoints();
 		add_action( 'wp_login', array( $this, 'maybe_prompt_biometric_setup' ), 10, 2 );
 	}
 

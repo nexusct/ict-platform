@@ -18,6 +18,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 class ICT_Microsoft_Teams_Adapter {
 
 	/**
+	 * Singleton instance.
+	 *
+	 * @var ICT_Microsoft_Teams_Adapter
+	 */
+	private static $instance = null;
+
+	/**
 	 * Microsoft Graph API base URL.
 	 *
 	 * @var string
@@ -39,12 +46,36 @@ class ICT_Microsoft_Teams_Adapter {
 	private $webhooks = array();
 
 	/**
+	 * Get singleton instance.
+	 *
+	 * @return ICT_Microsoft_Teams_Adapter
+	 */
+	public static function get_instance() {
+		if ( null === self::$instance ) {
+			self::$instance = new self();
+		}
+		return self::$instance;
+	}
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.1.0
 	 */
-	public function __construct() {
+	private function __construct() {
 		$this->load_webhooks();
+	}
+
+	/**
+	 * Initialize Teams integration.
+	 *
+	 * @since 1.1.0
+	 * @return void
+	 */
+	public function init() {
+		// Add any initialization hooks here
+		add_action( 'ict_project_status_changed', array( $this, 'notify_project_update' ), 10, 3 );
+		add_action( 'ict_low_stock_detected', array( $this, 'notify_low_stock' ), 10, 1 );
 	}
 
 	/**

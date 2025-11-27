@@ -184,18 +184,27 @@ class ICT_Advanced_Role_Manager {
 	 * @since 1.1.0
 	 */
 	private function __construct() {
-		$this->init_hooks();
+		// Private constructor for singleton
 	}
 
 	/**
-	 * Initialize hooks.
+	 * Initialize the role manager.
 	 *
 	 * @since 1.1.0
 	 * @return void
 	 */
-	private function init_hooks() {
-		add_action( 'rest_api_init', array( $this, 'register_endpoints' ) );
+	public function init() {
 		add_filter( 'user_has_cap', array( $this, 'filter_user_capabilities' ), 10, 4 );
+	}
+
+	/**
+	 * Register REST API routes.
+	 *
+	 * @since 1.1.0
+	 * @return void
+	 */
+	public function register_routes() {
+		$this->register_endpoints();
 	}
 
 	/**

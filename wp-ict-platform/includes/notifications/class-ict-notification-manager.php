@@ -67,6 +67,16 @@ class ICT_Notification_Manager {
 	 * @since 1.1.0
 	 */
 	private function __construct() {
+		// Private constructor for singleton
+	}
+
+	/**
+	 * Initialize the notification manager.
+	 *
+	 * @since 1.1.0
+	 * @return void
+	 */
+	public function init() {
 		$this->init_hooks();
 	}
 

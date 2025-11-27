@@ -86,17 +86,27 @@ class ICT_Custom_Field_Builder {
 	 * @since 1.1.0
 	 */
 	private function __construct() {
-		$this->init_hooks();
+		// Private constructor for singleton
 	}
 
 	/**
-	 * Initialize hooks.
+	 * Initialize the custom field builder.
 	 *
 	 * @since 1.1.0
 	 * @return void
 	 */
-	private function init_hooks() {
-		add_action( 'rest_api_init', array( $this, 'register_endpoints' ) );
+	public function init() {
+		// Add any initialization hooks here
+	}
+
+	/**
+	 * Register REST API routes.
+	 *
+	 * @since 1.1.0
+	 * @return void
+	 */
+	public function register_routes() {
+		$this->register_endpoints();
 	}
 
 	/**
