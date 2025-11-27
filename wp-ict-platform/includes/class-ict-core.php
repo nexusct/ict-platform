@@ -118,6 +118,9 @@ class ICT_Core {
 
 		// Load custom field builder
 		require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/class-ict-custom-field-builder.php';
+
+		// Load setup wizard
+		require_once ICT_PLATFORM_PLUGIN_DIR . 'admin/class-ict-setup-wizard.php';
 	}
 
 	/**
@@ -162,6 +165,31 @@ class ICT_Core {
 
 		// Custom cron schedules
 		$this->loader->add_filter( 'cron_schedules', $this, 'add_custom_cron_schedules' );
+
+		// Setup wizard
+		$setup_wizard = ICT_Setup_Wizard::get_instance();
+		$this->loader->add_action( 'init', $setup_wizard, 'init' );
+		$this->loader->add_action( 'admin_menu', $setup_wizard, 'register_wizard_page' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $setup_wizard, 'enqueue_wizard_assets' );
+
+		// Handle wizard dismissal
+		$this->loader->add_action( 'admin_init', $this, 'handle_wizard_dismissal' );
+	}
+
+	/**
+	 * Handle wizard dismissal.
+	 *
+	 * @since  1.1.0
+	 * @return void
+	 */
+	public function handle_wizard_dismissal() {
+		if ( isset( $_GET['dismiss-wizard'] ) && isset( $_GET['_wpnonce'] ) ) {
+			if ( wp_verify_nonce( $_GET['_wpnonce'], 'ict_dismiss_wizard' ) && current_user_can( 'manage_options' ) ) {
+				update_option( 'ict_wizard_dismissed', true );
+				wp_redirect( admin_url( 'admin.php?page=ict-platform' ) );
+				exit;
+			}
+		}
 	}
 
 	/**
