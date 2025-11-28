@@ -26,7 +26,7 @@ export const TimesheetApproval: React.FC = () => {
   const [approvalNotes, setApprovalNotes] = useState('');
   const [rejectReason, setRejectReason] = useState('');
   const [showRejectModal, setShowRejectModal] = useState(false);
-  const [dateFilter, setDateFilter] = useState('week');
+  const [_dateFilter, _setDateFilter] = useState('week');
 
   useEffect(() => {
     // Filter for submitted entries only

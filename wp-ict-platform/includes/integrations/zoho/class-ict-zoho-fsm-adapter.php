@@ -106,19 +106,19 @@ class ICT_Zoho_FSM_Adapter extends ICT_Zoho_API_Client {
 		// Get project details
 		$project = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_PROJECTS_TABLE . " WHERE id = %d",
+				'SELECT * FROM ' . ICT_PROJECTS_TABLE . ' WHERE id = %d',
 				$data['project_id']
 			)
 		);
 
 		$payload = array(
-			'subject'     => $data['title'] ?? $project->project_name,
-			'description' => $data['description'] ?? '',
-			'priority'    => $data['priority'] ?? 'Medium',
-			'status'      => $this->map_status_to_fsm( $data['status'] ?? 'pending' ),
+			'subject'         => $data['title'] ?? $project->project_name,
+			'description'     => $data['description'] ?? '',
+			'priority'        => $data['priority'] ?? 'Medium',
+			'status'          => $this->map_status_to_fsm( $data['status'] ?? 'pending' ),
 			'scheduled_start' => date( 'c', strtotime( $data['start_date'] ) ),
 			'scheduled_end'   => date( 'c', strtotime( $data['end_date'] ) ),
-			'assigned_to' => $this->get_fsm_agent_id( $data['technician_id'] ),
+			'assigned_to'     => $this->get_fsm_agent_id( $data['technician_id'] ),
 		);
 
 		$response = $this->post( '/workorders', $payload );
@@ -234,16 +234,19 @@ class ICT_Zoho_FSM_Adapter extends ICT_Zoho_API_Client {
 		$response = $this->get( '/workorders', $params );
 
 		if ( ! isset( $response['data']['data'] ) ) {
-			return array( 'success' => false, 'message' => __( 'No work orders found', 'ict-platform' ) );
+			return array(
+				'success' => false,
+				'message' => __( 'No work orders found', 'ict-platform' ),
+			);
 		}
 
 		$work_orders = $response['data']['data'];
-		$synced = 0;
+		$synced      = 0;
 
 		foreach ( $work_orders as $wo ) {
 			// Create or update local task/project task
 			// Implementation depends on how tasks are stored
-			$synced++;
+			++$synced;
 		}
 
 		return array(
@@ -262,7 +265,10 @@ class ICT_Zoho_FSM_Adapter extends ICT_Zoho_API_Client {
 		$response = $this->get( '/users' );
 
 		if ( ! isset( $response['data']['users'] ) ) {
-			return array( 'success' => false, 'message' => __( 'No field agents found', 'ict-platform' ) );
+			return array(
+				'success' => false,
+				'message' => __( 'No field agents found', 'ict-platform' ),
+			);
 		}
 
 		$agents = $response['data']['users'];
@@ -285,19 +291,21 @@ class ICT_Zoho_FSM_Adapter extends ICT_Zoho_API_Client {
 				);
 
 				if ( ! is_wp_error( $user_id ) ) {
-					wp_update_user( array(
-						'ID'         => $user_id,
-						'first_name' => $agent['first_name'] ?? '',
-						'last_name'  => $agent['last_name'] ?? '',
-						'role'       => 'ict_technician',
-					) );
+					wp_update_user(
+						array(
+							'ID'         => $user_id,
+							'first_name' => $agent['first_name'] ?? '',
+							'last_name'  => $agent['last_name'] ?? '',
+							'role'       => 'ict_technician',
+						)
+					);
 
 					update_user_meta( $user_id, 'zoho_fsm_agent_id', $agent['id'] );
-					$synced++;
+					++$synced;
 				}
 			} else {
 				update_user_meta( $user->ID, 'zoho_fsm_agent_id', $agent['id'] );
-				$synced++;
+				++$synced;
 			}
 		}
 

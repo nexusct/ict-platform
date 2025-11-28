@@ -50,20 +50,20 @@ class ICT_Zoho_Desk_Adapter extends ICT_Zoho_API_Client {
 		}
 
 		$payload = array(
-			'subject'     => $data['subject'],
-			'description' => $data['description'] ?? '',
+			'subject'      => $data['subject'],
+			'description'  => $data['description'] ?? '',
 			'departmentId' => get_option( 'ict_zoho_desk_department_id' ),
-			'contactId'   => $this->get_desk_contact_id( $data['client_id'] ),
-			'priority'    => $data['priority'] ?? 'Medium',
-			'status'      => 'Open',
-			'channel'     => 'Web',
+			'contactId'    => $this->get_desk_contact_id( $data['client_id'] ),
+			'priority'     => $data['priority'] ?? 'Medium',
+			'status'       => 'Open',
+			'channel'      => 'Web',
 		);
 
 		if ( ! empty( $data['project_id'] ) ) {
 			global $wpdb;
 			$project = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT project_number, project_name FROM " . ICT_PROJECTS_TABLE . " WHERE id = %d",
+					'SELECT project_number, project_name FROM ' . ICT_PROJECTS_TABLE . ' WHERE id = %d',
 					$data['project_id']
 				)
 			);
@@ -164,16 +164,19 @@ class ICT_Zoho_Desk_Adapter extends ICT_Zoho_API_Client {
 		$response = $this->get( '/tickets', $params );
 
 		if ( ! isset( $response['data']['data'] ) ) {
-			return array( 'success' => false, 'message' => __( 'No tickets found', 'ict-platform' ) );
+			return array(
+				'success' => false,
+				'message' => __( 'No tickets found', 'ict-platform' ),
+			);
 		}
 
 		$tickets = $response['data']['data'];
-		$synced = 0;
+		$synced  = 0;
 
 		foreach ( $tickets as $ticket ) {
 			// Create or update local support ticket
 			// Implementation depends on support ticket structure
-			$synced++;
+			++$synced;
 		}
 
 		return array(
@@ -194,8 +197,8 @@ class ICT_Zoho_Desk_Adapter extends ICT_Zoho_API_Client {
 	 */
 	public function add_comment( $ticket_id, $comment, $is_public = false ) {
 		$payload = array(
-			'content'   => $comment,
-			'isPublic'  => $is_public,
+			'content'  => $comment,
+			'isPublic' => $is_public,
 		);
 
 		$response = $this->post( "/tickets/{$ticket_id}/comments", $payload );
@@ -284,7 +287,7 @@ class ICT_Zoho_Desk_Adapter extends ICT_Zoho_API_Client {
 	 */
 	public function sync_contacts() {
 		// Get WordPress users (clients)
-		$users = get_users( array( 'role' => 'customer' ) );
+		$users  = get_users( array( 'role' => 'customer' ) );
 		$synced = 0;
 
 		foreach ( $users as $user ) {
@@ -306,7 +309,7 @@ class ICT_Zoho_Desk_Adapter extends ICT_Zoho_API_Client {
 
 				if ( isset( $response['data']['id'] ) ) {
 					update_user_meta( $user->ID, 'zoho_desk_contact_id', $response['data']['id'] );
-					$synced++;
+					++$synced;
 				}
 			} catch ( Exception $e ) {
 				// Log error and continue

@@ -7,8 +7,11 @@
 
 import '@testing-library/jest-dom';
 
+// Declare global for Node.js environment
+declare const global: typeof globalThis;
+
 // Mock WordPress localized script
-(global as any).ictPlatform = {
+(global as typeof globalThis & { ictPlatform: unknown }).ictPlatform = {
   apiUrl: 'http://localhost/wp-json/ict/v1',
   nonce: 'test-nonce',
   currentUser: 1,
