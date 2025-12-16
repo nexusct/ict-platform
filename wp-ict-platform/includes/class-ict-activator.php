@@ -547,6 +547,7 @@ class ICT_Activator {
 	 */
 	private static function set_default_options() {
 		$defaults = array(
+			// Core settings
 			'ict_sync_interval'          => 15, // minutes
 			'ict_sync_rate_limit'        => 60, // requests per minute
 			'ict_time_rounding'          => 15, // minutes
@@ -556,10 +557,29 @@ class ICT_Activator {
 			'ict_currency'               => 'USD',
 			'ict_date_format'            => 'Y-m-d',
 			'ict_time_format'            => 'H:i:s',
+			'ict_working_hours_per_day'  => 8,
+
+			// Feature flags
 			'ict_enable_offline_mode'    => true,
 			'ict_enable_gps_tracking'    => true,
 			'ict_enable_notifications'   => true,
+			'ict_enable_biometric_auth'  => true,
 			'ict_notification_types'     => array( 'low_stock', 'overdue_tasks', 'time_approval' ),
+
+			// Email notification settings
+			'ict_enable_email_notifications' => true,
+			'ict_email_from_name'        => get_bloginfo( 'name' ),
+			'ict_email_from_address'     => get_option( 'admin_email' ),
+			'ict_email_primary_color'    => '#0073aa',
+
+			// SMS notification settings
+			'ict_enable_sms_notifications' => false,
+
+			// Microsoft Teams settings
+			'ict_enable_teams_notifications' => false,
+
+			// Push notification settings
+			'ict_enable_push_notifications' => true,
 		);
 
 		foreach ( $defaults as $key => $value ) {
@@ -577,19 +597,61 @@ class ICT_Activator {
 		// Get administrator role
 		$admin = get_role( 'administrator' );
 
-		// Add capabilities to administrator
+		// Add all capabilities to administrator
 		$capabilities = array(
+			// Platform management
 			'manage_ict_platform',
+			'manage_ict_integrations',
+			'manage_ict_sync',
+
+			// Projects
 			'manage_ict_projects',
 			'edit_ict_projects',
 			'delete_ict_projects',
+			'view_ict_projects',
+			'create_ict_projects',
+			'assign_ict_projects',
+
+			// Time tracking
 			'manage_ict_time_entries',
+			'edit_ict_time_entry',
 			'approve_ict_time_entries',
+			'view_all_time_entries',
+
+			// Inventory
 			'manage_ict_inventory',
+			'edit_ict_inventory',
+			'view_ict_inventory',
+
+			// Purchase orders
 			'manage_ict_purchase_orders',
+			'create_ict_purchase_orders',
 			'approve_ict_purchase_orders',
+			'view_ict_purchase_orders',
+
+			// Resources
+			'manage_ict_resources',
+			'view_ict_resources',
+
+			// Reports
 			'view_ict_reports',
-			'manage_ict_sync',
+			'export_ict_reports',
+			'manage_ict_reports',
+
+			// Tasks
+			'manage_ict_tasks',
+			'view_ict_tasks',
+			'edit_ict_tasks',
+
+			// Users
+			'manage_ict_users',
+			'view_ict_users',
+
+			// Custom fields
+			'manage_custom_fields',
+
+			// Notifications
+			'manage_notifications',
 		);
 
 		foreach ( $capabilities as $cap ) {

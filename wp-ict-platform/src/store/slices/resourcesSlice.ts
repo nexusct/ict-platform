@@ -58,7 +58,7 @@ export const fetchResources = createAsyncThunk(
       page: params?.page,
       per_page: params?.per_page,
     });
-    return response.data!;
+    return response;
   }
 );
 
@@ -205,7 +205,7 @@ export const batchUpdateAllocations = createAsyncThunk(
 export const batchDeleteAllocations = createAsyncThunk(
   'resources/batchDelete',
   async (ids: number[]) => {
-    const response = await resourceAPI.batchDelete(ids);
+    await resourceAPI.batchDelete(ids);
     return ids;
   }
 );

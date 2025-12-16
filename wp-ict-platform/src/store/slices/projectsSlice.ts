@@ -29,9 +29,9 @@ const initialState: ProjectsState = {
 // Async thunks
 export const fetchProjects = createAsyncThunk(
   'projects/fetchAll',
-  async (params?: { page?: number; per_page?: number }, { getState }) => {
+  async (params: { page?: number; per_page?: number } | undefined, { getState }) => {
     const state = getState() as { projects: ProjectsState };
-    const { filters, sort, pagination } = state.projects;
+    const { filters, pagination } = state.projects;
 
     const response = await projectAPI.getAll({
       page: params?.page || pagination.page,

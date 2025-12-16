@@ -27,12 +27,10 @@ import {
   selectResourcesError,
   selectHasConflicts,
 } from '../../store/slices/resourcesSlice';
-import { fetchProjects } from '../../store/slices/projectsSlice';
 import {
   ProjectResource,
   ResourceFormData,
   ResourceType,
-  ResourceStatus,
 } from '../../types';
 
 interface ResourceAllocationProps {
