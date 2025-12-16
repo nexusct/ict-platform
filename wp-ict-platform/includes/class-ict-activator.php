@@ -255,6 +255,265 @@ class ICT_Activator {
 			KEY synced_at (synced_at)
 		) $charset_collate;";
 
+		// Documents table (NEW FEATURE)
+		$documents_table = "CREATE TABLE " . ICT_DOCUMENTS_TABLE . " (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			project_id bigint(20) UNSIGNED DEFAULT NULL,
+			entity_type varchar(50) DEFAULT 'project',
+			entity_id bigint(20) UNSIGNED DEFAULT NULL,
+			document_name varchar(255) NOT NULL,
+			original_filename varchar(255) NOT NULL,
+			file_path varchar(500) NOT NULL,
+			file_type varchar(100) DEFAULT NULL,
+			file_size bigint(20) UNSIGNED DEFAULT 0,
+			mime_type varchar(100) DEFAULT NULL,
+			category varchar(50) DEFAULT 'general',
+			description text DEFAULT NULL,
+			version int(11) DEFAULT 1,
+			is_public tinyint(1) DEFAULT 0,
+			uploaded_by bigint(20) UNSIGNED NOT NULL,
+			tags text DEFAULT NULL,
+			metadata longtext DEFAULT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+			PRIMARY KEY  (id),
+			KEY project_id (project_id),
+			KEY entity (entity_type, entity_id),
+			KEY category (category),
+			KEY uploaded_by (uploaded_by)
+		) $charset_collate;";
+
+		// Equipment table (NEW FEATURE)
+		$equipment_table = "CREATE TABLE " . ICT_EQUIPMENT_TABLE . " (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			equipment_name varchar(255) NOT NULL,
+			equipment_number varchar(50) DEFAULT NULL,
+			equipment_type varchar(100) NOT NULL,
+			manufacturer varchar(255) DEFAULT NULL,
+			model varchar(255) DEFAULT NULL,
+			serial_number varchar(100) DEFAULT NULL,
+			purchase_date date DEFAULT NULL,
+			purchase_price decimal(15,2) DEFAULT 0.00,
+			current_value decimal(15,2) DEFAULT 0.00,
+			status varchar(50) DEFAULT 'available',
+			condition_rating int(3) DEFAULT 5,
+			location varchar(255) DEFAULT NULL,
+			assigned_to bigint(20) UNSIGNED DEFAULT NULL,
+			assigned_project bigint(20) UNSIGNED DEFAULT NULL,
+			last_maintenance date DEFAULT NULL,
+			next_maintenance date DEFAULT NULL,
+			maintenance_interval_days int(11) DEFAULT 365,
+			qr_code varchar(100) DEFAULT NULL,
+			notes text DEFAULT NULL,
+			specifications longtext DEFAULT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+			PRIMARY KEY  (id),
+			KEY equipment_type (equipment_type),
+			KEY status (status),
+			KEY assigned_to (assigned_to),
+			KEY assigned_project (assigned_project),
+			KEY qr_code (qr_code)
+		) $charset_collate;";
+
+		// Expenses table (NEW FEATURE)
+		$expenses_table = "CREATE TABLE " . ICT_EXPENSES_TABLE . " (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			project_id bigint(20) UNSIGNED DEFAULT NULL,
+			technician_id bigint(20) UNSIGNED NOT NULL,
+			expense_date date NOT NULL,
+			category varchar(50) NOT NULL,
+			vendor varchar(255) DEFAULT NULL,
+			description text DEFAULT NULL,
+			amount decimal(15,2) NOT NULL,
+			currency varchar(10) DEFAULT 'USD',
+			receipt_path varchar(500) DEFAULT NULL,
+			receipt_thumbnail varchar(500) DEFAULT NULL,
+			status varchar(50) DEFAULT 'pending',
+			approved_by bigint(20) UNSIGNED DEFAULT NULL,
+			approved_at datetime DEFAULT NULL,
+			reimbursed_at datetime DEFAULT NULL,
+			payment_method varchar(50) DEFAULT NULL,
+			is_billable tinyint(1) DEFAULT 1,
+			notes text DEFAULT NULL,
+			zoho_expense_id varchar(100) DEFAULT NULL,
+			sync_status varchar(20) DEFAULT 'pending',
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+			PRIMARY KEY  (id),
+			KEY project_id (project_id),
+			KEY technician_id (technician_id),
+			KEY category (category),
+			KEY status (status),
+			KEY expense_date (expense_date)
+		) $charset_collate;";
+
+		// Digital signatures table (NEW FEATURE)
+		$signatures_table = "CREATE TABLE " . ICT_SIGNATURES_TABLE . " (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			entity_type varchar(50) NOT NULL,
+			entity_id bigint(20) UNSIGNED NOT NULL,
+			signer_name varchar(255) NOT NULL,
+			signer_email varchar(255) DEFAULT NULL,
+			signer_role varchar(100) DEFAULT NULL,
+			signature_data longtext NOT NULL,
+			signature_image varchar(500) DEFAULT NULL,
+			ip_address varchar(45) DEFAULT NULL,
+			user_agent text DEFAULT NULL,
+			location_latitude decimal(10,8) DEFAULT NULL,
+			location_longitude decimal(11,8) DEFAULT NULL,
+			signed_at datetime NOT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY  (id),
+			KEY entity (entity_type, entity_id),
+			KEY signer_email (signer_email),
+			KEY signed_at (signed_at)
+		) $charset_collate;";
+
+		// Voice notes table (NEW FEATURE)
+		$voice_notes_table = "CREATE TABLE " . ICT_VOICE_NOTES_TABLE . " (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			project_id bigint(20) UNSIGNED DEFAULT NULL,
+			entity_type varchar(50) DEFAULT 'project',
+			entity_id bigint(20) UNSIGNED DEFAULT NULL,
+			recorded_by bigint(20) UNSIGNED NOT NULL,
+			audio_path varchar(500) NOT NULL,
+			duration_seconds int(11) DEFAULT 0,
+			file_size bigint(20) UNSIGNED DEFAULT 0,
+			transcription longtext DEFAULT NULL,
+			transcription_status varchar(20) DEFAULT 'pending',
+			location_latitude decimal(10,8) DEFAULT NULL,
+			location_longitude decimal(11,8) DEFAULT NULL,
+			tags text DEFAULT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY  (id),
+			KEY project_id (project_id),
+			KEY entity (entity_type, entity_id),
+			KEY recorded_by (recorded_by)
+		) $charset_collate;";
+
+		// Activity log table (NEW FEATURE)
+		$activity_log_table = "CREATE TABLE " . ICT_ACTIVITY_LOG_TABLE . " (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			user_id bigint(20) UNSIGNED NOT NULL,
+			action varchar(50) NOT NULL,
+			entity_type varchar(50) NOT NULL,
+			entity_id bigint(20) UNSIGNED DEFAULT NULL,
+			entity_name varchar(255) DEFAULT NULL,
+			description text DEFAULT NULL,
+			old_values longtext DEFAULT NULL,
+			new_values longtext DEFAULT NULL,
+			ip_address varchar(45) DEFAULT NULL,
+			user_agent text DEFAULT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY  (id),
+			KEY user_id (user_id),
+			KEY action (action),
+			KEY entity (entity_type, entity_id),
+			KEY created_at (created_at)
+		) $charset_collate;";
+
+		// Fleet/vehicles table (NEW FEATURE)
+		$fleet_table = "CREATE TABLE " . ICT_FLEET_TABLE . " (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			vehicle_name varchar(255) NOT NULL,
+			vehicle_number varchar(50) DEFAULT NULL,
+			vehicle_type varchar(100) NOT NULL,
+			make varchar(100) DEFAULT NULL,
+			model varchar(100) DEFAULT NULL,
+			year int(4) DEFAULT NULL,
+			vin varchar(50) DEFAULT NULL,
+			license_plate varchar(50) DEFAULT NULL,
+			color varchar(50) DEFAULT NULL,
+			status varchar(50) DEFAULT 'available',
+			current_mileage int(11) DEFAULT 0,
+			fuel_type varchar(50) DEFAULT NULL,
+			fuel_capacity decimal(10,2) DEFAULT 0.00,
+			assigned_driver bigint(20) UNSIGNED DEFAULT NULL,
+			assigned_project bigint(20) UNSIGNED DEFAULT NULL,
+			insurance_expiry date DEFAULT NULL,
+			registration_expiry date DEFAULT NULL,
+			last_service_date date DEFAULT NULL,
+			next_service_date date DEFAULT NULL,
+			service_interval_miles int(11) DEFAULT 5000,
+			gps_device_id varchar(100) DEFAULT NULL,
+			qr_code varchar(100) DEFAULT NULL,
+			notes text DEFAULT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+			PRIMARY KEY  (id),
+			KEY vehicle_type (vehicle_type),
+			KEY status (status),
+			KEY assigned_driver (assigned_driver),
+			KEY license_plate (license_plate),
+			KEY gps_device_id (gps_device_id)
+		) $charset_collate;";
+
+		// Fleet location tracking table (NEW FEATURE)
+		$fleet_locations_table = "CREATE TABLE " . ICT_FLEET_LOCATIONS_TABLE . " (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			vehicle_id bigint(20) UNSIGNED NOT NULL,
+			latitude decimal(10,8) NOT NULL,
+			longitude decimal(11,8) NOT NULL,
+			speed decimal(6,2) DEFAULT 0.00,
+			heading int(3) DEFAULT 0,
+			altitude decimal(10,2) DEFAULT NULL,
+			accuracy decimal(10,2) DEFAULT NULL,
+			address text DEFAULT NULL,
+			engine_status varchar(20) DEFAULT 'off',
+			recorded_at datetime NOT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY  (id),
+			KEY vehicle_id (vehicle_id),
+			KEY recorded_at (recorded_at)
+		) $charset_collate;";
+
+		// Push notifications table (NEW FEATURE)
+		$notifications_table = "CREATE TABLE " . ICT_NOTIFICATIONS_TABLE . " (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			user_id bigint(20) UNSIGNED NOT NULL,
+			type varchar(50) NOT NULL,
+			title varchar(255) NOT NULL,
+			message text NOT NULL,
+			data longtext DEFAULT NULL,
+			priority varchar(20) DEFAULT 'normal',
+			is_read tinyint(1) DEFAULT 0,
+			read_at datetime DEFAULT NULL,
+			action_url varchar(500) DEFAULT NULL,
+			entity_type varchar(50) DEFAULT NULL,
+			entity_id bigint(20) UNSIGNED DEFAULT NULL,
+			push_sent tinyint(1) DEFAULT 0,
+			push_sent_at datetime DEFAULT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY  (id),
+			KEY user_id (user_id),
+			KEY type (type),
+			KEY is_read (is_read),
+			KEY created_at (created_at)
+		) $charset_collate;";
+
+		// QR codes table (NEW FEATURE)
+		$qr_codes_table = "CREATE TABLE " . ICT_QR_CODES_TABLE . " (
+			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			code varchar(100) NOT NULL,
+			entity_type varchar(50) NOT NULL,
+			entity_id bigint(20) UNSIGNED NOT NULL,
+			label varchar(255) DEFAULT NULL,
+			description text DEFAULT NULL,
+			qr_image_path varchar(500) DEFAULT NULL,
+			is_active tinyint(1) DEFAULT 1,
+			scan_count int(11) DEFAULT 0,
+			last_scanned_at datetime DEFAULT NULL,
+			last_scanned_by bigint(20) UNSIGNED DEFAULT NULL,
+			created_by bigint(20) UNSIGNED NOT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+			PRIMARY KEY  (id),
+			UNIQUE KEY code (code),
+			KEY entity (entity_type, entity_id),
+			KEY is_active (is_active)
+		) $charset_collate;";
+
 		// Execute table creation
 		dbDelta( $projects_table );
 		dbDelta( $time_entries_table );
@@ -264,213 +523,20 @@ class ICT_Activator {
 		dbDelta( $sync_queue_table );
 		dbDelta( $sync_log_table );
 
-		// Save database version
-		update_option( 'ict_platform_db_version', '1.0.0' );
-
-		// Create additional tables for new features
-		self::create_additional_tables();
-	}
-
-	/**
-	 * Create additional database tables for new features.
-	 *
-	 * @since 1.1.0
-	 * @return void
-	 */
-	private static function create_additional_tables() {
-		global $wpdb;
-
-		$charset_collate = $wpdb->get_charset_collate();
-
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-
-		// Custom fields definition table
-		$custom_fields_table = "CREATE TABLE {$wpdb->prefix}ict_custom_fields (
-			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-			entity_type varchar(50) NOT NULL,
-			field_key varchar(100) NOT NULL,
-			field_name varchar(255) NOT NULL,
-			field_label varchar(255) NOT NULL,
-			field_type varchar(50) NOT NULL,
-			description text DEFAULT NULL,
-			placeholder varchar(255) DEFAULT NULL,
-			default_value text DEFAULT NULL,
-			options longtext DEFAULT NULL,
-			settings longtext DEFAULT NULL,
-			validation_rules longtext DEFAULT NULL,
-			field_group varchar(100) DEFAULT 'default',
-			sort_order int(11) DEFAULT 0,
-			is_required tinyint(1) DEFAULT 0,
-			is_active tinyint(1) DEFAULT 1,
-			show_in_list tinyint(1) DEFAULT 0,
-			show_in_form tinyint(1) DEFAULT 1,
-			created_at datetime DEFAULT CURRENT_TIMESTAMP,
-			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-			PRIMARY KEY (id),
-			UNIQUE KEY entity_field (entity_type, field_key),
-			KEY entity_type (entity_type),
-			KEY field_group (field_group)
-		) $charset_collate;";
-
-		// Custom field values table
-		$custom_field_values_table = "CREATE TABLE {$wpdb->prefix}ict_custom_field_values (
-			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-			entity_type varchar(50) NOT NULL,
-			entity_id bigint(20) UNSIGNED NOT NULL,
-			field_id bigint(20) UNSIGNED NOT NULL,
-			field_value longtext DEFAULT NULL,
-			created_at datetime DEFAULT CURRENT_TIMESTAMP,
-			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-			PRIMARY KEY (id),
-			UNIQUE KEY entity_field (entity_type, entity_id, field_id),
-			KEY entity (entity_type, entity_id),
-			KEY field_id (field_id)
-		) $charset_collate;";
-
-		// Notifications log table
-		$notifications_log_table = "CREATE TABLE {$wpdb->prefix}ict_notifications_log (
-			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-			notification_type varchar(100) NOT NULL,
-			recipients longtext DEFAULT NULL,
-			data longtext DEFAULT NULL,
-			results longtext DEFAULT NULL,
-			created_at datetime DEFAULT CURRENT_TIMESTAMP,
-			PRIMARY KEY (id),
-			KEY notification_type (notification_type),
-			KEY created_at (created_at)
-		) $charset_collate;";
-
-		// SMS log table
-		$sms_log_table = "CREATE TABLE {$wpdb->prefix}ict_sms_log (
-			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-			recipient varchar(50) NOT NULL,
-			message text NOT NULL,
-			status varchar(20) NOT NULL,
-			error text DEFAULT NULL,
-			twilio_sid varchar(100) DEFAULT NULL,
-			created_at datetime DEFAULT CURRENT_TIMESTAMP,
-			PRIMARY KEY (id),
-			KEY status (status),
-			KEY created_at (created_at)
-		) $charset_collate;";
-
-		// Email queue table
-		$email_queue_table = "CREATE TABLE {$wpdb->prefix}ict_email_queue (
-			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-			notification_type varchar(100) NOT NULL,
-			recipients longtext NOT NULL,
-			data longtext NOT NULL,
-			status varchar(20) DEFAULT 'pending',
-			result longtext DEFAULT NULL,
-			created_at datetime DEFAULT CURRENT_TIMESTAMP,
-			sent_at datetime DEFAULT NULL,
-			PRIMARY KEY (id),
-			KEY status (status),
-			KEY created_at (created_at)
-		) $charset_collate;";
-
-		// Sync conflicts table
-		$sync_conflicts_table = "CREATE TABLE {$wpdb->prefix}ict_sync_conflicts (
-			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-			entity_type varchar(50) NOT NULL,
-			entity_id bigint(20) UNSIGNED NOT NULL,
-			client_data longtext NOT NULL,
-			client_time datetime NOT NULL,
-			server_data longtext NOT NULL,
-			user_id bigint(20) UNSIGNED NOT NULL,
-			status varchar(20) DEFAULT 'pending',
-			resolution varchar(20) DEFAULT NULL,
-			resolved_at datetime DEFAULT NULL,
-			created_at datetime DEFAULT CURRENT_TIMESTAMP,
-			PRIMARY KEY (id),
-			KEY entity (entity_type, entity_id),
-			KEY user_id (user_id),
-			KEY status (status)
-		) $charset_collate;";
-
-		// Offline queue table
-		$offline_queue_table = "CREATE TABLE {$wpdb->prefix}ict_offline_queue (
-			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-			entity_type varchar(50) NOT NULL,
-			entity_id bigint(20) UNSIGNED DEFAULT NULL,
-			action varchar(20) NOT NULL,
-			client_id varchar(100) DEFAULT NULL,
-			user_id bigint(20) UNSIGNED NOT NULL,
-			data longtext NOT NULL,
-			status varchar(20) DEFAULT 'pending',
-			result longtext DEFAULT NULL,
-			created_at datetime DEFAULT CURRENT_TIMESTAMP,
-			processed_at datetime DEFAULT NULL,
-			PRIMARY KEY (id),
-			KEY entity (entity_type, entity_id),
-			KEY user_id (user_id),
-			KEY status (status)
-		) $charset_collate;";
-
-		// Tasks table
-		$tasks_table = "CREATE TABLE {$wpdb->prefix}ict_tasks (
-			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-			project_id bigint(20) UNSIGNED NOT NULL,
-			parent_id bigint(20) UNSIGNED DEFAULT NULL,
-			title varchar(255) NOT NULL,
-			description text DEFAULT NULL,
-			status varchar(50) DEFAULT 'pending',
-			priority varchar(20) DEFAULT 'medium',
-			assigned_to bigint(20) UNSIGNED DEFAULT NULL,
-			due_date datetime DEFAULT NULL,
-			estimated_hours decimal(10,2) DEFAULT 0.00,
-			actual_hours decimal(10,2) DEFAULT 0.00,
-			completed_at datetime DEFAULT NULL,
-			completed_by bigint(20) UNSIGNED DEFAULT NULL,
-			sort_order int(11) DEFAULT 0,
-			created_by bigint(20) UNSIGNED DEFAULT NULL,
-			created_at datetime DEFAULT CURRENT_TIMESTAMP,
-			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-			PRIMARY KEY (id),
-			KEY project_id (project_id),
-			KEY parent_id (parent_id),
-			KEY assigned_to (assigned_to),
-			KEY status (status),
-			KEY due_date (due_date)
-		) $charset_collate;";
-
-		// Expenses table
-		$expenses_table = "CREATE TABLE {$wpdb->prefix}ict_expenses (
-			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-			project_id bigint(20) UNSIGNED DEFAULT NULL,
-			user_id bigint(20) UNSIGNED NOT NULL,
-			expense_date date NOT NULL,
-			category varchar(100) NOT NULL,
-			description text DEFAULT NULL,
-			amount decimal(15,2) NOT NULL,
-			receipt_url varchar(500) DEFAULT NULL,
-			status varchar(20) DEFAULT 'pending',
-			approved_by bigint(20) UNSIGNED DEFAULT NULL,
-			approved_at datetime DEFAULT NULL,
-			zoho_expense_id varchar(100) DEFAULT NULL,
-			sync_status varchar(20) DEFAULT 'pending',
-			created_at datetime DEFAULT CURRENT_TIMESTAMP,
-			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-			PRIMARY KEY (id),
-			KEY project_id (project_id),
-			KEY user_id (user_id),
-			KEY status (status),
-			KEY expense_date (expense_date)
-		) $charset_collate;";
-
-		// Execute table creation
-		dbDelta( $custom_fields_table );
-		dbDelta( $custom_field_values_table );
-		dbDelta( $notifications_log_table );
-		dbDelta( $sms_log_table );
-		dbDelta( $email_queue_table );
-		dbDelta( $sync_conflicts_table );
-		dbDelta( $offline_queue_table );
-		dbDelta( $tasks_table );
+		// Execute new feature tables
+		dbDelta( $documents_table );
+		dbDelta( $equipment_table );
 		dbDelta( $expenses_table );
+		dbDelta( $signatures_table );
+		dbDelta( $voice_notes_table );
+		dbDelta( $activity_log_table );
+		dbDelta( $fleet_table );
+		dbDelta( $fleet_locations_table );
+		dbDelta( $notifications_table );
+		dbDelta( $qr_codes_table );
 
-		// Update database version
-		update_option( 'ict_platform_db_version', '1.1.0' );
+		// Save database version
+		update_option( 'ict_platform_db_version', '2.1.0' );
 	}
 
 	/**

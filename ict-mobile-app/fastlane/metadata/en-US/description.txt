@@ -1,0 +1,62 @@
+ICT Platform - Operations Management for ICT/Electrical Contractors
+
+Streamline your field operations with ICT Platform, the comprehensive mobile solution designed specifically for ICT and electrical contracting businesses.
+
+KEY FEATURES:
+
+TIME TRACKING
+- Clock in/out with GPS location tracking
+- Track breaks (lunch, short breaks)
+- Multiple billing rates support
+- Overtime tracking and alerts
+- Offline-capable with automatic sync
+
+PROJECT MANAGEMENT
+- View all active projects
+- Access project details, documents, and team
+- Track project progress and priorities
+- Navigate to job sites with built-in maps
+
+INVENTORY MANAGEMENT
+- Barcode/QR code scanning
+- Real-time stock levels
+- Low stock alerts
+- Quick quantity adjustments
+- Search and filter inventory
+
+EQUIPMENT TRACKING
+- Track tools and equipment
+- Assign to projects or technicians
+- Maintenance scheduling
+- QR code-based check-in/out
+
+FLEET MANAGEMENT
+- Vehicle tracking
+- Mileage logging
+- Service reminders
+- GPS location history
+
+EXPENSE TRACKING
+- Capture receipts
+- Submit expenses for approval
+- Track reimbursement status
+- Categorize by project
+
+DOCUMENT ACCESS
+- View permits and contracts
+- Access project documents
+- Upload photos and files
+- Digital signatures
+
+SEAMLESS INTEGRATION
+- Syncs with Zoho CRM, FSM, Books, and People
+- Real-time bidirectional synchronization
+- Offline-first architecture
+
+SECURE & RELIABLE
+- Enterprise-grade security
+- Data encryption
+- Role-based access control
+- GDPR compliant
+
+Download ICT Platform today and transform how your team manages field operations!

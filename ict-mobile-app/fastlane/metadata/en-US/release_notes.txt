@@ -1,0 +1,18 @@
+Version 1.0.0 - Initial Release
+
+We're excited to launch ICT Platform for iOS!
+
+This release includes:
+- Complete time tracking with GPS and break management
+- Project dashboard and detailed project views
+- Inventory management with barcode scanning
+- Equipment tracking and assignment
+- Fleet management with GPS tracking
+- Expense submission and approval workflow
+- Document management
+- Push notifications
+- Offline support with automatic sync
+- Dark mode support
+- Integration with Zoho suite
+
+Thank you for choosing ICT Platform!
