@@ -110,7 +110,7 @@ export const TimeTracker: React.FC = () => {
             <span className="dashicons dashicons-clock"></span>
           </div>
           <h3>Not Clocked In</h3>
-          <p>You don't have an active time entry. Use the Time Clock to clock in to a project.</p>
+          <p>You do not have an active time entry. Use the Time Clock to clock in to a project.</p>
         </div>
       </div>
     );

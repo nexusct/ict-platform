@@ -13,12 +13,11 @@
  * @since   1.0.0
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   fetchCalendarEvents,
   updateResourceAllocation,
-  deleteResourceAllocation,
   checkResourceConflicts,
   clearConflicts,
   selectCalendarEvents,
@@ -26,11 +25,10 @@ import {
   selectResourceConflicts,
   selectHasConflicts,
 } from '../../store/slices/resourcesSlice';
-import { ResourceType, CalendarEvent } from '../../types';
+import { ResourceType } from '../../types';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
 import interactionPlugin from '@fullcalendar/interaction';
 import type { EventClickArg, EventDropArg, DateSelectArg, EventContentArg } from '@fullcalendar/core';
 
@@ -44,7 +42,7 @@ interface ResourceCalendarProps {
 }
 
 const ResourceCalendar: React.FC<ResourceCalendarProps> = ({
-  projectId,
+  projectId: _projectId,
   resourceType,
   resourceId,
   editable = false,
@@ -66,17 +64,7 @@ const ResourceCalendar: React.FC<ResourceCalendarProps> = ({
     resourceId: resourceId || undefined,
   });
 
-  // Fetch calendar events when date range changes
-  useEffect(() => {
-    if (calendarRef.current) {
-      const calendarApi = calendarRef.current.getApi();
-      const view = calendarApi.view;
-
-      fetchEvents(view.activeStart.toISOString(), view.activeEnd.toISOString());
-    }
-  }, [filters.resourceType, filters.resourceId]);
-
-  const fetchEvents = (start: string, end: string) => {
+  const fetchEvents = useCallback((start: string, end: string) => {
     dispatch(
       fetchCalendarEvents({
         start,
@@ -85,7 +73,17 @@ const ResourceCalendar: React.FC<ResourceCalendarProps> = ({
         resource_id: filters.resourceId,
       })
     );
-  };
+  }, [dispatch, filters.resourceType, filters.resourceId]);
+
+  // Fetch calendar events when date range changes
+  useEffect(() => {
+    if (calendarRef.current) {
+      const calendarApi = calendarRef.current.getApi();
+      const view = calendarApi.view;
+
+      fetchEvents(view.activeStart.toISOString(), view.activeEnd.toISOString());
+    }
+  }, [fetchEvents]);
 
   // Handle date range change
   const handleDatesSet = (dateInfo: any) => {
@@ -200,7 +198,7 @@ const ResourceCalendar: React.FC<ResourceCalendarProps> = ({
       onEventCreate(
         selectInfo.start.toISOString(),
         selectInfo.end.toISOString(),
-        selectInfo.resource?.id ? Number(selectInfo.resource.id) : undefined
+        undefined
       );
     }
   };
@@ -274,12 +272,6 @@ const ResourceCalendar: React.FC<ResourceCalendarProps> = ({
               onClick={() => handleViewChange('timeGridDay')}
             >
               Day
-            </button>
-            <button
-              className={`ict-button ict-button--small ${selectedView === 'resourceTimelineWeek' ? 'ict-button--primary' : 'ict-button--secondary'}`}
-              onClick={() => handleViewChange('resourceTimelineWeek')}
-            >
-              Timeline
             </button>
           </div>
 
@@ -364,14 +356,14 @@ const ResourceCalendar: React.FC<ResourceCalendarProps> = ({
       <div className="ict-resource-calendar__calendar">
         <FullCalendar
           ref={calendarRef}
-          plugins={[dayGridPlugin, timeGridPlugin, resourceTimelinePlugin, interactionPlugin]}
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           initialView={selectedView}
           headerToolbar={{
             left: 'prev,next',
             center: 'title',
             right: '',
           }}
-          events={events}
+          events={events.map(event => ({ ...event, id: String(event.id) }))}
           editable={editable}
           selectable={editable}
           selectMirror={true}

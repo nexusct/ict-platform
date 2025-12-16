@@ -80,7 +80,7 @@ class ICT_Zoho_People_Adapter extends ICT_Zoho_API_Client {
 
 		$zoho_id = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT zoho_people_id FROM " . ICT_TIME_ENTRIES_TABLE . " WHERE id = %d",
+				'SELECT zoho_people_id FROM ' . ICT_TIME_ENTRIES_TABLE . ' WHERE id = %d',
 				$entity_id
 			)
 		);
@@ -89,7 +89,7 @@ class ICT_Zoho_People_Adapter extends ICT_Zoho_API_Client {
 			return $this->create( $entity_type, $data );
 		}
 
-		$payload = $this->transform_time_entry_for_people( $data );
+		$payload             = $this->transform_time_entry_for_people( $data );
 		$payload['recordId'] = $zoho_id;
 
 		$response = $this->post( '/timetracker/updatetime', $payload );
@@ -114,7 +114,7 @@ class ICT_Zoho_People_Adapter extends ICT_Zoho_API_Client {
 
 		$zoho_id = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT zoho_people_id FROM " . ICT_TIME_ENTRIES_TABLE . " WHERE id = %d",
+				'SELECT zoho_people_id FROM ' . ICT_TIME_ENTRIES_TABLE . ' WHERE id = %d',
 				$entity_id
 			)
 		);
@@ -141,11 +141,14 @@ class ICT_Zoho_People_Adapter extends ICT_Zoho_API_Client {
 		$response = $this->get( '/forms/employee/getRecords' );
 
 		if ( ! isset( $response['data']['response']['result'] ) ) {
-			return array( 'success' => false, 'message' => __( 'No employees found', 'ict-platform' ) );
+			return array(
+				'success' => false,
+				'message' => __( 'No employees found', 'ict-platform' ),
+			);
 		}
 
 		$employees = $response['data']['response']['result'];
-		$synced = 0;
+		$synced    = 0;
 
 		foreach ( $employees as $employee ) {
 			// Check if user exists by email
@@ -165,20 +168,22 @@ class ICT_Zoho_People_Adapter extends ICT_Zoho_API_Client {
 				);
 
 				if ( ! is_wp_error( $user_id ) ) {
-					wp_update_user( array(
-						'ID'         => $user_id,
-						'first_name' => $employee['FirstName'] ?? '',
-						'last_name'  => $employee['LastName'] ?? '',
-						'role'       => 'ict_technician',
-					) );
+					wp_update_user(
+						array(
+							'ID'         => $user_id,
+							'first_name' => $employee['FirstName'] ?? '',
+							'last_name'  => $employee['LastName'] ?? '',
+							'role'       => 'ict_technician',
+						)
+					);
 
 					update_user_meta( $user_id, 'zoho_people_id', $employee['recordId'] );
-					$synced++;
+					++$synced;
 				}
 			} else {
 				// Update existing user
 				update_user_meta( $user->ID, 'zoho_people_id', $employee['recordId'] );
-				$synced++;
+				++$synced;
 			}
 		}
 
@@ -205,7 +210,10 @@ class ICT_Zoho_People_Adapter extends ICT_Zoho_API_Client {
 		$response = $this->get( '/timetracker/gettimeentries', $params );
 
 		if ( ! isset( $response['data']['response']['result'] ) ) {
-			return array( 'success' => false, 'message' => __( 'No timesheets found', 'ict-platform' ) );
+			return array(
+				'success' => false,
+				'message' => __( 'No timesheets found', 'ict-platform' ),
+			);
 		}
 
 		// Implementation: Sync timesheets to local time entries table
@@ -231,20 +239,20 @@ class ICT_Zoho_People_Adapter extends ICT_Zoho_API_Client {
 		// Get project info for job name
 		$project = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT project_name FROM " . ICT_PROJECTS_TABLE . " WHERE id = %d",
+				'SELECT project_name FROM ' . ICT_PROJECTS_TABLE . ' WHERE id = %d',
 				$data['project_id']
 			)
 		);
 
 		return array(
-			'user'        => $zoho_employee_id,
-			'workDate'    => date( 'd-MMM-yyyy', strtotime( $data['clock_in'] ) ),
+			'user'          => $zoho_employee_id,
+			'workDate'      => date( 'd-MMM-yyyy', strtotime( $data['clock_in'] ) ),
 			'billingStatus' => 'Billable',
-			'fromTime'    => date( 'h:i A', strtotime( $data['clock_in'] ) ),
-			'toTime'      => date( 'h:i A', strtotime( $data['clock_out'] ) ),
-			'hours'       => $data['total_hours'],
-			'jobName'     => $project->project_name ?? 'General',
-			'workItem'    => $data['notes'] ?? '',
+			'fromTime'      => date( 'h:i A', strtotime( $data['clock_in'] ) ),
+			'toTime'        => date( 'h:i A', strtotime( $data['clock_out'] ) ),
+			'hours'         => $data['total_hours'],
+			'jobName'       => $project->project_name ?? 'General',
+			'workItem'      => $data['notes'] ?? '',
 		);
 	}
 

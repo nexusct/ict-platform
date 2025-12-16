@@ -108,15 +108,15 @@ class ICT_Zoho_Books_Adapter extends ICT_Zoho_API_Client {
 	 */
 	protected function create_item( $data ) {
 		$payload = array(
-			'name'        => $data['item_name'],
-			'sku'         => $data['sku'],
-			'description' => $data['description'] ?? '',
-			'rate'        => $data['unit_price'] ?? 0,
-			'purchase_rate' => $data['unit_cost'] ?? 0,
-			'item_type'   => 'inventory',
+			'name'            => $data['item_name'],
+			'sku'             => $data['sku'],
+			'description'     => $data['description'] ?? '',
+			'rate'            => $data['unit_price'] ?? 0,
+			'purchase_rate'   => $data['unit_cost'] ?? 0,
+			'item_type'       => 'inventory',
 			'track_inventory' => true,
-			'initial_stock' => $data['quantity_on_hand'] ?? 0,
-			'reorder_level' => $data['reorder_level'] ?? 0,
+			'initial_stock'   => $data['quantity_on_hand'] ?? 0,
+			'reorder_level'   => $data['reorder_level'] ?? 0,
 		);
 
 		$response = $this->post(
@@ -164,7 +164,7 @@ class ICT_Zoho_Books_Adapter extends ICT_Zoho_API_Client {
 
 		$zoho_id = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT zoho_books_item_id FROM " . ICT_INVENTORY_ITEMS_TABLE . " WHERE id = %d",
+				'SELECT zoho_books_item_id FROM ' . ICT_INVENTORY_ITEMS_TABLE . ' WHERE id = %d',
 				$entity_id
 			)
 		);
@@ -174,9 +174,9 @@ class ICT_Zoho_Books_Adapter extends ICT_Zoho_API_Client {
 		}
 
 		$payload = array(
-			'name'        => $data['item_name'],
-			'description' => $data['description'] ?? '',
-			'rate'        => $data['unit_price'] ?? 0,
+			'name'          => $data['item_name'],
+			'description'   => $data['description'] ?? '',
+			'rate'          => $data['unit_price'] ?? 0,
 			'purchase_rate' => $data['unit_cost'] ?? 0,
 			'reorder_level' => $data['reorder_level'] ?? 0,
 		);
@@ -213,19 +213,19 @@ class ICT_Zoho_Books_Adapter extends ICT_Zoho_API_Client {
 		$items = array();
 		foreach ( $line_items as $item ) {
 			$items[] = array(
-				'item_id'   => $this->get_zoho_item_id( $item->inventory_item_id ),
-				'quantity'  => $item->quantity,
-				'rate'      => $item->unit_price,
+				'item_id'  => $this->get_zoho_item_id( $item->inventory_item_id ),
+				'quantity' => $item->quantity,
+				'rate'     => $item->unit_price,
 			);
 		}
 
 		$payload = array(
-			'vendor_id'      => $this->get_zoho_vendor_id( $data['supplier_id'] ),
+			'vendor_id'            => $this->get_zoho_vendor_id( $data['supplier_id'] ),
 			'purchaseorder_number' => $data['po_number'],
-			'date'           => date( 'Y-m-d', strtotime( $data['po_date'] ) ),
-			'delivery_date'  => date( 'Y-m-d', strtotime( $data['delivery_date'] ) ),
-			'line_items'     => $items,
-			'notes'          => $data['notes'] ?? '',
+			'date'                 => date( 'Y-m-d', strtotime( $data['po_date'] ) ),
+			'delivery_date'        => date( 'Y-m-d', strtotime( $data['delivery_date'] ) ),
+			'line_items'           => $items,
+			'notes'                => $data['notes'] ?? '',
 		);
 
 		$response = $this->post(
@@ -270,7 +270,7 @@ class ICT_Zoho_Books_Adapter extends ICT_Zoho_API_Client {
 
 		$zoho_id = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT zoho_books_po_id FROM " . ICT_PURCHASE_ORDERS_TABLE . " WHERE id = %d",
+				'SELECT zoho_books_po_id FROM ' . ICT_PURCHASE_ORDERS_TABLE . ' WHERE id = %d',
 				$entity_id
 			)
 		);
@@ -305,7 +305,10 @@ class ICT_Zoho_Books_Adapter extends ICT_Zoho_API_Client {
 		$response = $this->get( '/items?organization_id=' . $this->organization_id );
 
 		if ( ! isset( $response['data']['items'] ) ) {
-			return array( 'success' => false, 'message' => __( 'No items found', 'ict-platform' ) );
+			return array(
+				'success' => false,
+				'message' => __( 'No items found', 'ict-platform' ),
+			);
 		}
 
 		// Sync items to local inventory
@@ -315,7 +318,7 @@ class ICT_Zoho_Books_Adapter extends ICT_Zoho_API_Client {
 		foreach ( $response['data']['items'] as $item ) {
 			$existing = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT id FROM " . ICT_INVENTORY_ITEMS_TABLE . " WHERE zoho_books_item_id = %s",
+					'SELECT id FROM ' . ICT_INVENTORY_ITEMS_TABLE . ' WHERE zoho_books_item_id = %s',
 					$item['item_id']
 				)
 			);
@@ -343,7 +346,7 @@ class ICT_Zoho_Books_Adapter extends ICT_Zoho_API_Client {
 				$wpdb->insert( ICT_INVENTORY_ITEMS_TABLE, $item_data );
 			}
 
-			$synced++;
+			++$synced;
 		}
 
 		return array(
@@ -363,7 +366,7 @@ class ICT_Zoho_Books_Adapter extends ICT_Zoho_API_Client {
 		global $wpdb;
 		return $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT zoho_books_item_id FROM " . ICT_INVENTORY_ITEMS_TABLE . " WHERE id = %d",
+				'SELECT zoho_books_item_id FROM ' . ICT_INVENTORY_ITEMS_TABLE . ' WHERE id = %d',
 				$inventory_item_id
 			)
 		);

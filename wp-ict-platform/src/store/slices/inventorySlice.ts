@@ -55,7 +55,7 @@ export const fetchInventory = createAsyncThunk(
     low_stock?: boolean;
   }) => {
     const response = await inventoryAPI.getAll(params);
-    return response.data!;
+    return response;
   }
 );
 

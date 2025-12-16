@@ -17,8 +17,6 @@ import {
   PurchaseOrdersState,
   PurchaseOrder,
   PurchaseOrderStatus,
-  PaginatedResponse,
-  APIResponse,
 } from '../../types';
 import { purchaseOrderAPI } from '../../services/api';
 

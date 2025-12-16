@@ -132,7 +132,7 @@ class ICT_Zoho_CRM_Adapter extends ICT_Zoho_API_Client {
 			);
 		}
 
-		$deals = $response['data']['data'];
+		$deals  = $response['data']['data'];
 		$synced = 0;
 		$errors = array();
 
@@ -143,7 +143,7 @@ class ICT_Zoho_CRM_Adapter extends ICT_Zoho_API_Client {
 				// Check if project exists
 				$existing = $wpdb->get_row(
 					$wpdb->prepare(
-						"SELECT id FROM " . ICT_PROJECTS_TABLE . " WHERE zoho_crm_id = %s",
+						'SELECT id FROM ' . ICT_PROJECTS_TABLE . ' WHERE zoho_crm_id = %s',
 						$deal['id']
 					)
 				);
@@ -168,7 +168,7 @@ class ICT_Zoho_CRM_Adapter extends ICT_Zoho_API_Client {
 					);
 				}
 
-				$synced++;
+				++$synced;
 
 			} catch ( Exception $e ) {
 				$errors[] = array(
@@ -179,9 +179,9 @@ class ICT_Zoho_CRM_Adapter extends ICT_Zoho_API_Client {
 		}
 
 		return array(
-			'success' => true,
-			'synced'  => $synced,
-			'errors'  => $errors,
+			'success'  => true,
+			'synced'   => $synced,
+			'errors'   => $errors,
 			'has_more' => isset( $response['data']['info']['more_records'] ) && $response['data']['info']['more_records'],
 		);
 	}
@@ -204,7 +204,10 @@ class ICT_Zoho_CRM_Adapter extends ICT_Zoho_API_Client {
 		$response = $this->get( '/Contacts', $params );
 
 		if ( ! isset( $response['data']['data'] ) ) {
-			return array( 'success' => false, 'message' => __( 'No contacts found', 'ict-platform' ) );
+			return array(
+				'success' => false,
+				'message' => __( 'No contacts found', 'ict-platform' ),
+			);
 		}
 
 		// Implementation: Sync contacts to WordPress users or custom clients table
@@ -263,14 +266,14 @@ class ICT_Zoho_CRM_Adapter extends ICT_Zoho_API_Client {
 	 */
 	protected function transform_deal_to_project( $deal ) {
 		return array(
-			'zoho_crm_id'    => $deal['id'],
-			'project_name'   => $deal['Deal_Name'] ?? '',
-			'status'         => $this->map_stage_to_status( $deal['Stage'] ?? '' ),
-			'budget_amount'  => $deal['Amount'] ?? 0,
-			'end_date'       => $deal['Closing_Date'] ?? null,
-			'notes'          => $deal['Description'] ?? '',
-			'sync_status'    => 'synced',
-			'last_synced'    => current_time( 'mysql' ),
+			'zoho_crm_id'   => $deal['id'],
+			'project_name'  => $deal['Deal_Name'] ?? '',
+			'status'        => $this->map_stage_to_status( $deal['Stage'] ?? '' ),
+			'budget_amount' => $deal['Amount'] ?? 0,
+			'end_date'      => $deal['Closing_Date'] ?? null,
+			'notes'         => $deal['Description'] ?? '',
+			'sync_status'   => 'synced',
+			'last_synced'   => current_time( 'mysql' ),
 		);
 	}
 
@@ -301,13 +304,13 @@ class ICT_Zoho_CRM_Adapter extends ICT_Zoho_API_Client {
 	 */
 	protected function map_stage_to_status( $stage ) {
 		$mapping = array(
-			'Qualification'          => 'pending',
-			'Needs Analysis'         => 'pending',
-			'Value Proposition'      => 'pending',
-			'Proposal/Price Quote'   => 'in-progress',
-			'Negotiation/Review'     => 'in-progress',
-			'Closed Won'             => 'completed',
-			'Closed Lost'            => 'cancelled',
+			'Qualification'        => 'pending',
+			'Needs Analysis'       => 'pending',
+			'Value Proposition'    => 'pending',
+			'Proposal/Price Quote' => 'in-progress',
+			'Negotiation/Review'   => 'in-progress',
+			'Closed Won'           => 'completed',
+			'Closed Lost'          => 'cancelled',
 		);
 
 		return $mapping[ $stage ] ?? 'pending';
@@ -327,7 +330,7 @@ class ICT_Zoho_CRM_Adapter extends ICT_Zoho_API_Client {
 		if ( 'project' === $entity_type ) {
 			return $wpdb->get_var(
 				$wpdb->prepare(
-					"SELECT zoho_crm_id FROM " . ICT_PROJECTS_TABLE . " WHERE id = %d",
+					'SELECT zoho_crm_id FROM ' . ICT_PROJECTS_TABLE . ' WHERE id = %d',
 					$entity_id
 				)
 			);
@@ -352,9 +355,9 @@ class ICT_Zoho_CRM_Adapter extends ICT_Zoho_API_Client {
 			$wpdb->update(
 				ICT_PROJECTS_TABLE,
 				array(
-					'zoho_crm_id'  => $zoho_id,
-					'sync_status'  => 'synced',
-					'last_synced'  => current_time( 'mysql' ),
+					'zoho_crm_id' => $zoho_id,
+					'sync_status' => 'synced',
+					'last_synced' => current_time( 'mysql' ),
 				),
 				array( 'id' => $entity_id ),
 				array( '%s', '%s', '%s' ),
