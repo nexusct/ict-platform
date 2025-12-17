@@ -1,64 +1,57 @@
-# WordPress Core Files
-/wp-admin/
-/wp-includes/
-/wp-content/plugins/*/
-!/wp-content/plugins/wp-ict-platform/
-/wp-content/themes/*/
-!/wp-content/themes/.gitkeep
-/wp-content/upgrade/
-/wp-content/uploads/
-/wp-content/cache/
-/wp-content/backups/
-/wp-content/ai1wm-backups/
-index.php
-license.txt
-readme.html
-wp-activate.php
-wp-blog-header.php
-wp-comments-post.php
-wp-config.php
-wp-config-sample.php
-wp-cron.php
-wp-links-opml.php
-wp-load.php
-wp-login.php
-wp-mail.php
-wp-settings.php
-wp-signup.php
-wp-trackback.php
-xmlrpc.php
+# ICT Platform .gitignore
 
-# Node.js / Mobile App
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-package-lock.json
-yarn.lock
-
-# React Native
-ict-mobile-app/ios/Pods/
-ict-mobile-app/ios/build/
-ict-mobile-app/android/.gradle/
-ict-mobile-app/android/app/build/
-ict-mobile-app/android/build/
-ict-mobile-app/android/local.properties
-ict-mobile-app/android/.cxx/
-ict-mobile-app/.expo/
-ict-mobile-app/.expo-shared/
-
-# Metro bundler
-ict-mobile-app/.metro-health-check*
-
-# Environment files
+# ============================================
+# Environment & Secrets
+# ============================================
 .env
 .env.local
 .env.*.local
 .env.production
 .env.development
+*.pem
+*.key
+*.cert
+credentials.json
+secrets.json
 
+# ============================================
+# Dependencies
+# ============================================
+node_modules/
+vendor/
+composer.phar
+
+# ============================================
+# Build Artifacts
+# ============================================
+dist/
+build/
+releases/
+*.min.js
+*.min.css
+wp-ict-platform/assets/js/dist/
+wp-ict-platform/assets/css/*.css
+
+# ============================================
+# Testing & Coverage
+# ============================================
+coverage/
+coverage-report/
+.nyc_output/
+*.lcov
+.phpunit.cache/
+.phpunit.result.cache
+
+# ============================================
+# Docker
+# ============================================
+docker/nginx/ssl/*.crt
+docker/nginx/ssl/*.key
+docker/nginx/ssl/*.pem
+
+# ============================================
 # IDE / Editor
+# ============================================
 .vscode/
 .idea/
 *.swp
@@ -70,67 +63,86 @@ ict-mobile-app/.metro-health-check*
 *.sublime-project
 *.sublime-workspace
 .history/
+Thumbs.db
+ehthumbs.db
+Desktop.ini
 
+# ============================================
 # Logs
+# ============================================
 *.log
 logs/
 *.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
-# Testing
-coverage/
-.nyc_output/
-*.lcov
+# ============================================
+# React Native / Mobile App
+# ============================================
+ict-mobile-app/ios/Pods/
+ict-mobile-app/ios/build/
+ict-mobile-app/android/.gradle/
+ict-mobile-app/android/app/build/
+ict-mobile-app/android/build/
+ict-mobile-app/android/local.properties
+ict-mobile-app/android/.cxx/
+ict-mobile-app/.expo/
+ict-mobile-app/.expo-shared/
+ict-mobile-app/.metro-health-check*
 
-# Temporary files
+# ============================================
+# Temporary Files
+# ============================================
 *.tmp
 *.temp
 tmp/
 temp/
 .tmp/
+*.bak
+*.backup
 
+# ============================================
 # Database
+# ============================================
 *.sql
+!docker/mysql/init.sql
 *.sqlite
 *.db
 
-# Sensitive files
-*.pem
-*.key
-*.cert
-credentials.json
-secrets.json
-
-# Build artifacts
-dist/
-build/
-*.min.js
-*.min.css
-
-# WordPress Plugin specific
-wp-ict-platform/vendor/
-wp-ict-platform/node_modules/
-wp-ict-platform/assets/js/*.min.js
-wp-ict-platform/assets/css/*.min.css
-
-# Composer
-composer.phar
-/vendor/
-
-# OS generated files
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-.AppleDouble
-.LSOverride
-
-# Archives
+# ============================================
+# Archives (except in releases tracking)
+# ============================================
 *.zip
 *.tar
 *.tar.gz
 *.rar
 
-# Backup files
-*.bak
-*.backup
-*~
+# ============================================
+# OS Generated
+# ============================================
+.AppleDouble
+.LSOverride
+$RECYCLE.BIN/
+
+# ============================================
+# WordPress (if present in repo)
+# ============================================
+/wp-admin/
+/wp-includes/
+/wp-content/plugins/*/
+!/wp-content/plugins/wp-ict-platform/
+/wp-content/themes/*/
+/wp-content/upgrade/
+/wp-content/uploads/
+/wp-content/cache/
+/wp-content/backups/
+/wp-content/ai1wm-backups/
+wp-config.php
+wp-config-sample.php
+
+# ============================================
+# Keep these directories
+# ============================================
+!.gitkeep

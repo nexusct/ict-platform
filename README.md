@@ -1,365 +1,298 @@
 # ICT Platform - Complete Operations Management System
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
 ![WordPress](https://img.shields.io/badge/WordPress-6.4%2B-blue.svg)
-![React Native](https://img.shields.io/badge/React%20Native-0.72.6-blue.svg)
 ![PHP](https://img.shields.io/badge/PHP-8.1%2B-purple.svg)
+![React Native](https://img.shields.io/badge/React%20Native-0.72.6-blue.svg)
+![CI](https://img.shields.io/badge/CI-GitHub%20Actions-green.svg)
 ![License](https://img.shields.io/badge/license-GPL%20v2-green.svg)
 
-A comprehensive operations management platform for ICT/electrical contracting businesses with WordPress plugin and React Native mobile app. Integrates with Zoho's suite of services (CRM, FSM, Books, People, Desk) for complete business management.
+A comprehensive operations management platform for ICT/electrical contracting businesses. Includes a WordPress plugin with React frontend and a React Native mobile app. Integrates bidirectionally with Zoho's suite of services (CRM, FSM, Books, People, Desk) and QuoteWerks.
 
-## 📦 Repository Structure
-
-```
-ZOHOQW/
-├── wp-ict-platform/          # WordPress Plugin
-│   ├── admin/                # Admin area functionality
-│   ├── api/                  # REST API controllers
-│   ├── includes/             # Core classes & integrations
-│   ├── public/               # Public-facing functionality
-│   └── src/                  # React/TypeScript frontend
-│
-├── ict-mobile-app/           # React Native Mobile App
-│   ├── src/
-│   │   ├── screens/          # 18 screen components
-│   │   ├── navigation/       # React Navigation setup
-│   │   ├── services/         # API & location services
-│   │   ├── store/            # Redux Toolkit state
-│   │   └── types/            # TypeScript definitions
-│   └── App.tsx               # Root component
-│
-└── docs/                     # Documentation
-```
-
-## 🚀 Features
-
-### WordPress Plugin
-
-#### Core Modules (Phases 1-7 Complete)
-- ✅ **Project Management** - Complete project lifecycle tracking
-- ✅ **Time Tracking** - Clock in/out with GPS, approval workflows
-- ✅ **Resource Management** - Technician allocation, skills matrix, calendar
-- ✅ **Inventory Management** - Stock tracking, reorder alerts
-- ✅ **Procurement** - Purchase order workflow with approval
-- ✅ **Reports & Analytics** - Custom dashboards with charts
-- ✅ **Zoho Integration** - Bidirectional sync with CRM, FSM, Books, People, Desk
-
-#### REST API Endpoints
-```
-/ict/v1/auth/*              - JWT authentication
-/ict/v1/projects/*          - Project & task management
-/ict/v1/time/*              - Time tracking & clock operations
-/ict/v1/location/*          - GPS tracking & history
-/ict/v1/expenses/*          - Expense submission & receipts
-/ict/v1/schedule/*          - Events & calendar
-/ict/v1/inventory/*         - Stock management
-/ict/v1/purchase-orders/*   - PO workflow
-/ict/v1/resources/*         - Resource allocation
-/ict/v1/reports/*           - Analytics & reports
-```
-
-### Mobile App (React Native)
-
-#### Key Features
-- 🔐 **Authentication** - JWT with auto-refresh
-- ⏱️ **Time Tracking** - Live timer, clock in/out with GPS
-- 📍 **Background GPS** - Tracks location every 5 minutes while clocked in
-- 🔔 **Smart Reminders** - Auto-prompts task change when >0.5 miles away for >30 min
-- 📊 **Projects & Tasks** - View and update project information
-- 💰 **Expenses** - Submit expenses with receipt photos
-- 📁 **File Management** - Upload to Zoho WorkDrive
-- 📅 **Schedule** - View events and assignments
-- 🔔 **Push Notifications** - Task reminders and alerts
-
-#### Screens (18 Total)
-- Auth: Login, Forgot Password
-- Dashboard: Home with quick stats
-- Time: Clock, Entries List, Entry Detail
-- Projects: List, Project Detail, Task Detail
-- Schedule: Calendar view
-- More: Expenses, Files, Notifications, Settings, Profile
-
-## 🛠️ Technology Stack
-
-### WordPress Plugin
-- **Backend**: PHP 8.1+, WordPress 6.4+
-- **Frontend**: React 18.2, TypeScript 5.2, Redux Toolkit
-- **Build**: Webpack 5, Babel
-- **Database**: MySQL 5.7+ with 10 custom tables
-- **Testing**: PHPUnit, Jest, React Testing Library
-- **APIs**: WordPress REST API + Custom endpoints
-- **Background Jobs**: WordPress Action Scheduler
-
-### Mobile App
-- **Framework**: React Native 0.72.6
-- **Language**: TypeScript 5.2
-- **State**: Redux Toolkit
-- **Navigation**: React Navigation v6
-- **Location**: react-native-background-geolocation
-- **Camera**: react-native-vision-camera
-- **Notifications**: @notifee/react-native
-- **API**: Axios with interceptors
-
-### Integrations
-- Zoho CRM - Customer & deal management
-- Zoho FSM - Field service management
-- Zoho Books - Accounting & invoicing
-- Zoho People - HR & time tracking
-- Zoho Desk - Support tickets
-- Zoho WorkDrive - File storage
-- Microsoft Teams - Group messaging (ready)
-
-## 📥 Installation
-
-### Prerequisites
-- PHP 8.1+ and Composer
-- Node.js 18+ and npm
-- WordPress 6.4+
-- MySQL 5.7+
-- React Native development environment (for mobile app)
-
-### WordPress Plugin
+## Quick Start
 
 ```bash
-cd wp-ict-platform
-
-# Install PHP dependencies
-composer install
-
-# Install Node dependencies
-npm install
-
-# Build production assets
-npm run build
-```
-
-**Activate the plugin in WordPress:**
-1. Copy `wp-ict-platform` to `wp-content/plugins/`
-2. Activate in WordPress admin
-3. Navigate to ICT Platform → Settings
-4. Configure Zoho credentials
-
-### Mobile App
-
-```bash
-cd ict-mobile-app
+# Clone the repository
+git clone https://github.com/nexusct/ict-platform.git
+cd ict-platform
 
 # Install dependencies
-npm install
+make install
 
-# iOS only - install pods
-cd ios && pod install && cd ..
+# Start development environment
+make dev
 
-# Run on iOS
-npm run ios
-
-# Run on Android
-npm run android
+# WordPress available at: http://localhost:8080
+# phpMyAdmin at: http://localhost:8081
+# MailHog at: http://localhost:8025
 ```
 
-**Configure environment:**
-Create `.env` file:
-```env
-API_BASE_URL=https://yoursite.com/wp-json/ict/v1
-WP_BASE_URL=https://yoursite.com/wp-json/wp/v2
+## Repository Structure
+
+```
+ict-platform/
+├── .github/                    # GitHub Actions & templates
+│   ├── workflows/
+│   │   ├── ci.yml              # CI pipeline
+│   │   └── release.yml         # Release automation
+│   └── ISSUE_TEMPLATE/         # Issue templates
+├── docker/                     # Docker configuration
+│   ├── wordpress/              # PHP-FPM + WordPress
+│   ├── mysql/                  # Database init
+│   └── nginx/                  # Web server
+├── scripts/                    # Automation scripts
+│   ├── build.sh                # Production build
+│   ├── release.sh              # Create release package
+│   ├── deploy.sh               # Server deployment
+│   ├── install.sh              # Setup development
+│   └── test.sh                 # Run all tests
+├── docs/                       # Documentation
+│   ├── api/                    # API reference
+│   ├── deployment/             # Deployment guides
+│   └── development/            # Developer guides
+├── wp-ict-platform/            # WordPress Plugin
+│   ├── admin/                  # Admin functionality
+│   ├── api/                    # REST API endpoints
+│   ├── includes/               # Core PHP classes
+│   │   ├── features/           # 40+ feature modules
+│   │   ├── integrations/       # External services
+│   │   └── sync/               # Sync engine
+│   ├── public/                 # Frontend functionality
+│   ├── src/                    # React/TypeScript
+│   │   ├── components/         # React components
+│   │   ├── store/              # Redux slices
+│   │   ├── hooks/              # Custom hooks
+│   │   └── services/           # API services
+│   └── tests/                  # PHP & JS tests
+├── ict-mobile-app/             # React Native Mobile App
+├── docker-compose.yml          # Development environment
+├── Makefile                    # Common commands
+└── .env.example                # Environment template
 ```
 
-## 📊 Database Schema
-
-### Custom Tables (10 total)
-- `wp_ict_projects` - Project data synced with Zoho CRM
-- `wp_ict_time_entries` - Time tracking with GPS
-- `wp_ict_inventory_items` - Stock management
-- `wp_ict_purchase_orders` - PO workflow
-- `wp_ict_project_resources` - Resource allocation
-- `wp_ict_sync_queue` - Pending Zoho sync operations
-- `wp_ict_sync_log` - Sync history & debugging
-- `wp_ict_location_tracking` - GPS coordinate history
-- `wp_ict_expenses` - Expense submissions
-- `wp_ict_tasks` - Task management
-
-## 🔧 Configuration
-
-### Zoho OAuth Setup
-1. Create app at https://api-console.zoho.com/
-2. Set redirect URI: `https://yoursite.com/wp-admin/`
-3. Add scopes for each service (CRM, FSM, Books, People, Desk)
-4. Enter credentials in plugin settings
-
-### Mobile App Permissions
-**iOS (Info.plist):**
-- NSLocationAlwaysAndWhenInUseUsageDescription
-- NSCameraUsageDescription
-- NSPhotoLibraryUsageDescription
-
-**Android (AndroidManifest.xml):**
-- ACCESS_FINE_LOCATION
-- ACCESS_BACKGROUND_LOCATION
-- CAMERA
-- READ_EXTERNAL_STORAGE
-
-## 🚀 Deployment
+## Features
 
 ### WordPress Plugin
-```bash
-# Create production build
-npm run build
 
-# Create plugin zip
-zip -r ict-platform.zip wp-ict-platform/ \
-  -x "*/node_modules/*" "*/src/*" "*/tests/*" "*/.git/*"
-```
+| Module | Description | Status |
+|--------|-------------|--------|
+| Project Management | Complete project lifecycle tracking | ✅ |
+| Time Tracking | Clock in/out with GPS, approvals | ✅ |
+| Resource Management | Technician allocation, skills matrix | ✅ |
+| Inventory Management | Stock tracking, reorder alerts | ✅ |
+| Procurement | PO workflow with approval | ✅ |
+| Reports & Analytics | Custom dashboards, charts | ✅ |
+| Zoho Integration | CRM, FSM, Books, People, Desk | ✅ |
+| QuoteWerks | Quote management sync | ✅ |
 
 ### Mobile App
-```bash
-# iOS
-cd ios
-xcodebuild -workspace ICTMobileApp.xcworkspace \
-  -scheme ICTMobileApp -configuration Release
 
-# Android
-cd android
-./gradlew assembleRelease
+- JWT Authentication with auto-refresh
+- Live time tracking with GPS
+- Background location tracking (5-minute intervals)
+- Smart task change reminders
+- Expense submission with receipts
+- Project and task management
+- Push notifications
+- Offline capability
+
+## Development
+
+### Prerequisites
+
+- Docker & Docker Compose
+- Node.js 18+
+- PHP 8.1+ with Composer
+- Make
+
+### Available Commands
+
+```bash
+make help           # Show all available commands
+
+# Development
+make install        # Install all dependencies
+make dev            # Start Docker + watch mode
+make build          # Production build
+make clean          # Clean build artifacts
+
+# Testing
+make test           # Run all tests
+make test-php       # PHP unit tests only
+make test-js        # JavaScript tests only
+make test-coverage  # Tests with coverage
+
+# Code Quality
+make lint           # Run all linters
+make lint-fix       # Auto-fix linting issues
+make format         # Format code
+make type-check     # TypeScript checking
+
+# Docker
+make docker-up      # Start containers
+make docker-down    # Stop containers
+make docker-logs    # View logs
+make docker-shell   # Shell into WordPress
+
+# Release
+make release V=1.0.0  # Create release package
+make deploy           # Deploy to production
 ```
 
-## 📖 Documentation
+### Development Environment
 
-### User Guides
-- [WordPress Plugin Documentation](wp-ict-platform/README.md)
-- [Mobile App Documentation](ict-mobile-app/README.md)
-- [API Reference](wp-ict-platform/docs/api.md)
-- [Zoho Integration Guide](ZOHO_SYNC_ENHANCEMENTS.md)
-- [Installation Guide](MASTER_INSTALLATION_GUIDE.md)
+The Docker environment includes:
 
-### Launch & Operations
-- **[Deployment Checklist](DEPLOYMENT_CHECKLIST.md)** - Complete pre-launch validation steps
-- **[Launch Guide](LAUNCH_GUIDE.md)** - Day-of-launch procedures and monitoring
-- **[Troubleshooting Guide](TROUBLESHOOTING_GUIDE.md)** - Common issues and solutions
+| Service | Port | Description |
+|---------|------|-------------|
+| WordPress | 8080 | Main application |
+| MySQL | 3306 | Database |
+| phpMyAdmin | 8081 | Database management |
+| MailHog | 8025 | Email testing |
+| Redis | 6379 | Object caching |
 
-### API Health Check
-Test system health and integrations:
+### Environment Configuration
+
+```bash
+# Copy template and configure
+cp .env.example .env
+
+# Required variables:
+DB_NAME=wordpress
+DB_USER=wordpress
+DB_PASSWORD=your_password
+
+# Zoho Integration (optional for development)
+ZOHO_CRM_CLIENT_ID=your_client_id
+ZOHO_CRM_CLIENT_SECRET=your_client_secret
+# ... other integrations
+```
+
+## CI/CD Pipeline
+
+### Continuous Integration
+
+Every push triggers:
+1. PHP linting and PHPCS
+2. JavaScript/TypeScript linting
+3. PHPUnit tests
+4. Jest tests
+5. TypeScript type checking
+6. Production build
+7. Security audit
+
+### Release Process
+
+```bash
+# Create a new release
+git tag v1.2.0
+git push origin v1.2.0
+
+# This automatically:
+# 1. Builds production assets
+# 2. Creates optimized plugin package
+# 3. Generates changelog
+# 4. Creates GitHub release
+```
+
+## Testing
+
+### Coverage Targets
+
+| Type | Target |
+|------|--------|
+| PHP Unit Tests | 70% |
+| JavaScript Tests | 70% |
+| Integration Tests | Key workflows |
+
+### Running Tests
+
+```bash
+# All tests
+make test
+
+# With coverage
+make test-coverage
+
+# Specific suites
+cd wp-ict-platform
+npm test                    # Jest
+composer test               # PHPUnit
+```
+
+## API Reference
+
+### REST Endpoints
+
+```
+/wp-json/ict/v1/
+├── auth/                   # Authentication
+├── projects/               # Project management
+├── time/                   # Time tracking
+├── inventory/              # Stock management
+├── purchase-orders/        # PO workflow
+├── resources/              # Resource allocation
+├── reports/                # Analytics
+├── schedule/               # Calendar events
+├── expenses/               # Expense tracking
+├── location/               # GPS tracking
+└── health/                 # System health
+```
+
+### Health Check
+
 ```bash
 curl -X GET "https://yoursite.com/wp-json/ict/v1/health" \
-  -H "Authorization: Bearer YOUR_ADMIN_TOKEN"
+  -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
-Test complete sync workflows:
-```bash
-curl -X POST "https://yoursite.com/wp-json/ict/v1/health/test-sync" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"workflow": "full_workflow", "entity_id": 123}'
-```
+## Deployment
 
-## 🧪 Testing
+### Production Checklist
 
-### WordPress Plugin
-```bash
-# PHP tests
-composer test
+1. Configure environment variables
+2. Run production build: `make build`
+3. Create release: `make release`
+4. Deploy: `make deploy`
+5. Verify health endpoint
+6. Test integrations
 
-# JavaScript tests
-npm test
-npm run test:coverage
+### Server Requirements
 
-# Code quality
-composer phpcs
-npm run lint
-```
+- PHP 8.1+
+- WordPress 6.4+
+- MySQL 5.7+
+- SSL certificate (required for OAuth)
+- WP-Cron or system cron
 
-### Mobile App
-```bash
-# Run tests
-npm test
+## Documentation
 
-# Type checking
-npm run type-check
+- [Development Guide](docs/development/)
+- [API Reference](docs/api/)
+- [Deployment Guide](docs/deployment/)
+- [Zoho Integration](ZOHO_SYNC_ENHANCEMENTS.md)
+- [Troubleshooting](TROUBLESHOOTING_GUIDE.md)
+- [Deployment Checklist](DEPLOYMENT_CHECKLIST.md)
 
-# Linting
-npm run lint
-```
-
-## 📈 Project Status
-
-### 🎉 PRODUCTION READY - All Systems Go!
-
-### WordPress Plugin
-- **Phase 1-3**: ✅ 100% Complete (Foundation, Zoho, Projects)
-- **Phase 4**: ✅ 100% Complete (Time Tracking)
-- **Phase 5**: ✅ 100% Complete (Resource Management)
-- **Phase 6**: ✅ 100% Complete (Inventory & Procurement)
-- **Phase 7**: ✅ 100% Complete (Reports & Analytics)
-- **Integration Layer**: ✅ 100% Complete (QuoteWerks + 5 Zoho Services)
-
-### Mobile App
-- **Core Features**: ✅ 100% Complete
-- **Screens**: ✅ 18/18 Implemented
-- **REST API Integration**: ✅ Complete
-- **Background Services**: ✅ Complete
-- **GPS Tracking**: ✅ 5-minute intervals with smart reminders
-- **Microsoft Teams**: ⏳ Ready for integration
-
-### Integrations
-- **QuoteWerks**: ✅ Bidirectional sync with webhooks
-- **Zoho CRM**: ✅ Deals ↔ Projects
-- **Zoho FSM**: ✅ Work Orders ↔ Projects
-- **Zoho Books**: ✅ Inventory & Purchase Orders
-- **Zoho People**: ✅ Time tracking sync
-- **Zoho Desk**: ✅ Support tickets
-- **Zoho WorkDrive**: ✅ File storage & uploads
-
-### Launch Readiness
-- **Health Monitoring**: ✅ Complete API health check endpoint
-- **Sync Orchestration**: ✅ Full workflow testing available
-- **Documentation**: ✅ Deployment checklist, troubleshooting guide, launch guide
-- **Error Handling**: ✅ Retry logic, rate limiting, comprehensive logging
-- **Security**: ✅ OAuth 2.0, JWT tokens, encrypted credentials, webhook signature verification
-
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create your feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
 5. Open a Pull Request
 
-See [CONTRIBUTING.md](wp-ict-platform/CONTRIBUTING.md) for detailed guidelines.
+See [CONTRIBUTING.md](wp-ict-platform/CONTRIBUTING.md) for guidelines.
 
-## 📝 License
+## License
 
-This project is licensed under the GPL v2 or later - see the LICENSE file for details.
+GPL v2 or later - see [LICENSE](LICENSE) for details.
 
-## 🙏 Acknowledgments
+## Support
 
-- WordPress Community
-- React Native Community
-- Zoho Developer Platform
-- All contributors and testers
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/yourusername/ict-platform/issues)
-- **Documentation**: [Wiki](https://github.com/yourusername/ict-platform/wiki)
-- **Email**: support@example.com
+- **Issues**: [GitHub Issues](https://github.com/nexusct/ict-platform/issues)
+- **Documentation**: [Project Wiki](https://github.com/nexusct/ict-platform/wiki)
 
 ---
 
-## 🔮 Roadmap
-
-### Future Enhancements
-- [ ] Microsoft Teams full integration
-- [ ] Offline mode with data sync
-- [ ] Advanced reporting with exports
-- [ ] Mobile biometric authentication
-- [ ] Multi-language support
-- [ ] Advanced role management
-- [ ] Custom field builder
-- [ ] Email notifications
-- [ ] SMS notifications
-- [ ] WhatsApp integration
-
----
-
-**Built with ❤️ for ICT/electrical contractors**
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
+**Built with precision for ICT/electrical contractors**

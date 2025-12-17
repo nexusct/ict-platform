@@ -1,0 +1,115 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  PHP_VERSION: '8.2'
+  NODE_VERSION: '18'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, pdo_mysql, curl, json, gd, xml, zip
+          tools: composer:v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: ./wp-ict-platform/package-lock.json
+
+      - name: Install PHP dependencies (production)
+        working-directory: ./wp-ict-platform
+        run: composer install --no-dev --prefer-dist --optimize-autoloader
+
+      - name: Install Node dependencies
+        working-directory: ./wp-ict-platform
+        run: npm ci
+
+      - name: Build production assets
+        working-directory: ./wp-ict-platform
+        run: npm run build
+
+      - name: Update version in plugin file
+        working-directory: ./wp-ict-platform
+        run: |
+          sed -i "s/Version:.*$/Version:           ${{ steps.version.outputs.VERSION }}/" ict-platform.php
+          sed -i "s/define('ICT_PLATFORM_VERSION', '.*');/define('ICT_PLATFORM_VERSION', '${{ steps.version.outputs.VERSION }}');/" ict-platform.php
+
+      - name: Create release package
+        run: |
+          cd wp-ict-platform
+          # Remove development files
+          rm -rf node_modules
+          rm -rf tests
+          rm -rf src/components/*/__tests__
+          rm -rf src/hooks/__tests__
+          rm -f .eslintrc.json
+          rm -f .prettierrc.json
+          rm -f jest.config.js
+          rm -f tsconfig.json
+          rm -f webpack.config.js
+          rm -f phpcs.xml
+          rm -f phpunit.xml
+          rm -f package.json
+          rm -f package-lock.json
+          rm -f composer.json
+          rm -f composer.lock
+          rm -f .gitignore
+
+          # Create zip
+          cd ..
+          zip -r ict-platform-${{ steps.version.outputs.VERSION }}.zip wp-ict-platform \
+            -x "wp-ict-platform/.git/*" \
+            -x "wp-ict-platform/.github/*" \
+            -x "wp-ict-platform/src/*.ts" \
+            -x "wp-ict-platform/src/*.tsx"
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Get commits since last tag
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          if [ -n "$PREV_TAG" ]; then
+            CHANGELOG=$(git log $PREV_TAG..HEAD --pretty=format:"- %s (%h)" --no-merges)
+          else
+            CHANGELOG=$(git log --pretty=format:"- %s (%h)" --no-merges -20)
+          fi
+
+          # Write to file for multi-line output
+          echo "$CHANGELOG" > changelog.txt
+          echo "Generated changelog for version ${{ steps.version.outputs.VERSION }}"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ICT Platform v${{ steps.version.outputs.VERSION }}
+          body_path: changelog.txt
+          files: ict-platform-${{ steps.version.outputs.VERSION }}.zip
+          draft: false
+          prerelease: ${{ contains(github.ref, '-beta') || contains(github.ref, '-alpha') || contains(github.ref, '-rc') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
