@@ -28,7 +28,7 @@ class Container implements ContainerInterface
     /**
      * Container bindings
      *
-     * @var array<string, Closure|string|object>
+     * @var array<string, mixed>
      */
     private array $bindings = [];
 
@@ -61,11 +61,11 @@ class Container implements ContainerInterface
     /**
      * Bind a class or interface to a concrete implementation
      *
-     * @param string                      $abstract   The abstract type (interface or class name)
-     * @param Closure|string|object|null  $concrete   The concrete implementation
-     * @param bool                        $singleton  Whether to treat as singleton
+     * @param string                   $abstract   The abstract type (interface or class name)
+     * @param Closure|string|null      $concrete   The concrete implementation
+     * @param bool                     $singleton  Whether to treat as singleton
      */
-    public function bind(string $abstract, Closure|string|object|null $concrete = null, bool $singleton = false): self
+    public function bind(string $abstract, Closure|string|null $concrete = null, bool $singleton = false): self
     {
         $this->bindings[$abstract] = $concrete ?? $abstract;
         $this->singletons[$abstract] = $singleton;
@@ -76,10 +76,10 @@ class Container implements ContainerInterface
     /**
      * Bind a singleton
      *
-     * @param string                      $abstract  The abstract type
-     * @param Closure|string|object|null  $concrete  The concrete implementation
+     * @param string                   $abstract  The abstract type
+     * @param Closure|string|null      $concrete  The concrete implementation
      */
-    public function singleton(string $abstract, Closure|string|object|null $concrete = null): self
+    public function singleton(string $abstract, Closure|string|null $concrete = null): self
     {
         return $this->bind($abstract, $concrete, true);
     }
@@ -154,12 +154,12 @@ class Container implements ContainerInterface
     /**
      * Build a concrete instance
      *
-     * @param Closure|string|object      $concrete   The concrete type to build
+     * @param mixed                      $concrete   The concrete type to build
      * @param array<string, mixed>       $parameters Additional parameters
      * @return mixed The built instance
      * @throws ContainerException If the type cannot be built
      */
-    private function build(Closure|string|object $concrete, array $parameters = []): mixed
+    private function build(mixed $concrete, array $parameters = []): mixed
     {
         // If it's a Closure, execute it
         if ($concrete instanceof Closure) {

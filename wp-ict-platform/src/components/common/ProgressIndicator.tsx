@@ -90,9 +90,9 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
             >
               <div className="ict-step-indicator__marker">
                 {status === 'completed' ? (
-                  <Icon name="check" size={14} aria-hidden="true" />
+                  <Icon name="check" size={14} aria-hidden={true} />
                 ) : (
-                  <span aria-hidden="true">{index + 1}</span>
+                  <span aria-hidden={true}>{index + 1}</span>
                 )}
               </div>
               <div className="ict-step-indicator__content">
@@ -102,7 +102,7 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                 )}
               </div>
               {index < steps.length - 1 && (
-                <div className="ict-step-indicator__connector" aria-hidden="true" />
+                <div className="ict-step-indicator__connector" aria-hidden={true} />
               )}
             </li>
           );
@@ -138,7 +138,7 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
           aria-live="polite"
         >
           <div className="ict-loading-overlay__content">
-            <div className="ict-loading-overlay__spinner" aria-hidden="true">
+            <div className="ict-loading-overlay__spinner" aria-hidden={true}>
               <Icon name="loader" size={32} />
             </div>
             <span className="ict-loading-overlay__message">{message}</span>
@@ -182,7 +182,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
         stroke={color || 'currentColor'}
         strokeWidth="2"
         className="ict-spinner__icon"
-        aria-hidden="true"
+        aria-hidden={true}
       >
         <path d="M12 2v4m0 12v4m10-10h-4M6 12H2m15.5-6.5l-2.83 2.83M9.33 14.67l-2.83 2.83m11-2.83l-2.83-2.83M9.33 9.33L6.5 6.5" />
       </svg>

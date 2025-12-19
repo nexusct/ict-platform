@@ -101,7 +101,8 @@ export function useAutoSave<T>({
   );
 
   // Debounced save
-  const debouncedSave = useDebouncedCallback((dataToSave: T) => {
+  const debouncedSave = useDebouncedCallback((...args: unknown[]) => {
+    const dataToSave = args[0] as T;
     performSave(dataToSave);
   }, delay);
 

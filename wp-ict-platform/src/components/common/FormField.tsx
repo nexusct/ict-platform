@@ -158,7 +158,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         <label htmlFor={id} className={`ict-form-field__label ${labelClassName}`}>
           {label}
           {required && (
-            <span className="ict-form-field__required" aria-hidden="true">
+            <span className="ict-form-field__required" aria-hidden={true}>
               *
             </span>
           )}
@@ -169,7 +169,7 @@ export const FormField: React.FC<FormFieldProps> = ({
       <div className="ict-form-field__input-wrapper">
         {renderInput()}
         {type === 'select' && (
-          <span className="ict-form-field__select-arrow" aria-hidden="true">
+          <span className="ict-form-field__select-arrow" aria-hidden={true}>
             <Icon name="chevron-down" size={16} />
           </span>
         )}
@@ -179,7 +179,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         <div className="ict-form-field__messages">
           {error && (
             <p id={errorId} className="ict-form-field__error" role="alert">
-              <Icon name="alert-circle" size={14} aria-hidden="true" />
+              <Icon name="alert-circle" size={14} aria-hidden={true} />
               {error}
             </p>
           )}

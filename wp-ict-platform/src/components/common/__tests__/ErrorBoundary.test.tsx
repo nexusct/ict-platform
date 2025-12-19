@@ -88,26 +88,54 @@ describe('ErrorBoundary', () => {
   });
 
   it('provides try again button that resets error state', () => {
+    // Use a key to force remounting the ErrorBoundary with different children
     const { rerender } = render(
-      <ErrorBoundary>
-        <ThrowError />
+      <ErrorBoundary key="error-boundary">
+        <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     );
 
     // Error boundary should show error UI
     expect(screen.getByText('Something went wrong')).toBeInTheDocument();
 
-    // Click try again
-    fireEvent.click(screen.getByText('Try Again'));
-
-    // Re-render with a component that doesn't throw
+    // Re-render with a fresh ErrorBoundary and a component that doesn't throw
+    // This simulates what would happen if user navigated away and back
     rerender(
-      <ErrorBoundary>
+      <ErrorBoundary key="error-boundary-reset">
         <ThrowError shouldThrow={false} />
       </ErrorBoundary>
     );
 
     expect(screen.getByText('No error')).toBeInTheDocument();
+  });
+
+  it('handleRetry resets error state allowing recovery', () => {
+    // Test that the retry handler actually resets state
+    let shouldThrow = true;
+    const ControlledThrow: React.FC = () => {
+      if (shouldThrow) {
+        throw new Error('Controlled error');
+      }
+      return <div>Recovered successfully</div>;
+    };
+
+    render(
+      <ErrorBoundary>
+        <ControlledThrow />
+      </ErrorBoundary>
+    );
+
+    // Error boundary should show error UI
+    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+
+    // Change the throw behavior before clicking retry
+    shouldThrow = false;
+
+    // Click try again
+    fireEvent.click(screen.getByText('Try Again'));
+
+    // Now it should recover
+    expect(screen.getByText('Recovered successfully')).toBeInTheDocument();
   });
 
   it('is accessible with proper ARIA attributes', () => {

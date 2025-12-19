@@ -147,7 +147,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             className="ict-pagination__button ict-pagination__button--prev"
             aria-label="Previous page"
           >
-            <Icon name="chevron-left" size={16} aria-hidden="true" />
+            <Icon name="chevron-left" size={16} aria-hidden={true} />
             <span className="ict-pagination__button-text">Previous</span>
           </button>
 
@@ -157,7 +157,7 @@ export const Pagination: React.FC<PaginationProps> = ({
               if (page === 'ellipsis') {
                 return (
                   <li key={`ellipsis-${index}`} className="ict-pagination__ellipsis">
-                    <span aria-hidden="true">&hellip;</span>
+                    <span aria-hidden={true}>&hellip;</span>
                   </li>
                 );
               }
@@ -187,7 +187,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             aria-label="Next page"
           >
             <span className="ict-pagination__button-text">Next</span>
-            <Icon name="chevron-right" size={16} aria-hidden="true" />
+            <Icon name="chevron-right" size={16} aria-hidden={true} />
           </button>
 
           {/* Jump to page */}

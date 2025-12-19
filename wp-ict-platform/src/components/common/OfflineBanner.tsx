@@ -54,7 +54,7 @@ export const OfflineBanner: React.FC<OfflineBannerProps> = ({
         <Icon
           name={showReconnectedMessage ? 'check-circle' : 'wifi-off'}
           size={18}
-          aria-hidden="true"
+          aria-hidden={true}
         />
         <span className="ict-offline-banner__message">
           {showReconnectedMessage

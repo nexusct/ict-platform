@@ -765,8 +765,26 @@ export interface ActivityLogEntry {
   description?: string;
   old_values?: object;
   new_values?: object;
+  changes?: ActivityChange[];
   ip_address?: string;
   created_at: string;
+}
+
+export interface ActivityChange {
+  field: string;
+  old: unknown;
+  new: unknown;
+  old_value?: unknown;
+  new_value?: unknown;
+}
+
+// Icon types
+export interface IconProps {
+  name: string;
+  size?: number;
+  color?: string;
+  className?: string;
+  'aria-hidden'?: boolean | string;
 }
 
 // Weather types

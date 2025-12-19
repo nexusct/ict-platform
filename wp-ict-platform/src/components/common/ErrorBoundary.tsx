@@ -45,7 +45,7 @@ export class ErrorBoundary extends Component<Props, State> {
       type: 'react_error',
       message: error.message,
       stack: error.stack,
-      componentStack: errorInfo.componentStack,
+      componentStack: errorInfo.componentStack ?? undefined,
       timestamp: new Date().toISOString(),
     });
 

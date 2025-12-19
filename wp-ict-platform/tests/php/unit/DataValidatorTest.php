@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace ICT_Platform\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 
 /**
  * Test class for ICT_Data_Validator
@@ -17,98 +18,175 @@ use PHPUnit\Framework\TestCase;
 class DataValidatorTest extends TestCase
 {
     /**
-     * Test email validation
+     * Test required_string validation
      */
-    public function test_validate_email(): void
+    public function test_required_string(): void
     {
         if (!class_exists('ICT_Data_Validator')) {
             $this->markTestSkipped('ICT_Data_Validator class not loaded');
         }
 
-        $validator = new \ICT_Data_Validator();
+        // Valid string
+        $result = \ICT_Data_Validator::required_string('Hello World');
+        $this->assertEquals('Hello World', $result);
 
-        // Valid email
-        $this->assertTrue($validator->is_valid_email('test@example.com'));
+        // String with HTML tags should be stripped
+        $result = \ICT_Data_Validator::required_string('<p>Hello</p>');
+        $this->assertEquals('Hello', $result);
 
-        // Invalid emails
-        $this->assertFalse($validator->is_valid_email('invalid-email'));
-        $this->assertFalse($validator->is_valid_email(''));
+        // Empty string should throw exception
+        $this->expectException(InvalidArgumentException::class);
+        \ICT_Data_Validator::required_string('');
     }
 
     /**
-     * Test phone number validation
+     * Test required_string max length
      */
-    public function test_validate_phone(): void
+    public function test_required_string_max_length(): void
     {
         if (!class_exists('ICT_Data_Validator')) {
             $this->markTestSkipped('ICT_Data_Validator class not loaded');
         }
 
-        $validator = new \ICT_Data_Validator();
+        // String within max length
+        $result = \ICT_Data_Validator::required_string('Short', 10);
+        $this->assertEquals('Short', $result);
 
-        // Various phone formats should be accepted
-        $this->assertTrue($validator->is_valid_phone('1234567890'));
-        $this->assertTrue($validator->is_valid_phone('123-456-7890'));
-        $this->assertTrue($validator->is_valid_phone('(123) 456-7890'));
+        // String exceeding max length should throw
+        $this->expectException(InvalidArgumentException::class);
+        \ICT_Data_Validator::required_string('This is a very long string', 10);
     }
 
     /**
-     * Test positive number validation
+     * Test optional_string validation
      */
-    public function test_validate_positive_number(): void
+    public function test_optional_string(): void
     {
         if (!class_exists('ICT_Data_Validator')) {
             $this->markTestSkipped('ICT_Data_Validator class not loaded');
         }
 
-        $validator = new \ICT_Data_Validator();
+        // Valid string
+        $result = \ICT_Data_Validator::optional_string('Hello World');
+        $this->assertEquals('Hello World', $result);
 
-        $this->assertTrue($validator->is_positive_number(1));
-        $this->assertTrue($validator->is_positive_number(100.5));
-        $this->assertFalse($validator->is_positive_number(-1));
-        $this->assertFalse($validator->is_positive_number(0));
+        // Empty string should return null
+        $result = \ICT_Data_Validator::optional_string('');
+        $this->assertNull($result);
+
+        // Null should return null
+        $result = \ICT_Data_Validator::optional_string(null);
+        $this->assertNull($result);
     }
 
     /**
-     * Test date format validation
+     * Test non_negative_decimal validation
      */
-    public function test_validate_date_format(): void
+    public function test_non_negative_decimal(): void
     {
         if (!class_exists('ICT_Data_Validator')) {
             $this->markTestSkipped('ICT_Data_Validator class not loaded');
         }
 
-        $validator = new \ICT_Data_Validator();
+        // Valid positive number
+        $result = \ICT_Data_Validator::non_negative_decimal(100.55);
+        $this->assertEquals(100.55, $result);
 
-        // Valid dates
-        $this->assertTrue($validator->is_valid_date('2024-01-01'));
-        $this->assertTrue($validator->is_valid_date('2024-12-31'));
+        // Zero is valid
+        $result = \ICT_Data_Validator::non_negative_decimal(0);
+        $this->assertEquals(0.0, $result);
 
-        // Invalid dates
-        $this->assertFalse($validator->is_valid_date('invalid'));
-        $this->assertFalse($validator->is_valid_date('01-01-2024')); // Wrong format
+        // Empty value returns 0
+        $result = \ICT_Data_Validator::non_negative_decimal('');
+        $this->assertEquals(0.0, $result);
+
+        // Negative number should throw exception
+        $this->expectException(InvalidArgumentException::class);
+        \ICT_Data_Validator::non_negative_decimal(-1);
     }
 
     /**
-     * Test required fields validation
+     * Test id validation
      */
-    public function test_validate_required_fields(): void
+    public function test_id(): void
     {
         if (!class_exists('ICT_Data_Validator')) {
             $this->markTestSkipped('ICT_Data_Validator class not loaded');
         }
 
-        $validator = new \ICT_Data_Validator();
+        // Valid positive integer
+        $result = \ICT_Data_Validator::id(123);
+        $this->assertEquals(123, $result);
 
-        $data = [
-            'name' => 'Test Project',
-            'email' => 'test@example.com',
-        ];
+        // String number should be converted
+        $result = \ICT_Data_Validator::id('456');
+        $this->assertEquals(456, $result);
 
-        $required = ['name', 'email'];
-        $this->assertTrue($validator->has_required_fields($data, $required));
+        // Zero should throw exception
+        $this->expectException(InvalidArgumentException::class);
+        \ICT_Data_Validator::id(0);
+    }
 
-        $required_missing = ['name', 'email', 'phone'];
-        $this->assertFalse($validator->has_required_fields($data, $required_missing));
+    /**
+     * Test enum validation
+     */
+    public function test_enum(): void
+    {
+        if (!class_exists('ICT_Data_Validator')) {
+            $this->markTestSkipped('ICT_Data_Validator class not loaded');
+        }
+
+        $allowed = ['active', 'inactive', 'pending'];
+
+        // Valid value
+        $result = \ICT_Data_Validator::enum('active', $allowed);
+        $this->assertEquals('active', $result);
+
+        // Case insensitive - should be lowercased
+        $result = \ICT_Data_Validator::enum('ACTIVE', $allowed);
+        $this->assertEquals('active', $result);
+
+        // Invalid value should throw exception
+        $this->expectException(InvalidArgumentException::class);
+        \ICT_Data_Validator::enum('invalid', $allowed);
+    }
+
+    /**
+     * Test iso_datetime validation
+     */
+    public function test_iso_datetime(): void
+    {
+        if (!class_exists('ICT_Data_Validator')) {
+            $this->markTestSkipped('ICT_Data_Validator class not loaded');
+        }
+
+        // Valid datetime
+        $result = \ICT_Data_Validator::iso_datetime('2024-01-01 12:00:00');
+        $this->assertEquals('2024-01-01 12:00:00', $result);
+
+        // ISO format
+        $result = \ICT_Data_Validator::iso_datetime('2024-01-01T12:00:00');
+        $this->assertStringContainsString('2024-01-01', $result);
+
+        // Empty non-required returns null
+        $result = \ICT_Data_Validator::iso_datetime('', false);
+        $this->assertNull($result);
+
+        // Empty required throws exception
+        $this->expectException(InvalidArgumentException::class);
+        \ICT_Data_Validator::iso_datetime('', true);
+    }
+
+    /**
+     * Test iso_datetime with invalid format
+     */
+    public function test_iso_datetime_invalid(): void
+    {
+        if (!class_exists('ICT_Data_Validator')) {
+            $this->markTestSkipped('ICT_Data_Validator class not loaded');
+        }
+
+        $this->expectException(InvalidArgumentException::class);
+        \ICT_Data_Validator::iso_datetime('not-a-date');
     }
 }

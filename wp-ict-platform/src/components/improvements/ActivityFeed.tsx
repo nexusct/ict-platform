@@ -214,7 +214,7 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
         {Object.entries(changes).map(([field, change]) => (
           <div key={field} className="ict-activity-change">
             <span className="ict-activity-change-field">{field}:</span>
-            {change.old && (
+            {change.old !== undefined && change.old !== null && (
               <span className="ict-activity-change-old">{String(change.old)}</span>
             )}
             <span className="ict-activity-change-arrow">→</span>

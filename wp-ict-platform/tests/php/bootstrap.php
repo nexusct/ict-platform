@@ -141,6 +141,96 @@ if (file_exists($wp_tests_dir . '/includes/functions.php')) {
             // No-op
         }
     }
+
+    if (!function_exists('get_option')) {
+        function get_option(string $option, $default = false)
+        {
+            $options = [
+                'ict_currency' => 'USD',
+                'ict_overtime_threshold' => 8,
+                'ict_project_number_prefix' => 'PRJ',
+                'ict_po_number_prefix' => 'PO',
+            ];
+            return $options[$option] ?? $default;
+        }
+    }
+
+    if (!function_exists('wp_parse_args')) {
+        function wp_parse_args($args, $defaults = []): array
+        {
+            if (is_object($args)) {
+                $args = get_object_vars($args);
+            } elseif (is_string($args)) {
+                parse_str($args, $args);
+            }
+            if (!is_array($args)) {
+                $args = [];
+            }
+            return array_merge($defaults, $args);
+        }
+    }
+
+    if (!function_exists('wp_strip_all_tags')) {
+        function wp_strip_all_tags(string $string, bool $remove_breaks = false): string
+        {
+            $string = preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', $string);
+            $string = strip_tags($string);
+            if ($remove_breaks) {
+                $string = preg_replace('/[\r\n\t ]+/', ' ', $string);
+            }
+            return trim($string);
+        }
+    }
+
+    if (!function_exists('current_time')) {
+        function current_time(string $type, bool $gmt = false): string
+        {
+            if ($type === 'mysql') {
+                return date('Y-m-d H:i:s');
+            }
+            return (string)time();
+        }
+    }
+
+    if (!function_exists('get_userdata')) {
+        function get_userdata(int $user_id)
+        {
+            return null;
+        }
+    }
+
+    if (!function_exists('get_user_meta')) {
+        function get_user_meta(int $user_id, string $key = '', bool $single = false)
+        {
+            return $single ? '' : [];
+        }
+    }
+
+    // Define table constants for testing
+    if (!defined('ABSPATH')) {
+        define('ABSPATH', ICT_PLATFORM_PLUGIN_DIR);
+    }
+    if (!defined('ICT_PROJECTS_TABLE')) {
+        define('ICT_PROJECTS_TABLE', 'wp_ict_projects');
+    }
+    if (!defined('ICT_TIME_ENTRIES_TABLE')) {
+        define('ICT_TIME_ENTRIES_TABLE', 'wp_ict_time_entries');
+    }
+    if (!defined('ICT_INVENTORY_ITEMS_TABLE')) {
+        define('ICT_INVENTORY_ITEMS_TABLE', 'wp_ict_inventory_items');
+    }
+    if (!defined('ICT_PURCHASE_ORDERS_TABLE')) {
+        define('ICT_PURCHASE_ORDERS_TABLE', 'wp_ict_purchase_orders');
+    }
+    if (!defined('ICT_PROJECT_RESOURCES_TABLE')) {
+        define('ICT_PROJECT_RESOURCES_TABLE', 'wp_ict_project_resources');
+    }
+    if (!defined('ICT_SYNC_QUEUE_TABLE')) {
+        define('ICT_SYNC_QUEUE_TABLE', 'wp_ict_sync_queue');
+    }
+    if (!defined('ICT_SYNC_LOG_TABLE')) {
+        define('ICT_SYNC_LOG_TABLE', 'wp_ict_sync_log');
+    }
 }
 
 echo "ICT Platform Test Bootstrap loaded.\n";

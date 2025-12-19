@@ -4,7 +4,6 @@
          bootstrap="tests/php/bootstrap.php"
          colors="true"
          beStrictAboutOutputDuringTests="true"
-         beStrictAboutTodoAnnotatedTests="true"
          failOnRisky="true"
          failOnWarning="true"
          cacheResultFile=".phpunit.cache/test-results"
@@ -19,7 +18,7 @@
         </testsuite>
     </testsuites>
 
-    <coverage cacheDirectory=".phpunit.cache/code-coverage">
+    <source>
         <include>
             <directory suffix=".php">includes</directory>
             <directory suffix=".php">admin</directory>
@@ -32,12 +31,7 @@
             <directory>tests</directory>
             <file>includes/class-ict-autoloader.php</file>
         </exclude>
-        <report>
-            <clover outputFile="coverage.xml"/>
-            <html outputDirectory="coverage-report"/>
-            <text outputFile="php://stdout" showUncoveredFiles="true"/>
-        </report>
-    </coverage>
+    </source>
 
     <php>
         <env name="WP_PHPUNIT__TESTS_CONFIG" value="tests/php/wp-tests-config.php"/>
