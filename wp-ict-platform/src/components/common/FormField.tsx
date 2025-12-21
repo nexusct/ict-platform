@@ -179,7 +179,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         <div className="ict-form-field__messages">
           {error && (
             <p id={errorId} className="ict-form-field__error" role="alert">
-              <Icon name="alert-circle" size={14} aria-hidden="true" />
+              <Icon name="alert-circle" size={14} aria-hidden={true} />
               {error}
             </p>
           )}

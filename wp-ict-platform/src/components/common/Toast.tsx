@@ -36,15 +36,17 @@ export const ToastContainer: React.FC<ToastProps> = ({
   }, [dispatch]);
 
   useEffect(() => {
-    if (toast) {
-      setIsVisible(true);
-      setIsExiting(false);
-
-      const duration = toast.duration || 5000;
-      const timer = setTimeout(dismissToast, duration);
-
-      return () => clearTimeout(timer);
+    if (!toast) {
+      return;
     }
+
+    setIsVisible(true);
+    setIsExiting(false);
+
+    const duration = toast.duration || 5000;
+    const timer = setTimeout(dismissToast, duration);
+
+    return () => clearTimeout(timer);
   }, [toast, dismissToast]);
 
   if (!toast || !isVisible) {

@@ -259,7 +259,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({
 
           {query.length >= 2 && results.length === 0 && !isLoading && (
             <div className="ict-search-empty">
-              <span>No results found for "{query}"</span>
+              <span>No results found for &quot;{query}&quot;</span>
             </div>
           )}
 

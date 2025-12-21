@@ -316,7 +316,7 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
                       </span>
                       {activity.entity_name && (
                         <span className="ict-activity-entity-name">
-                          "{activity.entity_name}"
+                          &quot;{activity.entity_name}&quot;
                         </span>
                       )}
                     </span>
