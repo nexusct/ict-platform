@@ -63,8 +63,8 @@ class ICT_Divi_Compatibility {
 		}
 
 		// Get Divi version.
-		$theme         = wp_get_theme();
-		$divi_version  = ( 'Divi' === $theme->name ) ? $theme->version : $theme->parent()->version;
+		$theme            = wp_get_theme();
+		$divi_version     = ( 'Divi' === $theme->name ) ? $theme->version : $theme->parent()->version;
 		$min_divi_version = '5.0.0';
 
 		// Check if Divi version is compatible.
