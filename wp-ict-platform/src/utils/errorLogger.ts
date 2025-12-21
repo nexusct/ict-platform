@@ -107,7 +107,7 @@ class ErrorLogger {
 
   private getCurrentUserId(): number | undefined {
     try {
-      // @ts-ignore - WordPress localized variable
+      // @ts-expect-error - WordPress localized variable
       return window.ictPlatform?.currentUser;
     } catch {
       return undefined;
@@ -125,7 +125,7 @@ class ErrorLogger {
 
   private async sendToRemote(entry: ErrorLogEntry): Promise<void> {
     try {
-      // @ts-ignore - WordPress localized variable
+      // @ts-expect-error - WordPress localized variable
       const nonce = window.ictPlatform?.nonce;
 
       await fetch(this.config.remoteEndpoint, {

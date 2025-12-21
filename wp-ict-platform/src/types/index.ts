@@ -765,6 +765,7 @@ export interface ActivityLogEntry {
   description?: string;
   old_values?: object;
   new_values?: object;
+  changes?: Record<string, { old: unknown; new: unknown }>;
   ip_address?: string;
   created_at: string;
 }

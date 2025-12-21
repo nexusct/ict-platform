@@ -211,16 +211,21 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
 
     return (
       <div className="ict-activity-changes">
-        {Object.entries(changes).map(([field, change]) => (
-          <div key={field} className="ict-activity-change">
-            <span className="ict-activity-change-field">{field}:</span>
-            {change.old && (
-              <span className="ict-activity-change-old">{String(change.old)}</span>
-            )}
-            <span className="ict-activity-change-arrow">→</span>
-            <span className="ict-activity-change-new">{String(change.new)}</span>
-          </div>
-        ))}
+        {Object.entries(changes).map(([field, change]) => {
+          const oldValue = change.old !== null && change.old !== undefined ? String(change.old) : '';
+          const newValue = change.new !== null && change.new !== undefined ? String(change.new) : '';
+          
+          return (
+            <div key={field} className="ict-activity-change">
+              <span className="ict-activity-change-field">{field}:</span>
+              {oldValue && (
+                <span className="ict-activity-change-old">{oldValue}</span>
+              )}
+              <span className="ict-activity-change-arrow">→</span>
+              <span className="ict-activity-change-new">{newValue}</span>
+            </div>
+          );
+        })}
       </div>
     );
   };
@@ -316,7 +321,7 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
                       </span>
                       {activity.entity_name && (
                         <span className="ict-activity-entity-name">
-                          "{activity.entity_name}"
+                          &quot;{activity.entity_name}&quot;
                         </span>
                       )}
                     </span>

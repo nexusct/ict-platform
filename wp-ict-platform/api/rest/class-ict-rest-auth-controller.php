@@ -203,7 +203,7 @@ class ICT_REST_Auth_Controller extends WP_REST_Controller {
 		}
 
 		// Generate new tokens
-		$token            = $this->generate_jwt_token( $user_id );
+		$token             = $this->generate_jwt_token( $user_id );
 		$new_refresh_token = $this->generate_refresh_token( $user_id );
 
 		// Update refresh token

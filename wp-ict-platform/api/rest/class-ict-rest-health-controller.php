@@ -99,16 +99,16 @@ class ICT_REST_Health_Controller extends WP_REST_Controller {
 				'callback'            => array( $this, 'test_sync_workflow' ),
 				'permission_callback' => array( $this, 'check_admin_permissions' ),
 				'args'                => array(
-					'workflow' => array(
-						'required'          => true,
-						'type'              => 'string',
-						'enum'              => array( 'quote_to_project', 'project_to_crm', 'project_to_fsm', 'inventory_to_books', 'full_workflow' ),
-						'description'       => 'Workflow to test',
+					'workflow'  => array(
+						'required'    => true,
+						'type'        => 'string',
+						'enum'        => array( 'quote_to_project', 'project_to_crm', 'project_to_fsm', 'inventory_to_books', 'full_workflow' ),
+						'description' => 'Workflow to test',
 					),
 					'entity_id' => array(
-						'required'          => false,
-						'type'              => 'integer',
-						'description'       => 'Entity ID for testing',
+						'required'    => false,
+						'type'        => 'integer',
+						'description' => 'Entity ID for testing',
 					),
 				),
 			)
@@ -124,35 +124,35 @@ class ICT_REST_Health_Controller extends WP_REST_Controller {
 	 */
 	public function get_system_health( $request ) {
 		$health = array(
-			'status'      => 'healthy',
-			'timestamp'   => current_time( 'mysql' ),
-			'version'     => ICT_PLATFORM_VERSION,
-			'checks'      => array(),
+			'status'    => 'healthy',
+			'timestamp' => current_time( 'mysql' ),
+			'version'   => ICT_PLATFORM_VERSION,
+			'checks'    => array(),
 		);
 
 		// Database health
-		$db_health = $this->get_database_status();
+		$db_health                    = $this->get_database_status();
 		$health['checks']['database'] = $db_health;
 		if ( ! $db_health['healthy'] ) {
 			$health['status'] = 'degraded';
 		}
 
 		// Zoho integrations health
-		$zoho_health = $this->get_zoho_status();
+		$zoho_health              = $this->get_zoho_status();
 		$health['checks']['zoho'] = $zoho_health;
 		if ( $zoho_health['healthy_count'] < $zoho_health['total_count'] ) {
 			$health['status'] = $health['status'] === 'healthy' ? 'degraded' : 'critical';
 		}
 
 		// QuoteWerks health
-		$qw_health = $this->get_quotewerks_status();
+		$qw_health                      = $this->get_quotewerks_status();
 		$health['checks']['quotewerks'] = $qw_health;
 		if ( ! $qw_health['healthy'] ) {
 			$health['status'] = 'degraded';
 		}
 
 		// Sync queue health
-		$sync_health = $this->get_sync_status();
+		$sync_health              = $this->get_sync_status();
 		$health['checks']['sync'] = $sync_health;
 		if ( $sync_health['status'] !== 'healthy' ) {
 			$health['status'] = $sync_health['status'] === 'warning' ? 'degraded' : 'critical';
@@ -219,11 +219,11 @@ class ICT_REST_Health_Controller extends WP_REST_Controller {
 		$orchestrator = new ICT_Sync_Orchestrator();
 
 		$result = array(
-			'workflow'   => $workflow,
-			'timestamp'  => current_time( 'mysql' ),
-			'success'    => false,
-			'steps'      => array(),
-			'errors'     => array(),
+			'workflow'  => $workflow,
+			'timestamp' => current_time( 'mysql' ),
+			'success'   => false,
+			'steps'     => array(),
+			'errors'    => array(),
 		);
 
 		try {
@@ -232,12 +232,12 @@ class ICT_REST_Health_Controller extends WP_REST_Controller {
 					if ( ! $entity_id ) {
 						return new WP_Error( 'missing_id', 'Quote ID required', array( 'status' => 400 ) );
 					}
-					$qw_adapter = new ICT_QuoteWerks_Adapter();
-					$project_id = $qw_adapter->sync_quote_to_project( $entity_id );
+					$qw_adapter        = new ICT_QuoteWerks_Adapter();
+					$project_id        = $qw_adapter->sync_quote_to_project( $entity_id );
 					$result['steps'][] = array(
-						'name'    => 'QuoteWerks to WordPress',
-						'status'  => is_wp_error( $project_id ) ? 'error' : 'success',
-						'result'  => is_wp_error( $project_id ) ? $project_id->get_error_message() : $project_id,
+						'name'   => 'QuoteWerks to WordPress',
+						'status' => is_wp_error( $project_id ) ? 'error' : 'success',
+						'result' => is_wp_error( $project_id ) ? $project_id->get_error_message() : $project_id,
 					);
 					$result['success'] = ! is_wp_error( $project_id );
 					break;
@@ -246,11 +246,11 @@ class ICT_REST_Health_Controller extends WP_REST_Controller {
 					if ( ! $entity_id ) {
 						return new WP_Error( 'missing_id', 'Project ID required', array( 'status' => 400 ) );
 					}
-					$crm_result = $orchestrator->sync_project_to_zoho_crm( $entity_id );
+					$crm_result        = $orchestrator->sync_project_to_zoho_crm( $entity_id );
 					$result['steps'][] = array(
-						'name'    => 'WordPress to Zoho CRM',
-						'status'  => is_wp_error( $crm_result ) ? 'error' : 'success',
-						'result'  => is_wp_error( $crm_result ) ? $crm_result->get_error_message() : $crm_result,
+						'name'   => 'WordPress to Zoho CRM',
+						'status' => is_wp_error( $crm_result ) ? 'error' : 'success',
+						'result' => is_wp_error( $crm_result ) ? $crm_result->get_error_message() : $crm_result,
 					);
 					$result['success'] = ! is_wp_error( $crm_result );
 					break;
@@ -259,11 +259,11 @@ class ICT_REST_Health_Controller extends WP_REST_Controller {
 					if ( ! $entity_id ) {
 						return new WP_Error( 'missing_id', 'Project ID required', array( 'status' => 400 ) );
 					}
-					$fsm_result = $orchestrator->sync_project_to_zoho_fsm( $entity_id );
+					$fsm_result        = $orchestrator->sync_project_to_zoho_fsm( $entity_id );
 					$result['steps'][] = array(
-						'name'    => 'WordPress to Zoho FSM',
-						'status'  => is_wp_error( $fsm_result ) ? 'error' : 'success',
-						'result'  => is_wp_error( $fsm_result ) ? $fsm_result->get_error_message() : $fsm_result,
+						'name'   => 'WordPress to Zoho FSM',
+						'status' => is_wp_error( $fsm_result ) ? 'error' : 'success',
+						'result' => is_wp_error( $fsm_result ) ? $fsm_result->get_error_message() : $fsm_result,
 					);
 					$result['success'] = ! is_wp_error( $fsm_result );
 					break;
@@ -272,11 +272,11 @@ class ICT_REST_Health_Controller extends WP_REST_Controller {
 					if ( ! $entity_id ) {
 						return new WP_Error( 'missing_id', 'Inventory item ID required', array( 'status' => 400 ) );
 					}
-					$books_result = $orchestrator->sync_inventory_to_zoho_books( $entity_id );
+					$books_result      = $orchestrator->sync_inventory_to_zoho_books( $entity_id );
 					$result['steps'][] = array(
-						'name'    => 'Inventory to Zoho Books',
-						'status'  => is_wp_error( $books_result ) ? 'error' : 'success',
-						'result'  => is_wp_error( $books_result ) ? $books_result->get_error_message() : $books_result,
+						'name'   => 'Inventory to Zoho Books',
+						'status' => is_wp_error( $books_result ) ? 'error' : 'success',
+						'result' => is_wp_error( $books_result ) ? $books_result->get_error_message() : $books_result,
 					);
 					$result['success'] = ! is_wp_error( $books_result );
 					break;
@@ -288,21 +288,21 @@ class ICT_REST_Health_Controller extends WP_REST_Controller {
 					$full_result = $orchestrator->full_quote_sync( $entity_id );
 
 					$result['steps'][] = array(
-						'name'    => 'QuoteWerks to WordPress',
-						'status'  => isset( $full_result['quotewerks_to_wordpress'] ) ? 'success' : 'error',
-						'result'  => $full_result['quotewerks_to_wordpress'] ?? 'Failed',
+						'name'   => 'QuoteWerks to WordPress',
+						'status' => isset( $full_result['quotewerks_to_wordpress'] ) ? 'success' : 'error',
+						'result' => $full_result['quotewerks_to_wordpress'] ?? 'Failed',
 					);
 
 					$result['steps'][] = array(
-						'name'    => 'WordPress to Zoho CRM',
-						'status'  => isset( $full_result['wordpress_to_zoho_crm'] ) ? 'success' : 'error',
-						'result'  => $full_result['wordpress_to_zoho_crm'] ?? 'Failed',
+						'name'   => 'WordPress to Zoho CRM',
+						'status' => isset( $full_result['wordpress_to_zoho_crm'] ) ? 'success' : 'error',
+						'result' => $full_result['wordpress_to_zoho_crm'] ?? 'Failed',
 					);
 
 					$result['steps'][] = array(
-						'name'    => 'WordPress to Zoho FSM',
-						'status'  => isset( $full_result['wordpress_to_zoho_fsm'] ) ? 'success' : 'error',
-						'result'  => $full_result['wordpress_to_zoho_fsm'] ?? 'Failed',
+						'name'   => 'WordPress to Zoho FSM',
+						'status' => isset( $full_result['wordpress_to_zoho_fsm'] ) ? 'success' : 'error',
+						'result' => $full_result['wordpress_to_zoho_fsm'] ?? 'Failed',
 					);
 
 					$result['success'] = $full_result['success'];
@@ -326,18 +326,18 @@ class ICT_REST_Health_Controller extends WP_REST_Controller {
 		global $wpdb;
 
 		$tables = array(
-			'projects'         => ICT_PROJECTS_TABLE,
-			'time_entries'     => ICT_TIME_ENTRIES_TABLE,
-			'inventory_items'  => ICT_INVENTORY_ITEMS_TABLE,
-			'purchase_orders'  => ICT_PURCHASE_ORDERS_TABLE,
+			'projects'          => ICT_PROJECTS_TABLE,
+			'time_entries'      => ICT_TIME_ENTRIES_TABLE,
+			'inventory_items'   => ICT_INVENTORY_ITEMS_TABLE,
+			'purchase_orders'   => ICT_PURCHASE_ORDERS_TABLE,
 			'project_resources' => ICT_PROJECT_RESOURCES_TABLE,
-			'sync_queue'       => ICT_SYNC_QUEUE_TABLE,
-			'sync_log'         => ICT_SYNC_LOG_TABLE,
+			'sync_queue'        => ICT_SYNC_QUEUE_TABLE,
+			'sync_log'          => ICT_SYNC_LOG_TABLE,
 		);
 
 		$status = array(
-			'healthy'       => true,
-			'tables'        => array(),
+			'healthy'        => true,
+			'tables'         => array(),
 			'missing_tables' => array(),
 		);
 
@@ -345,15 +345,15 @@ class ICT_REST_Health_Controller extends WP_REST_Controller {
 			$exists = $wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'" ) === $table_name;
 
 			if ( $exists ) {
-				$count = $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name}" );
+				$count                     = $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name}" );
 				$status['tables'][ $name ] = array(
 					'exists' => true,
 					'count'  => (int) $count,
 				);
 			} else {
-				$status['healthy'] = false;
+				$status['healthy']          = false;
 				$status['missing_tables'][] = $name;
-				$status['tables'][ $name ] = array(
+				$status['tables'][ $name ]  = array(
 					'exists' => false,
 					'count'  => 0,
 				);
@@ -366,7 +366,7 @@ class ICT_REST_Health_Controller extends WP_REST_Controller {
 
 		if ( ! $status['connection'] ) {
 			$status['healthy'] = false;
-			$status['error'] = $wpdb->last_error;
+			$status['error']   = $wpdb->last_error;
 		}
 
 		return $status;
@@ -405,7 +405,7 @@ class ICT_REST_Health_Controller extends WP_REST_Controller {
 				);
 
 				if ( $is_healthy ) {
-					$status['healthy_count']++;
+					++$status['healthy_count'];
 				}
 			} catch ( Exception $e ) {
 				$status['services'][ $name ] = array(
@@ -427,10 +427,10 @@ class ICT_REST_Health_Controller extends WP_REST_Controller {
 	 */
 	protected function get_quotewerks_status() {
 		$status = array(
-			'healthy'     => false,
-			'configured'  => false,
-			'message'     => '',
-			'last_test'   => current_time( 'mysql' ),
+			'healthy'    => false,
+			'configured' => false,
+			'message'    => '',
+			'last_test'  => current_time( 'mysql' ),
 		);
 
 		$api_url = get_option( 'ict_quotewerks_api_url' );
@@ -444,7 +444,7 @@ class ICT_REST_Health_Controller extends WP_REST_Controller {
 		$status['configured'] = true;
 
 		try {
-			$adapter = new ICT_QuoteWerks_Adapter();
+			$adapter     = new ICT_QuoteWerks_Adapter();
 			$test_result = $adapter->test_connection();
 
 			if ( ! is_wp_error( $test_result ) ) {
@@ -512,13 +512,13 @@ class ICT_REST_Health_Controller extends WP_REST_Controller {
 		}
 
 		return array(
-			'status'              => $health_status,
-			'queue'               => array(
+			'status'               => $health_status,
+			'queue'                => array(
 				'pending'    => (int) $pending_count,
 				'processing' => (int) $processing_count,
 				'failed'     => (int) $failed_count,
 			),
-			'last_24h'            => array(
+			'last_24h'             => array(
 				'success' => (int) $success_count_24h,
 				'errors'  => (int) $error_count_24h,
 			),

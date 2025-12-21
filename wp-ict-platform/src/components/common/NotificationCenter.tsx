@@ -7,7 +7,7 @@
  * @since   1.0.0
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Icon, IconName } from './Icon';
 
 export interface Notification {

@@ -16,142 +16,165 @@ use WP_Error;
  * @package ICT_Platform\Api\Controllers
  * @since   2.0.0
  */
-class SyncController extends AbstractController
-{
-    protected string $rest_base = 'sync';
-    private SyncLogger $syncLogger;
+class SyncController extends AbstractController {
 
-    public function __construct(\ICT_Platform\Util\Helper $helper, \ICT_Platform\Util\Cache $cache, SyncLogger $syncLogger)
-    {
-        parent::__construct($helper, $cache);
-        $this->syncLogger = $syncLogger;
-    }
+	protected string $rest_base = 'sync';
+	private SyncLogger $syncLogger;
 
-    public function registerRoutes(): void
-    {
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/status', [
-            'methods'             => WP_REST_Server::READABLE,
-            'callback'            => [$this, 'getStatus'],
-            'permission_callback' => [$this, 'permissionsCheck'],
-        ]);
+	public function __construct( \ICT_Platform\Util\Helper $helper, \ICT_Platform\Util\Cache $cache, SyncLogger $syncLogger ) {
+		parent::__construct( $helper, $cache );
+		$this->syncLogger = $syncLogger;
+	}
 
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/trigger', [
-            'methods'             => WP_REST_Server::CREATABLE,
-            'callback'            => [$this, 'triggerSync'],
-            'permission_callback' => [$this, 'permissionsCheck'],
-        ]);
+	public function registerRoutes(): void {
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/status',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'getStatus' ),
+				'permission_callback' => array( $this, 'permissionsCheck' ),
+			)
+		);
 
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/logs', [
-            'methods'             => WP_REST_Server::READABLE,
-            'callback'            => [$this, 'getLogs'],
-            'permission_callback' => [$this, 'permissionsCheck'],
-        ]);
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/trigger',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'triggerSync' ),
+				'permission_callback' => array( $this, 'permissionsCheck' ),
+			)
+		);
 
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/queue', [
-            'methods'             => WP_REST_Server::READABLE,
-            'callback'            => [$this, 'getQueue'],
-            'permission_callback' => [$this, 'permissionsCheck'],
-        ]);
-    }
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/logs',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'getLogs' ),
+				'permission_callback' => array( $this, 'permissionsCheck' ),
+			)
+		);
 
-    public function getStatus(WP_REST_Request $request): WP_REST_Response|WP_Error
-    {
-        global $wpdb;
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/queue',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'getQueue' ),
+				'permission_callback' => array( $this, 'permissionsCheck' ),
+			)
+		);
+	}
 
-        $pending = (int) $wpdb->get_var("SELECT COUNT(*) FROM " . ICT_SYNC_QUEUE_TABLE . " WHERE status = 'pending'");
-        $failed = (int) $wpdb->get_var("SELECT COUNT(*) FROM " . ICT_SYNC_QUEUE_TABLE . " WHERE status = 'failed'");
-        $lastSync = $wpdb->get_var("SELECT MAX(synced_at) FROM " . ICT_SYNC_LOG_TABLE);
+	public function getStatus( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		global $wpdb;
 
-        $services = [
-            'crm'    => $this->getServiceStatus('crm'),
-            'fsm'    => $this->getServiceStatus('fsm'),
-            'books'  => $this->getServiceStatus('books'),
-            'people' => $this->getServiceStatus('people'),
-            'desk'   => $this->getServiceStatus('desk'),
-        ];
+		$pending  = (int) $wpdb->get_var( 'SELECT COUNT(*) FROM ' . ICT_SYNC_QUEUE_TABLE . " WHERE status = 'pending'" );
+		$failed   = (int) $wpdb->get_var( 'SELECT COUNT(*) FROM ' . ICT_SYNC_QUEUE_TABLE . " WHERE status = 'failed'" );
+		$lastSync = $wpdb->get_var( 'SELECT MAX(synced_at) FROM ' . ICT_SYNC_LOG_TABLE );
 
-        return $this->success([
-            'pending_count' => $pending,
-            'failed_count'  => $failed,
-            'last_sync'     => $lastSync,
-            'services'      => $services,
-            'is_healthy'    => $failed < 10 && $pending < 100,
-        ]);
-    }
+		$services = array(
+			'crm'    => $this->getServiceStatus( 'crm' ),
+			'fsm'    => $this->getServiceStatus( 'fsm' ),
+			'books'  => $this->getServiceStatus( 'books' ),
+			'people' => $this->getServiceStatus( 'people' ),
+			'desk'   => $this->getServiceStatus( 'desk' ),
+		);
 
-    public function triggerSync(WP_REST_Request $request): WP_REST_Response|WP_Error
-    {
-        $entityType = $request->get_param('entity_type');
-        $entityId = (int) $request->get_param('entity_id');
-        $service = $request->get_param('service');
+		return $this->success(
+			array(
+				'pending_count' => $pending,
+				'failed_count'  => $failed,
+				'last_sync'     => $lastSync,
+				'services'      => $services,
+				'is_healthy'    => $failed < 10 && $pending < 100,
+			)
+		);
+	}
 
-        if (!$entityType || !$entityId) {
-            return $this->error('missing_params', __('Entity type and ID are required.', 'ict-platform'), 400);
-        }
+	public function triggerSync( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		$entityType = $request->get_param( 'entity_type' );
+		$entityId   = (int) $request->get_param( 'entity_id' );
+		$service    = $request->get_param( 'service' );
 
-        $queueId = $this->syncLogger->queueSync([
-            'entity_type'  => $entityType,
-            'entity_id'    => $entityId,
-            'action'       => 'sync',
-            'zoho_service' => $service ?? 'crm',
-            'priority'     => 1,
-        ]);
+		if ( ! $entityType || ! $entityId ) {
+			return $this->error( 'missing_params', __( 'Entity type and ID are required.', 'ict-platform' ), 400 );
+		}
 
-        if (!$queueId) {
-            return $this->error('queue_failed', __('Failed to queue sync.', 'ict-platform'), 500);
-        }
+		$queueId = $this->syncLogger->queueSync(
+			array(
+				'entity_type'  => $entityType,
+				'entity_id'    => $entityId,
+				'action'       => 'sync',
+				'zoho_service' => $service ?? 'crm',
+				'priority'     => 1,
+			)
+		);
 
-        // Trigger immediate processing
-        do_action('ict_platform_sync_job');
+		if ( ! $queueId ) {
+			return $this->error( 'queue_failed', __( 'Failed to queue sync.', 'ict-platform' ), 500 );
+		}
 
-        return $this->success(['queued' => true, 'queue_id' => $queueId]);
-    }
+		// Trigger immediate processing
+		do_action( 'ict_platform_sync_job' );
 
-    public function getLogs(WP_REST_Request $request): WP_REST_Response|WP_Error
-    {
-        $logs = $this->syncLogger->getLogs([
-            'entity_type'  => $request->get_param('entity_type'),
-            'zoho_service' => $request->get_param('service'),
-            'status'       => $request->get_param('status'),
-            'limit'        => (int) ($request->get_param('per_page') ?? 50),
-            'offset'       => (int) ($request->get_param('offset') ?? 0),
-        ]);
+		return $this->success(
+			array(
+				'queued'   => true,
+				'queue_id' => $queueId,
+			)
+		);
+	}
 
-        return $this->success($logs);
-    }
+	public function getLogs( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		$logs = $this->syncLogger->getLogs(
+			array(
+				'entity_type'  => $request->get_param( 'entity_type' ),
+				'zoho_service' => $request->get_param( 'service' ),
+				'status'       => $request->get_param( 'status' ),
+				'limit'        => (int) ( $request->get_param( 'per_page' ) ?? 50 ),
+				'offset'       => (int) ( $request->get_param( 'offset' ) ?? 0 ),
+			)
+		);
 
-    public function getQueue(WP_REST_Request $request): WP_REST_Response|WP_Error
-    {
-        $queue = $this->syncLogger->getPendingQueue((int) ($request->get_param('limit') ?? 50));
+		return $this->success( $logs );
+	}
 
-        return $this->success($queue);
-    }
+	public function getQueue( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		$queue = $this->syncLogger->getPendingQueue( (int) ( $request->get_param( 'limit' ) ?? 50 ) );
 
-    public function permissionsCheck(): bool
-    {
-        return $this->canManageSync();
-    }
+		return $this->success( $queue );
+	}
 
-    private function getServiceStatus(string $service): array
-    {
-        global $wpdb;
+	public function permissionsCheck(): bool {
+		return $this->canManageSync();
+	}
 
-        $lastSuccess = $wpdb->get_var($wpdb->prepare(
-            "SELECT MAX(synced_at) FROM " . ICT_SYNC_LOG_TABLE . " WHERE zoho_service = %s AND status = 'success'",
-            $service
-        ));
+	private function getServiceStatus( string $service ): array {
+		global $wpdb;
 
-        $recentErrors = (int) $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM " . ICT_SYNC_LOG_TABLE . "
+		$lastSuccess = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT MAX(synced_at) FROM ' . ICT_SYNC_LOG_TABLE . " WHERE zoho_service = %s AND status = 'success'",
+				$service
+			)
+		);
+
+		$recentErrors = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM ' . ICT_SYNC_LOG_TABLE . "
             WHERE zoho_service = %s AND status = 'error' AND synced_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)",
-            $service
-        ));
+				$service
+			)
+		);
 
-        return [
-            'connected'     => !empty(get_option("ict_zoho_{$service}_token")),
-            'last_success'  => $lastSuccess,
-            'recent_errors' => $recentErrors,
-            'is_healthy'    => $recentErrors < 5,
-        ];
-    }
+		return array(
+			'connected'     => ! empty( get_option( "ict_zoho_{$service}_token" ) ),
+			'last_success'  => $lastSuccess,
+			'recent_errors' => $recentErrors,
+			'is_healthy'    => $recentErrors < 5,
+		);
+	}
 }

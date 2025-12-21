@@ -7,7 +7,7 @@
  * @since   1.0.0
  */
 
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
 import { errorLogger } from '../../utils/errorLogger';
 
 interface Props {
@@ -44,8 +44,8 @@ export class ErrorBoundary extends Component<Props, State> {
     errorLogger.log({
       type: 'react_error',
       message: error.message,
-      stack: error.stack,
-      componentStack: errorInfo.componentStack,
+      stack: error.stack ?? undefined,
+      componentStack: errorInfo.componentStack ?? undefined,
       timestamp: new Date().toISOString(),
     });
 

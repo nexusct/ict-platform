@@ -41,20 +41,20 @@ class ICT_Email_Notification {
 	 */
 	private function load_templates() {
 		$this->templates = array(
-			'project_created'        => 'project-created',
-			'project_updated'        => 'project-updated',
-			'project_completed'      => 'project-completed',
-			'time_entry_submitted'   => 'time-entry-submitted',
-			'time_entry_approved'    => 'time-entry-approved',
-			'time_entry_rejected'    => 'time-entry-rejected',
-			'low_stock_alert'        => 'low-stock-alert',
-			'po_created'             => 'po-created',
-			'po_approved'            => 'po-approved',
-			'po_received'            => 'po-received',
-			'task_assigned'          => 'task-assigned',
-			'task_due_reminder'      => 'task-due-reminder',
-			'sync_error'             => 'sync-error',
-			'default'                => 'default',
+			'project_created'      => 'project-created',
+			'project_updated'      => 'project-updated',
+			'project_completed'    => 'project-completed',
+			'time_entry_submitted' => 'time-entry-submitted',
+			'time_entry_approved'  => 'time-entry-approved',
+			'time_entry_rejected'  => 'time-entry-rejected',
+			'low_stock_alert'      => 'low-stock-alert',
+			'po_created'           => 'po-created',
+			'po_approved'          => 'po-approved',
+			'po_received'          => 'po-received',
+			'task_assigned'        => 'task-assigned',
+			'task_due_reminder'    => 'task-due-reminder',
+			'sync_error'           => 'sync-error',
+			'default'              => 'default',
 		);
 	}
 
@@ -71,7 +71,10 @@ class ICT_Email_Notification {
 		$emails = $this->resolve_recipients( $recipients );
 
 		if ( empty( $emails ) ) {
-			return array( 'success' => false, 'error' => 'no_valid_recipients' );
+			return array(
+				'success' => false,
+				'error'   => 'no_valid_recipients',
+			);
 		}
 
 		$subject = $this->get_subject( $type, $data );
@@ -209,19 +212,19 @@ class ICT_Email_Notification {
 		}
 
 		$subjects = array(
-			'project_created'        => __( 'New Project Created', 'ict-platform' ),
-			'project_updated'        => __( 'Project Updated', 'ict-platform' ),
-			'project_completed'      => __( 'Project Completed', 'ict-platform' ),
-			'time_entry_submitted'   => __( 'Time Entry Submitted for Approval', 'ict-platform' ),
-			'time_entry_approved'    => __( 'Your Time Entry Has Been Approved', 'ict-platform' ),
-			'time_entry_rejected'    => __( 'Your Time Entry Has Been Rejected', 'ict-platform' ),
-			'low_stock_alert'        => __( 'Low Stock Alert', 'ict-platform' ),
-			'po_created'             => __( 'New Purchase Order Created', 'ict-platform' ),
-			'po_approved'            => __( 'Purchase Order Approved', 'ict-platform' ),
-			'po_received'            => __( 'Purchase Order Received', 'ict-platform' ),
-			'task_assigned'          => __( 'New Task Assigned to You', 'ict-platform' ),
-			'task_due_reminder'      => __( 'Task Due Reminder', 'ict-platform' ),
-			'sync_error'             => __( 'Synchronization Error', 'ict-platform' ),
+			'project_created'      => __( 'New Project Created', 'ict-platform' ),
+			'project_updated'      => __( 'Project Updated', 'ict-platform' ),
+			'project_completed'    => __( 'Project Completed', 'ict-platform' ),
+			'time_entry_submitted' => __( 'Time Entry Submitted for Approval', 'ict-platform' ),
+			'time_entry_approved'  => __( 'Your Time Entry Has Been Approved', 'ict-platform' ),
+			'time_entry_rejected'  => __( 'Your Time Entry Has Been Rejected', 'ict-platform' ),
+			'low_stock_alert'      => __( 'Low Stock Alert', 'ict-platform' ),
+			'po_created'           => __( 'New Purchase Order Created', 'ict-platform' ),
+			'po_approved'          => __( 'Purchase Order Approved', 'ict-platform' ),
+			'po_received'          => __( 'Purchase Order Received', 'ict-platform' ),
+			'task_assigned'        => __( 'New Task Assigned to You', 'ict-platform' ),
+			'task_due_reminder'    => __( 'Task Due Reminder', 'ict-platform' ),
+			'sync_error'           => __( 'Synchronization Error', 'ict-platform' ),
 		);
 
 		return $prefix . ( $subjects[ $type ] ?? __( 'Notification', 'ict-platform' ) );
@@ -266,7 +269,7 @@ class ICT_Email_Notification {
 		$title   = $data['title'] ?? __( 'Notification', 'ict-platform' );
 		$message = $data['message'] ?? '';
 
-		$html = '<h2>' . esc_html( $title ) . '</h2>';
+		$html  = '<h2>' . esc_html( $title ) . '</h2>';
 		$html .= '<p>' . nl2br( esc_html( $message ) ) . '</p>';
 
 		// Add facts if available
@@ -300,11 +303,11 @@ class ICT_Email_Notification {
 	 * @return string Full HTML email.
 	 */
 	private function wrap_in_layout( $content ) {
-		$site_name = get_bloginfo( 'name' );
-		$logo_url  = get_option( 'ict_email_logo_url', '' );
+		$site_name     = get_bloginfo( 'name' );
+		$logo_url      = get_option( 'ict_email_logo_url', '' );
 		$primary_color = get_option( 'ict_email_primary_color', '#0073aa' );
 
-		$html = '<!DOCTYPE html>';
+		$html  = '<!DOCTYPE html>';
 		$html .= '<html><head><meta charset="utf-8"></head>';
 		$html .= '<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #333333; background-color: #f5f5f5;">';
 
@@ -443,16 +446,16 @@ class ICT_Email_Notification {
 			$wpdb->update(
 				$table,
 				array(
-					'status'     => $result['success'] ? 'sent' : 'failed',
-					'sent_at'    => current_time( 'mysql' ),
-					'result'     => wp_json_encode( $result ),
+					'status'  => $result['success'] ? 'sent' : 'failed',
+					'sent_at' => current_time( 'mysql' ),
+					'result'  => wp_json_encode( $result ),
 				),
 				array( 'id' => $item->id ),
 				array( '%s', '%s', '%s' ),
 				array( '%d' )
 			);
 
-			$processed++;
+			++$processed;
 		}
 
 		return $processed;
@@ -495,7 +498,7 @@ class ICT_Email_Notification {
 		}
 
 		$subject = sprintf(
-			__( '[%s] Your %s Digest', 'ict-platform' ),
+			__( '[%1$s] Your %2$s Digest', 'ict-platform' ),
 			get_bloginfo( 'name' ),
 			$period === 'weekly' ? __( 'Weekly', 'ict-platform' ) : __( 'Daily', 'ict-platform' )
 		);
@@ -513,7 +516,7 @@ class ICT_Email_Notification {
 	 * @return string HTML body.
 	 */
 	private function build_digest_body( $notifications ) {
-		$html = '<h2>' . __( 'Your Activity Digest', 'ict-platform' ) . '</h2>';
+		$html  = '<h2>' . __( 'Your Activity Digest', 'ict-platform' ) . '</h2>';
 		$html .= '<p>' . sprintf(
 			__( 'Here is a summary of %d notifications:', 'ict-platform' ),
 			count( $notifications )
@@ -521,7 +524,7 @@ class ICT_Email_Notification {
 
 		$html .= '<ul style="padding-left: 20px;">';
 		foreach ( $notifications as $notification ) {
-			$data = json_decode( $notification->data, true );
+			$data  = json_decode( $notification->data, true );
 			$html .= '<li style="margin-bottom: 10px;">';
 			$html .= '<strong>' . esc_html( $data['title'] ?? $notification->notification_type ) . '</strong>';
 			$html .= '<br><small style="color: #666;">' . esc_html( $notification->created_at ) . '</small>';

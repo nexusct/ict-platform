@@ -30,14 +30,19 @@ export const OfflineBanner: React.FC<OfflineBannerProps> = ({
     if (!isOnline) {
       setWasOffline(true);
       setShowReconnectedMessage(false);
-    } else if (wasOffline && showReconnected) {
-      setShowReconnectedMessage(true);
-      const timer = setTimeout(() => {
-        setShowReconnectedMessage(false);
-        setWasOffline(false);
-      }, reconnectedDuration);
-      return () => clearTimeout(timer);
+      return;
     }
+    
+    if (!wasOffline || !showReconnected) {
+      return;
+    }
+
+    setShowReconnectedMessage(true);
+    const timer = setTimeout(() => {
+      setShowReconnectedMessage(false);
+      setWasOffline(false);
+    }, reconnectedDuration);
+    return () => clearTimeout(timer);
   }, [isOnline, wasOffline, showReconnected, reconnectedDuration]);
 
   if (isOnline && !showReconnectedMessage) {
@@ -54,7 +59,7 @@ export const OfflineBanner: React.FC<OfflineBannerProps> = ({
         <Icon
           name={showReconnectedMessage ? 'check-circle' : 'wifi-off'}
           size={18}
-          aria-hidden="true"
+          aria-hidden={true}
         />
         <span className="ict-offline-banner__message">
           {showReconnectedMessage

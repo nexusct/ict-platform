@@ -13,6 +13,6 @@ use Exception;
  * @package ICT_Platform\Container\Exception
  * @since   2.0.0
  */
-class ContainerException extends Exception implements ContainerExceptionInterface
-{
+class ContainerException extends Exception implements ContainerExceptionInterface {
+
 }

@@ -82,7 +82,7 @@ class ICT_Webhook_Receiver {
 					'args'                => array(
 						'service' => array(
 							'required'          => true,
-							'validate_callback' => function( $param ) {
+							'validate_callback' => function ( $param ) {
 								return in_array( $param, array( 'crm', 'fsm', 'books', 'people', 'desk' ), true );
 							},
 						),
@@ -290,20 +290,22 @@ class ICT_Webhook_Receiver {
 			// Find local project
 			$project = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT id FROM " . ICT_PROJECTS_TABLE . " WHERE zoho_crm_id = %s",
+					'SELECT id FROM ' . ICT_PROJECTS_TABLE . ' WHERE zoho_crm_id = %s',
 					$zoho_deal_id
 				)
 			);
 
 			if ( $project ) {
 				// Queue sync to update local project
-				ICT_Helper::queue_sync( array(
-					'entity_type'  => 'project',
-					'entity_id'    => $project->id,
-					'action'       => 'update',
-					'zoho_service' => 'crm',
-					'priority'     => 1,
-				) );
+				ICT_Helper::queue_sync(
+					array(
+						'entity_type'  => 'project',
+						'entity_id'    => $project->id,
+						'action'       => 'update',
+						'zoho_service' => 'crm',
+						'priority'     => 1,
+					)
+				);
 
 				return array( 'queued' => 'Project sync queued' );
 			}
@@ -354,19 +356,21 @@ class ICT_Webhook_Receiver {
 			if ( $zoho_item_id ) {
 				$inventory_item = $wpdb->get_row(
 					$wpdb->prepare(
-						"SELECT id FROM " . ICT_INVENTORY_ITEMS_TABLE . " WHERE zoho_books_item_id = %s",
+						'SELECT id FROM ' . ICT_INVENTORY_ITEMS_TABLE . ' WHERE zoho_books_item_id = %s',
 						$zoho_item_id
 					)
 				);
 
 				if ( $inventory_item ) {
-					ICT_Helper::queue_sync( array(
-						'entity_type'  => 'inventory_item',
-						'entity_id'    => $inventory_item->id,
-						'action'       => 'update',
-						'zoho_service' => 'books',
-						'priority'     => 2,
-					) );
+					ICT_Helper::queue_sync(
+						array(
+							'entity_type'  => 'inventory_item',
+							'entity_id'    => $inventory_item->id,
+							'action'       => 'update',
+							'zoho_service' => 'books',
+							'priority'     => 2,
+						)
+					);
 				}
 			}
 		}
@@ -392,7 +396,7 @@ class ICT_Webhook_Receiver {
 
 				$time_entry = $wpdb->get_row(
 					$wpdb->prepare(
-						"SELECT id FROM " . ICT_TIME_ENTRIES_TABLE . " WHERE zoho_people_id = %s",
+						'SELECT id FROM ' . ICT_TIME_ENTRIES_TABLE . ' WHERE zoho_people_id = %s',
 						$zoho_timesheet_id
 					)
 				);

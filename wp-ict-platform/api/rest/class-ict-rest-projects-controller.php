@@ -95,18 +95,18 @@ class ICT_REST_Projects_Controller extends WP_REST_Controller {
 
 		$offset = ( $page - 1 ) * $per_page;
 
-		$where = array( '1=1' );
+		$where  = array( '1=1' );
 		$params = array();
 
 		if ( $status ) {
-			$statuses = explode( ',', $status );
+			$statuses     = explode( ',', $status );
 			$placeholders = implode( ',', array_fill( 0, count( $statuses ), '%s' ) );
-			$where[] = "status IN ($placeholders)";
-			$params = array_merge( $params, $statuses );
+			$where[]      = "status IN ($placeholders)";
+			$params       = array_merge( $params, $statuses );
 		}
 
 		if ( $search ) {
-			$where[] = '(project_name LIKE %s OR project_number LIKE %s)';
+			$where[]  = '(project_name LIKE %s OR project_number LIKE %s)';
 			$params[] = '%' . $wpdb->esc_like( $search ) . '%';
 			$params[] = '%' . $wpdb->esc_like( $search ) . '%';
 		}
@@ -115,7 +115,7 @@ class ICT_REST_Projects_Controller extends WP_REST_Controller {
 
 		$total = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(*) FROM " . ICT_PROJECTS_TABLE . " WHERE $where_sql",
+				'SELECT COUNT(*) FROM ' . ICT_PROJECTS_TABLE . " WHERE $where_sql",
 				$params
 			)
 		);
@@ -125,7 +125,7 @@ class ICT_REST_Projects_Controller extends WP_REST_Controller {
 
 		$projects = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_PROJECTS_TABLE . " WHERE $where_sql ORDER BY created_at DESC LIMIT %d OFFSET %d",
+				'SELECT * FROM ' . ICT_PROJECTS_TABLE . " WHERE $where_sql ORDER BY created_at DESC LIMIT %d OFFSET %d",
 				$params
 			)
 		);
@@ -152,7 +152,7 @@ class ICT_REST_Projects_Controller extends WP_REST_Controller {
 
 		$project = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_PROJECTS_TABLE . " WHERE id = %d",
+				'SELECT * FROM ' . ICT_PROJECTS_TABLE . ' WHERE id = %d',
 				$id
 			)
 		);
@@ -208,16 +208,18 @@ class ICT_REST_Projects_Controller extends WP_REST_Controller {
 		$project_id = $wpdb->insert_id;
 
 		// Queue sync to Zoho CRM
-		ICT_Helper::queue_sync( array(
-			'entity_type'  => 'project',
-			'entity_id'    => $project_id,
-			'action'       => 'create',
-			'zoho_service' => 'crm',
-			'payload'      => wp_json_encode( $data ),
-		) );
+		ICT_Helper::queue_sync(
+			array(
+				'entity_type'  => 'project',
+				'entity_id'    => $project_id,
+				'action'       => 'create',
+				'zoho_service' => 'crm',
+				'payload'      => wp_json_encode( $data ),
+			)
+		);
 
 		$project = $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM " . ICT_PROJECTS_TABLE . " WHERE id = %d", $project_id )
+			$wpdb->prepare( 'SELECT * FROM ' . ICT_PROJECTS_TABLE . ' WHERE id = %d', $project_id )
 		);
 
 		return new WP_REST_Response(
@@ -284,15 +286,17 @@ class ICT_REST_Projects_Controller extends WP_REST_Controller {
 		}
 
 		// Queue sync
-		ICT_Helper::queue_sync( array(
-			'entity_type'  => 'project',
-			'entity_id'    => $id,
-			'action'       => 'update',
-			'zoho_service' => 'crm',
-		) );
+		ICT_Helper::queue_sync(
+			array(
+				'entity_type'  => 'project',
+				'entity_id'    => $id,
+				'action'       => 'update',
+				'zoho_service' => 'crm',
+			)
+		);
 
 		$project = $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM " . ICT_PROJECTS_TABLE . " WHERE id = %d", $id )
+			$wpdb->prepare( 'SELECT * FROM ' . ICT_PROJECTS_TABLE . ' WHERE id = %d', $id )
 		);
 
 		return new WP_REST_Response(
@@ -338,13 +342,15 @@ class ICT_REST_Projects_Controller extends WP_REST_Controller {
 	public function sync_item( $request ) {
 		$id = $request->get_param( 'id' );
 
-		ICT_Helper::queue_sync( array(
-			'entity_type'  => 'project',
-			'entity_id'    => $id,
-			'action'       => 'update',
-			'zoho_service' => 'crm',
-			'priority'     => 1,
-		) );
+		ICT_Helper::queue_sync(
+			array(
+				'entity_type'  => 'project',
+				'entity_id'    => $id,
+				'action'       => 'update',
+				'zoho_service' => 'crm',
+				'priority'     => 1,
+			)
+		);
 
 		return new WP_REST_Response(
 			array(
