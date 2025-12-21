@@ -5,8 +5,8 @@ declare(strict_types=1);
 /**
  * Plugin Name:       ICT Platform
  * Plugin URI:        https://github.com/yourusername/ict-platform
- * Description:       Complete ICT/electrical contracting operations platform with Zoho integration (CRM, FSM, Books, People, Desk). Manages projects, time tracking, resources, inventory, and procurement.
- * Version:           2.0.0
+ * Description:       Complete ICT/electrical contracting operations platform with Zoho integration (CRM, FSM, Books, People, Desk). Manages projects, time tracking, resources, inventory, and procurement. Compatible with Divi 5+.
+ * Version:           2.0.1
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Your Name
@@ -28,8 +28,9 @@ if (!defined('WPINC')) {
  * Current plugin version.
  * Start at version 2.0.0 and use SemVer - https://semver.org
  * v2.0.0 - PSR-4 refactoring with namespaces and DI container
+ * v2.0.1 - Added Divi 5 compatibility and PHP error fixes
  */
-define('ICT_PLATFORM_VERSION', '2.0.0');
+define('ICT_PLATFORM_VERSION', '2.0.1');
 
 /**
  * Plugin constants
@@ -94,6 +95,11 @@ if (file_exists($composer_autoloader)) {
  */
 require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/class-ict-autoloader.php';
 ICT_Autoloader::register();
+
+/**
+ * Load Divi 5 compatibility layer
+ */
+require_once ICT_PLATFORM_PLUGIN_DIR . 'includes/class-ict-divi-compatibility.php';
 
 /**
  * The code that runs during plugin activation.

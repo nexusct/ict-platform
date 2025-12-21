@@ -1,6 +1,6 @@
 {
   "name": "ict-platform",
-  "version": "1.0.0",
+  "version": "2.0.1",
   "description": "Complete ICT/electrical contracting operations platform with Zoho integration",
   "main": "index.js",
   "scripts": {
