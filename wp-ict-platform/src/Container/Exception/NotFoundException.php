@@ -13,6 +13,6 @@ use Exception;
  * @package ICT_Platform\Container\Exception
  * @since   2.0.0
  */
-class NotFoundException extends Exception implements NotFoundExceptionInterface
-{
+class NotFoundException extends Exception implements NotFoundExceptionInterface {
+
 }

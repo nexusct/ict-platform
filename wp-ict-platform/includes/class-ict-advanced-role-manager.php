@@ -31,28 +31,28 @@ class ICT_Advanced_Role_Manager {
 	 */
 	private $capabilities = array(
 		// Platform management
-		'manage_ict_platform'       => 'Manage ICT Platform settings',
-		'manage_ict_integrations'   => 'Manage integrations (Zoho, Teams, etc.)',
-		'manage_ict_sync'           => 'Manage sync operations',
+		'manage_ict_platform'         => 'Manage ICT Platform settings',
+		'manage_ict_integrations'     => 'Manage integrations (Zoho, Teams, etc.)',
+		'manage_ict_sync'             => 'Manage sync operations',
 
 		// Projects
-		'manage_ict_projects'       => 'Full project management access',
-		'edit_ict_projects'         => 'Edit projects',
-		'delete_ict_projects'       => 'Delete projects',
-		'view_ict_projects'         => 'View projects',
-		'create_ict_projects'       => 'Create new projects',
-		'assign_ict_projects'       => 'Assign users to projects',
+		'manage_ict_projects'         => 'Full project management access',
+		'edit_ict_projects'           => 'Edit projects',
+		'delete_ict_projects'         => 'Delete projects',
+		'view_ict_projects'           => 'View projects',
+		'create_ict_projects'         => 'Create new projects',
+		'assign_ict_projects'         => 'Assign users to projects',
 
 		// Time tracking
-		'manage_ict_time_entries'   => 'Manage all time entries',
-		'edit_ict_time_entry'       => 'Edit own time entries',
-		'approve_ict_time_entries'  => 'Approve time entries',
-		'view_all_time_entries'     => 'View all time entries',
+		'manage_ict_time_entries'     => 'Manage all time entries',
+		'edit_ict_time_entry'         => 'Edit own time entries',
+		'approve_ict_time_entries'    => 'Approve time entries',
+		'view_all_time_entries'       => 'View all time entries',
 
 		// Inventory
-		'manage_ict_inventory'      => 'Full inventory management',
-		'edit_ict_inventory'        => 'Edit inventory items',
-		'view_ict_inventory'        => 'View inventory',
+		'manage_ict_inventory'        => 'Full inventory management',
+		'edit_ict_inventory'          => 'Edit inventory items',
+		'view_ict_inventory'          => 'View inventory',
 
 		// Purchase orders
 		'manage_ict_purchase_orders'  => 'Manage all purchase orders',
@@ -61,28 +61,28 @@ class ICT_Advanced_Role_Manager {
 		'view_ict_purchase_orders'    => 'View purchase orders',
 
 		// Resources
-		'manage_ict_resources'      => 'Manage resource allocation',
-		'view_ict_resources'        => 'View resource allocation',
+		'manage_ict_resources'        => 'Manage resource allocation',
+		'view_ict_resources'          => 'View resource allocation',
 
 		// Reports
-		'view_ict_reports'          => 'View reports',
-		'export_ict_reports'        => 'Export reports',
-		'manage_ict_reports'        => 'Manage report schedules',
+		'view_ict_reports'            => 'View reports',
+		'export_ict_reports'          => 'Export reports',
+		'manage_ict_reports'          => 'Manage report schedules',
 
 		// Tasks
-		'manage_ict_tasks'          => 'Manage all tasks',
-		'view_ict_tasks'            => 'View tasks',
-		'edit_ict_tasks'            => 'Edit assigned tasks',
+		'manage_ict_tasks'            => 'Manage all tasks',
+		'view_ict_tasks'              => 'View tasks',
+		'edit_ict_tasks'              => 'Edit assigned tasks',
 
 		// Users
-		'manage_ict_users'          => 'Manage ICT users and roles',
-		'view_ict_users'            => 'View user directory',
+		'manage_ict_users'            => 'Manage ICT users and roles',
+		'view_ict_users'              => 'View user directory',
 
 		// Custom fields
-		'manage_custom_fields'      => 'Manage custom field definitions',
+		'manage_custom_fields'        => 'Manage custom field definitions',
 
 		// Notifications
-		'manage_notifications'      => 'Manage notification settings',
+		'manage_notifications'        => 'Manage notification settings',
 	);
 
 	/**
@@ -91,11 +91,11 @@ class ICT_Advanced_Role_Manager {
 	 * @var array
 	 */
 	private $default_roles = array(
-		'ict_administrator' => array(
+		'ict_administrator'     => array(
 			'display_name' => 'ICT Administrator',
 			'capabilities' => 'all',
 		),
-		'ict_project_manager' => array(
+		'ict_project_manager'   => array(
 			'display_name' => 'ICT Project Manager',
 			'capabilities' => array(
 				'manage_ict_projects',
@@ -120,7 +120,7 @@ class ICT_Advanced_Role_Manager {
 				'view_ict_inventory',
 			),
 		),
-		'ict_technician' => array(
+		'ict_technician'        => array(
 			'display_name' => 'ICT Technician',
 			'capabilities' => array(
 				'view_ict_projects',
@@ -142,7 +142,7 @@ class ICT_Advanced_Role_Manager {
 				'view_ict_reports',
 			),
 		),
-		'ict_accountant' => array(
+		'ict_accountant'        => array(
 			'display_name' => 'ICT Accountant',
 			'capabilities' => array(
 				'view_ict_projects',
@@ -154,7 +154,7 @@ class ICT_Advanced_Role_Manager {
 				'approve_ict_purchase_orders',
 			),
 		),
-		'ict_viewer' => array(
+		'ict_viewer'            => array(
 			'display_name' => 'ICT Viewer',
 			'capabilities' => array(
 				'view_ict_projects',
@@ -215,68 +215,108 @@ class ICT_Advanced_Role_Manager {
 	 */
 	public function register_endpoints() {
 		// Roles
-		register_rest_route( 'ict/v1', '/roles', array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'get_roles' ),
-			'permission_callback' => array( $this, 'can_manage_roles' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/roles',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_roles' ),
+				'permission_callback' => array( $this, 'can_manage_roles' ),
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/roles', array(
-			'methods'             => 'POST',
-			'callback'            => array( $this, 'create_role' ),
-			'permission_callback' => array( $this, 'can_manage_roles' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/roles',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'create_role' ),
+				'permission_callback' => array( $this, 'can_manage_roles' ),
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/roles/(?P<role>[a-z_]+)', array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'get_role' ),
-			'permission_callback' => array( $this, 'can_manage_roles' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/roles/(?P<role>[a-z_]+)',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_role' ),
+				'permission_callback' => array( $this, 'can_manage_roles' ),
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/roles/(?P<role>[a-z_]+)', array(
-			'methods'             => 'PUT',
-			'callback'            => array( $this, 'update_role' ),
-			'permission_callback' => array( $this, 'can_manage_roles' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/roles/(?P<role>[a-z_]+)',
+			array(
+				'methods'             => 'PUT',
+				'callback'            => array( $this, 'update_role' ),
+				'permission_callback' => array( $this, 'can_manage_roles' ),
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/roles/(?P<role>[a-z_]+)', array(
-			'methods'             => 'DELETE',
-			'callback'            => array( $this, 'delete_role' ),
-			'permission_callback' => array( $this, 'can_manage_roles' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/roles/(?P<role>[a-z_]+)',
+			array(
+				'methods'             => 'DELETE',
+				'callback'            => array( $this, 'delete_role' ),
+				'permission_callback' => array( $this, 'can_manage_roles' ),
+			)
+		);
 
 		// Capabilities
-		register_rest_route( 'ict/v1', '/capabilities', array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'get_capabilities' ),
-			'permission_callback' => array( $this, 'can_manage_roles' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/capabilities',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_capabilities' ),
+				'permission_callback' => array( $this, 'can_manage_roles' ),
+			)
+		);
 
 		// User roles
-		register_rest_route( 'ict/v1', '/users/(?P<user_id>\d+)/roles', array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'get_user_roles' ),
-			'permission_callback' => array( $this, 'can_manage_roles' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/users/(?P<user_id>\d+)/roles',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_user_roles' ),
+				'permission_callback' => array( $this, 'can_manage_roles' ),
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/users/(?P<user_id>\d+)/roles', array(
-			'methods'             => 'PUT',
-			'callback'            => array( $this, 'update_user_roles' ),
-			'permission_callback' => array( $this, 'can_manage_roles' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/users/(?P<user_id>\d+)/roles',
+			array(
+				'methods'             => 'PUT',
+				'callback'            => array( $this, 'update_user_roles' ),
+				'permission_callback' => array( $this, 'can_manage_roles' ),
+			)
+		);
 
 		// Permission groups
-		register_rest_route( 'ict/v1', '/permission-groups', array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'get_permission_groups' ),
-			'permission_callback' => array( $this, 'can_manage_roles' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/permission-groups',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_permission_groups' ),
+				'permission_callback' => array( $this, 'can_manage_roles' ),
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/permission-groups', array(
-			'methods'             => 'POST',
-			'callback'            => array( $this, 'create_permission_group' ),
-			'permission_callback' => array( $this, 'can_manage_roles' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/permission-groups',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'create_permission_group' ),
+				'permission_callback' => array( $this, 'can_manage_roles' ),
+			)
+		);
 	}
 
 	/**
@@ -304,9 +344,13 @@ class ICT_Advanced_Role_Manager {
 		foreach ( $wp_roles->roles as $role_id => $role ) {
 			// Filter to ICT-related roles
 			if ( strpos( $role_id, 'ict_' ) === 0 || $role_id === 'administrator' ) {
-				$ict_caps = array_filter( $role['capabilities'], function( $cap_val, $cap_name ) {
-					return strpos( $cap_name, 'ict_' ) !== false || strpos( $cap_name, 'manage_' ) !== false;
-				}, ARRAY_FILTER_USE_BOTH );
+				$ict_caps = array_filter(
+					$role['capabilities'],
+					function ( $cap_val, $cap_name ) {
+						return strpos( $cap_name, 'ict_' ) !== false || strpos( $cap_name, 'manage_' ) !== false;
+					},
+					ARRAY_FILTER_USE_BOTH
+				);
 
 				$roles[] = array(
 					'id'           => $role_id,
@@ -318,10 +362,13 @@ class ICT_Advanced_Role_Manager {
 			}
 		}
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'roles'   => $roles,
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'roles'   => $roles,
+			),
+			200
+		);
 	}
 
 	/**
@@ -336,30 +383,39 @@ class ICT_Advanced_Role_Manager {
 		$role    = get_role( $role_id );
 
 		if ( ! $role ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Role not found',
-			), 404 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Role not found',
+				),
+				404
+			);
 		}
 
 		$users = get_users( array( 'role' => $role_id ) );
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'role'    => array(
-				'id'           => $role_id,
-				'name'         => $this->get_role_display_name( $role_id ),
-				'capabilities' => $role->capabilities,
-				'users'        => array_map( function( $user ) {
-					return array(
-						'id'           => $user->ID,
-						'login'        => $user->user_login,
-						'display_name' => $user->display_name,
-						'email'        => $user->user_email,
-					);
-				}, $users ),
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'role'    => array(
+					'id'           => $role_id,
+					'name'         => $this->get_role_display_name( $role_id ),
+					'capabilities' => $role->capabilities,
+					'users'        => array_map(
+						function ( $user ) {
+							return array(
+								'id'           => $user->ID,
+								'login'        => $user->user_login,
+								'display_name' => $user->display_name,
+								'email'        => $user->user_email,
+							);
+						},
+						$users
+					),
+				),
 			),
-		), 200 );
+			200
+		);
 	}
 
 	/**
@@ -378,18 +434,24 @@ class ICT_Advanced_Role_Manager {
 		$clone_from   = $params['clone_from'] ?? null;
 
 		if ( empty( $role_id ) || empty( $display_name ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Role name and display name are required',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Role name and display name are required',
+				),
+				400
+			);
 		}
 
 		// Check if role exists
 		if ( get_role( $role_id ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Role already exists',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Role already exists',
+				),
+				400
+			);
 		}
 
 		// Clone capabilities from another role
@@ -414,20 +476,26 @@ class ICT_Advanced_Role_Manager {
 		$result = add_role( $role_id, $display_name, $valid_caps );
 
 		if ( ! $result ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Failed to create role',
-			), 500 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Failed to create role',
+				),
+				500
+			);
 		}
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'role'    => array(
-				'id'           => $role_id,
-				'name'         => $display_name,
-				'capabilities' => $valid_caps,
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'role'    => array(
+					'id'           => $role_id,
+					'name'         => $display_name,
+					'capabilities' => $valid_caps,
+				),
 			),
-		), 201 );
+			201
+		);
 	}
 
 	/**
@@ -443,18 +511,24 @@ class ICT_Advanced_Role_Manager {
 		$role    = get_role( $role_id );
 
 		if ( ! $role ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Role not found',
-			), 404 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Role not found',
+				),
+				404
+			);
 		}
 
 		// Prevent modification of system roles
 		if ( in_array( $role_id, array( 'administrator' ), true ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Cannot modify system role',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Cannot modify system role',
+				),
+				400
+			);
 		}
 
 		$capabilities = $params['capabilities'] ?? array();
@@ -470,13 +544,16 @@ class ICT_Advanced_Role_Manager {
 			}
 		}
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'role'    => array(
-				'id'           => $role_id,
-				'capabilities' => $role->capabilities,
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'role'    => array(
+					'id'           => $role_id,
+					'capabilities' => $role->capabilities,
+				),
 			),
-		), 200 );
+			200
+		);
 	}
 
 	/**
@@ -491,29 +568,38 @@ class ICT_Advanced_Role_Manager {
 
 		// Prevent deletion of default roles
 		if ( isset( $this->default_roles[ $role_id ] ) || in_array( $role_id, array( 'administrator', 'editor', 'subscriber' ), true ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Cannot delete default role',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Cannot delete default role',
+				),
+				400
+			);
 		}
 
 		// Check if users have this role
 		$users = get_users( array( 'role' => $role_id ) );
 
 		if ( ! empty( $users ) ) {
-			return new WP_REST_Response( array(
-				'success'    => false,
-				'error'      => 'Role has assigned users',
-				'user_count' => count( $users ),
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success'    => false,
+					'error'      => 'Role has assigned users',
+					'user_count' => count( $users ),
+				),
+				400
+			);
 		}
 
 		remove_role( $role_id );
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'message' => 'Role deleted',
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'message' => 'Role deleted',
+			),
+			200
+		);
 	}
 
 	/**
@@ -526,11 +612,14 @@ class ICT_Advanced_Role_Manager {
 	public function get_capabilities( $request ) {
 		$grouped = $this->get_grouped_capabilities();
 
-		return new WP_REST_Response( array(
-			'success'      => true,
-			'capabilities' => $this->capabilities,
-			'grouped'      => $grouped,
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success'      => true,
+				'capabilities' => $this->capabilities,
+				'grouped'      => $grouped,
+			),
+			200
+		);
 	}
 
 	/**
@@ -541,7 +630,7 @@ class ICT_Advanced_Role_Manager {
 	 */
 	private function get_grouped_capabilities() {
 		return array(
-			'platform' => array(
+			'platform'      => array(
 				'label'        => __( 'Platform Management', 'ict-platform' ),
 				'capabilities' => array(
 					'manage_ict_platform',
@@ -549,7 +638,7 @@ class ICT_Advanced_Role_Manager {
 					'manage_ict_sync',
 				),
 			),
-			'projects' => array(
+			'projects'      => array(
 				'label'        => __( 'Projects', 'ict-platform' ),
 				'capabilities' => array(
 					'manage_ict_projects',
@@ -569,7 +658,7 @@ class ICT_Advanced_Role_Manager {
 					'view_all_time_entries',
 				),
 			),
-			'inventory' => array(
+			'inventory'     => array(
 				'label'        => __( 'Inventory', 'ict-platform' ),
 				'capabilities' => array(
 					'manage_ict_inventory',
@@ -577,7 +666,7 @@ class ICT_Advanced_Role_Manager {
 					'view_ict_inventory',
 				),
 			),
-			'procurement' => array(
+			'procurement'   => array(
 				'label'        => __( 'Purchase Orders', 'ict-platform' ),
 				'capabilities' => array(
 					'manage_ict_purchase_orders',
@@ -586,14 +675,14 @@ class ICT_Advanced_Role_Manager {
 					'view_ict_purchase_orders',
 				),
 			),
-			'resources' => array(
+			'resources'     => array(
 				'label'        => __( 'Resources', 'ict-platform' ),
 				'capabilities' => array(
 					'manage_ict_resources',
 					'view_ict_resources',
 				),
 			),
-			'reports' => array(
+			'reports'       => array(
 				'label'        => __( 'Reports', 'ict-platform' ),
 				'capabilities' => array(
 					'view_ict_reports',
@@ -601,7 +690,7 @@ class ICT_Advanced_Role_Manager {
 					'manage_ict_reports',
 				),
 			),
-			'tasks' => array(
+			'tasks'         => array(
 				'label'        => __( 'Tasks', 'ict-platform' ),
 				'capabilities' => array(
 					'manage_ict_tasks',
@@ -609,14 +698,14 @@ class ICT_Advanced_Role_Manager {
 					'edit_ict_tasks',
 				),
 			),
-			'users' => array(
+			'users'         => array(
 				'label'        => __( 'Users', 'ict-platform' ),
 				'capabilities' => array(
 					'manage_ict_users',
 					'view_ict_users',
 				),
 			),
-			'other' => array(
+			'other'         => array(
 				'label'        => __( 'Other', 'ict-platform' ),
 				'capabilities' => array(
 					'manage_custom_fields',
@@ -638,10 +727,13 @@ class ICT_Advanced_Role_Manager {
 		$user    = get_user_by( 'id', $user_id );
 
 		if ( ! $user ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'User not found',
-			), 404 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'User not found',
+				),
+				404
+			);
 		}
 
 		$all_caps = array();
@@ -651,12 +743,15 @@ class ICT_Advanced_Role_Manager {
 			}
 		}
 
-		return new WP_REST_Response( array(
-			'success'      => true,
-			'user_id'      => $user_id,
-			'roles'        => $user->roles,
-			'capabilities' => $all_caps,
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success'      => true,
+				'user_id'      => $user_id,
+				'roles'        => $user->roles,
+				'capabilities' => $all_caps,
+			),
+			200
+		);
 	}
 
 	/**
@@ -672,10 +767,13 @@ class ICT_Advanced_Role_Manager {
 		$user    = get_user_by( 'id', $user_id );
 
 		if ( ! $user ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'User not found',
-			), 404 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'User not found',
+				),
+				404
+			);
 		}
 
 		$roles = $params['roles'] ?? array();
@@ -707,11 +805,14 @@ class ICT_Advanced_Role_Manager {
 			}
 		}
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'user_id' => $user_id,
-			'roles'   => $user->roles,
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'user_id' => $user_id,
+				'roles'   => $user->roles,
+			),
+			200
+		);
 	}
 
 	/**
@@ -724,10 +825,13 @@ class ICT_Advanced_Role_Manager {
 	public function get_permission_groups( $request ) {
 		$groups = get_option( 'ict_permission_groups', array() );
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'groups'  => $groups,
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'groups'  => $groups,
+			),
+			200
+		);
 	}
 
 	/**
@@ -745,10 +849,13 @@ class ICT_Advanced_Role_Manager {
 		$capabilities = $params['capabilities'] ?? array();
 
 		if ( empty( $group_id ) || empty( $display_name ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Group name and display name are required',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Group name and display name are required',
+				),
+				400
+			);
 		}
 
 		$groups = get_option( 'ict_permission_groups', array() );
@@ -761,10 +868,13 @@ class ICT_Advanced_Role_Manager {
 
 		update_option( 'ict_permission_groups', $groups );
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'group'   => $groups[ $group_id ],
-		), 201 );
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'group'   => $groups[ $group_id ],
+			),
+			201
+		);
 	}
 
 	/**
@@ -781,7 +891,7 @@ class ICT_Advanced_Role_Manager {
 		// Check for project-specific permissions
 		if ( isset( $args[2] ) && in_array( $args[0], array( 'edit_ict_project', 'view_ict_project' ), true ) ) {
 			$project_id = $args[2];
-			$allcaps = $this->check_project_permission( $allcaps, $user->ID, $project_id, $args[0] );
+			$allcaps    = $this->check_project_permission( $allcaps, $user->ID, $project_id, $args[0] );
 		}
 
 		// Check for time-based permissions (e.g., can only edit today's entries)
@@ -796,9 +906,9 @@ class ICT_Advanced_Role_Manager {
 	 * Check project-specific permission.
 	 *
 	 * @since  1.1.0
-	 * @param  array $allcaps    All capabilities.
-	 * @param  int   $user_id    User ID.
-	 * @param  int   $project_id Project ID.
+	 * @param  array  $allcaps    All capabilities.
+	 * @param  int    $user_id    User ID.
+	 * @param  int    $project_id Project ID.
 	 * @param  string $capability Capability being checked.
 	 * @return array Modified capabilities.
 	 */
@@ -808,7 +918,7 @@ class ICT_Advanced_Role_Manager {
 		// Check if user is project manager
 		$is_pm = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT 1 FROM " . ICT_PROJECTS_TABLE . " WHERE id = %d AND project_manager_id = %d",
+				'SELECT 1 FROM ' . ICT_PROJECTS_TABLE . ' WHERE id = %d AND project_manager_id = %d',
 				$project_id,
 				$user_id
 			)
@@ -822,7 +932,7 @@ class ICT_Advanced_Role_Manager {
 		// Check if user is assigned to project
 		$is_assigned = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT 1 FROM " . ICT_PROJECT_RESOURCES_TABLE . "
+				'SELECT 1 FROM ' . ICT_PROJECT_RESOURCES_TABLE . "
 				WHERE project_id = %d AND resource_type = 'user' AND resource_id = %d",
 				$project_id,
 				$user_id
@@ -851,7 +961,7 @@ class ICT_Advanced_Role_Manager {
 		// Get time entry
 		$entry = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT technician_id, clock_in, status FROM " . ICT_TIME_ENTRIES_TABLE . " WHERE id = %d",
+				'SELECT technician_id, clock_in, status FROM ' . ICT_TIME_ENTRIES_TABLE . ' WHERE id = %d',
 				$time_entry_id
 			)
 		);
@@ -872,7 +982,7 @@ class ICT_Advanced_Role_Manager {
 		} elseif ( date( 'Y-m-d', strtotime( $entry->clock_in ) ) !== date( 'Y-m-d' ) ) {
 			// Allow editing for 24 hours
 			$entry_time = strtotime( $entry->clock_in );
-			$now = current_time( 'timestamp' );
+			$now        = current_time( 'timestamp' );
 
 			if ( ( $now - $entry_time ) > DAY_IN_SECONDS ) {
 				$allcaps['edit_ict_time_entry'] = false;
@@ -927,10 +1037,12 @@ class ICT_Advanced_Role_Manager {
 	 * @return int User count.
 	 */
 	private function count_users_in_role( $role ) {
-		$users = get_users( array(
-			'role'   => $role,
-			'fields' => 'ID',
-		) );
+		$users = get_users(
+			array(
+				'role'   => $role,
+				'fields' => 'ID',
+			)
+		);
 
 		return count( $users );
 	}

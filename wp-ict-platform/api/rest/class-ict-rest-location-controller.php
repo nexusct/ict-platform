@@ -102,7 +102,7 @@ class ICT_REST_Location_Controller extends WP_REST_Controller {
 		// Verify time entry exists and belongs to current user
 		$time_entry = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_TIME_ENTRIES_TABLE . " WHERE id = %d",
+				'SELECT * FROM ' . ICT_TIME_ENTRIES_TABLE . ' WHERE id = %d',
 				$time_entry_id
 			)
 		);
@@ -188,7 +188,7 @@ class ICT_REST_Location_Controller extends WP_REST_Controller {
 		// Verify time entry exists
 		$time_entry = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_TIME_ENTRIES_TABLE . " WHERE id = %d",
+				'SELECT * FROM ' . ICT_TIME_ENTRIES_TABLE . ' WHERE id = %d',
 				$time_entry_id
 			)
 		);
@@ -245,7 +245,7 @@ class ICT_REST_Location_Controller extends WP_REST_Controller {
 
 		// Get all active time entries with latest location
 		$results = $wpdb->get_results(
-			"SELECT
+			'SELECT
 				te.id AS time_entry_id,
 				te.user_id,
 				te.project_id,
@@ -255,7 +255,7 @@ class ICT_REST_Location_Controller extends WP_REST_Controller {
 				lt.longitude,
 				lt.accuracy,
 				lt.recorded_at
-			FROM " . ICT_TIME_ENTRIES_TABLE . " te
+			FROM ' . ICT_TIME_ENTRIES_TABLE . " te
 			INNER JOIN {$wpdb->users} u ON te.user_id = u.ID
 			LEFT JOIN (
 				SELECT time_entry_id, latitude, longitude, accuracy, recorded_at

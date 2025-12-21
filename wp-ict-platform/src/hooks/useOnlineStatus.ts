@@ -39,7 +39,7 @@ export function useOnlineStatus(options: UseOnlineStatusOptions = {}): OnlineSta
     }
 
     try {
-      const response = await fetch(pingUrl, {
+      await fetch(pingUrl, {
         method: 'HEAD',
         cache: 'no-store',
         mode: 'no-cors',

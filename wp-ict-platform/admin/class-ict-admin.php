@@ -112,28 +112,28 @@ class ICT_Admin {
 			$this->plugin_name . '-admin',
 			'ictPlatform',
 			array(
-				'apiUrl'       => rest_url( 'ict/v1' ),
-				'nonce'        => wp_create_nonce( 'wp_rest' ),
-				'currentUser'  => wp_get_current_user()->ID,
-				'userCan'      => array(
-					'manageProjects'      => current_user_can( 'manage_ict_projects' ),
-					'manageTimeEntries'   => current_user_can( 'manage_ict_time_entries' ),
-					'approveTime'         => current_user_can( 'approve_ict_time_entries' ),
-					'manageInventory'     => current_user_can( 'manage_ict_inventory' ),
+				'apiUrl'      => rest_url( 'ict/v1' ),
+				'nonce'       => wp_create_nonce( 'wp_rest' ),
+				'currentUser' => wp_get_current_user()->ID,
+				'userCan'     => array(
+					'manageProjects'       => current_user_can( 'manage_ict_projects' ),
+					'manageTimeEntries'    => current_user_can( 'manage_ict_time_entries' ),
+					'approveTime'          => current_user_can( 'approve_ict_time_entries' ),
+					'manageInventory'      => current_user_can( 'manage_ict_inventory' ),
 					'managePurchaseOrders' => current_user_can( 'manage_ict_purchase_orders' ),
-					'viewReports'         => current_user_can( 'view_ict_reports' ),
-					'manageSync'          => current_user_can( 'manage_ict_sync' ),
+					'viewReports'          => current_user_can( 'view_ict_reports' ),
+					'manageSync'           => current_user_can( 'manage_ict_sync' ),
 				),
-				'settings'     => array(
-					'dateFormat'    => get_option( 'ict_date_format', 'Y-m-d' ),
-					'timeFormat'    => get_option( 'ict_time_format', 'H:i:s' ),
-					'currency'      => get_option( 'ict_currency', 'USD' ),
-					'timeRounding'  => get_option( 'ict_time_rounding', 15 ),
-					'offlineMode'   => get_option( 'ict_enable_offline_mode', true ),
-					'gpsTracking'   => get_option( 'ict_enable_gps_tracking', true ),
+				'settings'    => array(
+					'dateFormat'   => get_option( 'ict_date_format', 'Y-m-d' ),
+					'timeFormat'   => get_option( 'ict_time_format', 'H:i:s' ),
+					'currency'     => get_option( 'ict_currency', 'USD' ),
+					'timeRounding' => get_option( 'ict_time_rounding', 15 ),
+					'offlineMode'  => get_option( 'ict_enable_offline_mode', true ),
+					'gpsTracking'  => get_option( 'ict_enable_gps_tracking', true ),
 				),
-				'zohoStatus'   => $this->get_zoho_connection_status(),
-				'i18n'         => array(
+				'zohoStatus'  => $this->get_zoho_connection_status(),
+				'i18n'        => array(
 					'projects'     => __( 'Projects', 'ict-platform' ),
 					'timeTracking' => __( 'Time Tracking', 'ict-platform' ),
 					'inventory'    => __( 'Inventory', 'ict-platform' ),
@@ -178,7 +178,7 @@ class ICT_Admin {
 		$status   = array();
 
 		foreach ( $services as $service ) {
-			$token = get_option( "ict_zoho_{$service}_access_token" );
+			$token              = get_option( "ict_zoho_{$service}_access_token" );
 			$status[ $service ] = ! empty( $token );
 		}
 

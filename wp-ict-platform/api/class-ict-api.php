@@ -390,7 +390,6 @@ class ICT_API {
 	/**
 	 * Permission callbacks.
 	 */
-
 	public function check_projects_permission() {
 		// In Divi Visual Builder context, use elevated permissions check
 		if ( $this->is_divi_builder_request() ) {
@@ -439,7 +438,6 @@ class ICT_API {
 	/**
 	 * Placeholder endpoint handlers (to be implemented in dedicated controller classes).
 	 */
-
 	public function get_projects( $request ) {
 		return new WP_REST_Response( array( 'message' => 'Projects endpoint' ), 200 );
 	}

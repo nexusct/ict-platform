@@ -160,7 +160,7 @@ class ICT_REST_Files_Tasks_Controller extends WP_REST_Controller {
 		global $wpdb;
 		$project = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_PROJECTS_TABLE . " WHERE id = %d",
+				'SELECT * FROM ' . ICT_PROJECTS_TABLE . ' WHERE id = %d',
 				$project_id
 			)
 		);
@@ -211,8 +211,8 @@ class ICT_REST_Files_Tasks_Controller extends WP_REST_Controller {
 
 		return new WP_REST_Response(
 			array(
-				'id'         => $attachment_id,
-				'url'        => $file_url,
+				'id'           => $attachment_id,
+				'url'          => $file_url,
 				'workdrive_id' => null, // Would be set after Zoho sync
 			),
 			201
@@ -322,16 +322,16 @@ class ICT_REST_Files_Tasks_Controller extends WP_REST_Controller {
 		global $wpdb;
 
 		$user_id = get_current_user_id();
-		$status = $request->get_param( 'status' );
+		$status  = $request->get_param( 'status' );
 
 		// Create tasks table if it doesn't exist
 		$this->maybe_create_tasks_table();
 
-		$where = "WHERE 1=1";
+		$where  = 'WHERE 1=1';
 		$params = array();
 
 		if ( $status ) {
-			$where .= " AND status = %s";
+			$where   .= ' AND status = %s';
 			$params[] = $status;
 		}
 
@@ -408,19 +408,19 @@ class ICT_REST_Files_Tasks_Controller extends WP_REST_Controller {
 		}
 
 		// Update data
-		$update_data = array();
+		$update_data   = array();
 		$update_format = array();
 
 		$fields = array( 'status', 'priority', 'title', 'description', 'due_date', 'estimated_hours', 'actual_hours' );
 		foreach ( $fields as $field ) {
 			if ( $request->has_param( $field ) ) {
 				$update_data[ $field ] = $request->get_param( $field );
-				$update_format[] = in_array( $field, array( 'estimated_hours', 'actual_hours' ) ) ? '%f' : '%s';
+				$update_format[]       = in_array( $field, array( 'estimated_hours', 'actual_hours' ) ) ? '%f' : '%s';
 			}
 		}
 
 		$update_data['updated_at'] = current_time( 'mysql' );
-		$update_format[] = '%s';
+		$update_format[]           = '%s';
 
 		if ( ! empty( $update_data ) ) {
 			$result = $wpdb->update(
@@ -488,7 +488,7 @@ class ICT_REST_Files_Tasks_Controller extends WP_REST_Controller {
 
 		$entry = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_TIME_ENTRIES_TABLE . "
+				'SELECT * FROM ' . ICT_TIME_ENTRIES_TABLE . "
 				WHERE user_id = %d
 				AND clock_out IS NULL
 				AND status = 'active'

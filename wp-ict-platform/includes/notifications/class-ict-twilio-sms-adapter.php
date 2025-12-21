@@ -215,9 +215,9 @@ class ICT_Twilio_SMS_Adapter {
 			$result = $this->send( $phone, $message );
 
 			if ( $result['success'] ) {
-				$results['sent']++;
+				++$results['sent'];
 			} else {
-				$results['failed']++;
+				++$results['failed'];
 				$results['errors'][] = $result['error'];
 			}
 		}
@@ -271,21 +271,32 @@ class ICT_Twilio_SMS_Adapter {
 	 */
 	private function should_send_sms( $phone, $type ) {
 		// Find user by phone number
-		$users = get_users( array(
-			'meta_query' => array(
-				'relation' => 'OR',
-				array( 'key' => 'phone', 'value' => $phone ),
-				array( 'key' => 'mobile', 'value' => $phone ),
-				array( 'key' => 'ict_phone_number', 'value' => $phone ),
-			),
-			'number' => 1,
-		) );
+		$users = get_users(
+			array(
+				'meta_query' => array(
+					'relation' => 'OR',
+					array(
+						'key'   => 'phone',
+						'value' => $phone,
+					),
+					array(
+						'key'   => 'mobile',
+						'value' => $phone,
+					),
+					array(
+						'key'   => 'ict_phone_number',
+						'value' => $phone,
+					),
+				),
+				'number'     => 1,
+			)
+		);
 
 		if ( empty( $users ) ) {
 			return true; // External number, always send
 		}
 
-		$user = $users[0];
+		$user        = $users[0];
 		$preferences = get_user_meta( $user->ID, 'ict_notification_preferences', true );
 
 		if ( ! is_array( $preferences ) ) {
@@ -306,10 +317,8 @@ class ICT_Twilio_SMS_Adapter {
 				if ( $current_time >= $start && $current_time < $end ) {
 					return false;
 				}
-			} else {
-				if ( $current_time >= $start || $current_time < $end ) {
+			} elseif ( $current_time >= $start || $current_time < $end ) {
 					return false;
-				}
 			}
 		}
 
@@ -449,12 +458,12 @@ class ICT_Twilio_SMS_Adapter {
 		$wpdb->insert(
 			$table,
 			array(
-				'recipient'   => $to,
-				'message'     => $message,
-				'status'      => $status,
-				'error'       => $error,
-				'twilio_sid'  => $message_id,
-				'created_at'  => current_time( 'mysql' ),
+				'recipient'  => $to,
+				'message'    => $message,
+				'status'     => $status,
+				'error'      => $error,
+				'twilio_sid' => $message_id,
+				'created_at' => current_time( 'mysql' ),
 			),
 			array( '%s', '%s', '%s', '%s', '%s', '%s' )
 		);
@@ -580,10 +589,10 @@ class ICT_Twilio_SMS_Adapter {
 		if ( 200 === $status_code ) {
 			$body = json_decode( wp_remote_retrieve_body( $response ), true );
 			return array(
-				'valid'         => true,
-				'phone_number'  => $body['phone_number'] ?? $phone,
-				'country_code'  => $body['country_code'] ?? null,
-				'carrier'       => $body['carrier']['name'] ?? null,
+				'valid'        => true,
+				'phone_number' => $body['phone_number'] ?? $phone,
+				'country_code' => $body['country_code'] ?? null,
+				'carrier'      => $body['carrier']['name'] ?? null,
 			);
 		}
 

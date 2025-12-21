@@ -100,23 +100,23 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 				'callback'            => array( $this, 'clock_in' ),
 				'permission_callback' => array( $this, 'clock_permissions_check' ),
 				'args'                => array(
-					'project_id' => array(
+					'project_id'    => array(
 						'required'          => true,
 						'type'              => 'integer',
 						'sanitize_callback' => 'absint',
 					),
-					'task_type' => array(
+					'task_type'     => array(
 						'required'          => false,
 						'type'              => 'string',
 						'default'           => 'general',
 						'sanitize_callback' => 'sanitize_text_field',
 					),
-					'notes' => array(
+					'notes'         => array(
 						'required'          => false,
 						'type'              => 'string',
 						'sanitize_callback' => 'sanitize_textarea_field',
 					),
-					'gps_latitude' => array(
+					'gps_latitude'  => array(
 						'required'          => false,
 						'type'              => 'number',
 						'sanitize_callback' => 'floatval',
@@ -139,17 +139,17 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 				'callback'            => array( $this, 'clock_out' ),
 				'permission_callback' => array( $this, 'clock_permissions_check' ),
 				'args'                => array(
-					'entry_id' => array(
+					'entry_id'      => array(
 						'required'          => false,
 						'type'              => 'integer',
 						'sanitize_callback' => 'absint',
 					),
-					'notes' => array(
+					'notes'         => array(
 						'required'          => false,
 						'type'              => 'string',
 						'sanitize_callback' => 'sanitize_textarea_field',
 					),
-					'gps_latitude' => array(
+					'gps_latitude'  => array(
 						'required'          => false,
 						'type'              => 'number',
 						'sanitize_callback' => 'floatval',
@@ -231,48 +231,48 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 	public function get_items( $request ) {
 		global $wpdb;
 
-		$per_page = $request->get_param( 'per_page' ) ?? 20;
-		$page     = $request->get_param( 'page' ) ?? 1;
-		$offset   = ( $page - 1 ) * $per_page;
-		$status   = $request->get_param( 'status' );
-		$project_id = $request->get_param( 'project_id' );
+		$per_page      = $request->get_param( 'per_page' ) ?? 20;
+		$page          = $request->get_param( 'page' ) ?? 1;
+		$offset        = ( $page - 1 ) * $per_page;
+		$status        = $request->get_param( 'status' );
+		$project_id    = $request->get_param( 'project_id' );
 		$technician_id = $request->get_param( 'technician_id' );
-		$date_from = $request->get_param( 'date_from' );
-		$date_to = $request->get_param( 'date_to' );
-		$search = $request->get_param( 'search' );
+		$date_from     = $request->get_param( 'date_from' );
+		$date_to       = $request->get_param( 'date_to' );
+		$search        = $request->get_param( 'search' );
 
 		// Base query.
-		$where = array( '1=1' );
+		$where        = array( '1=1' );
 		$query_params = array();
 
 		// Add filters.
 		if ( ! empty( $status ) ) {
-			$where[] = 'status = %s';
+			$where[]        = 'status = %s';
 			$query_params[] = $status;
 		}
 
 		if ( ! empty( $project_id ) ) {
-			$where[] = 'project_id = %d';
+			$where[]        = 'project_id = %d';
 			$query_params[] = absint( $project_id );
 		}
 
 		if ( ! empty( $technician_id ) ) {
-			$where[] = 'technician_id = %d';
+			$where[]        = 'technician_id = %d';
 			$query_params[] = absint( $technician_id );
 		}
 
 		if ( ! empty( $date_from ) ) {
-			$where[] = 'clock_in >= %s';
+			$where[]        = 'clock_in >= %s';
 			$query_params[] = sanitize_text_field( $date_from );
 		}
 
 		if ( ! empty( $date_to ) ) {
-			$where[] = 'clock_in <= %s';
+			$where[]        = 'clock_in <= %s';
 			$query_params[] = sanitize_text_field( $date_to );
 		}
 
 		if ( ! empty( $search ) ) {
-			$where[] = '(notes LIKE %s OR task_type LIKE %s)';
+			$where[]        = '(notes LIKE %s OR task_type LIKE %s)';
 			$query_params[] = '%' . $wpdb->esc_like( $search ) . '%';
 			$query_params[] = '%' . $wpdb->esc_like( $search ) . '%';
 		}
@@ -280,14 +280,14 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 		$where_clause = implode( ' AND ', $where );
 
 		// Get total count.
-		$count_query = "SELECT COUNT(*) FROM " . ICT_TIME_ENTRIES_TABLE . " WHERE {$where_clause}";
+		$count_query = 'SELECT COUNT(*) FROM ' . ICT_TIME_ENTRIES_TABLE . " WHERE {$where_clause}";
 		if ( ! empty( $query_params ) ) {
 			$count_query = $wpdb->prepare( $count_query, $query_params );
 		}
 		$total_items = (int) $wpdb->get_var( $count_query );
 
 		// Get items.
-		$query = "SELECT * FROM " . ICT_TIME_ENTRIES_TABLE . " WHERE {$where_clause} ORDER BY clock_in DESC LIMIT %d OFFSET %d";
+		$query          = 'SELECT * FROM ' . ICT_TIME_ENTRIES_TABLE . " WHERE {$where_clause} ORDER BY clock_in DESC LIMIT %d OFFSET %d";
 		$query_params[] = $per_page;
 		$query_params[] = $offset;
 
@@ -320,7 +320,7 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 		$id = absint( $request['id'] );
 
 		$result = $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM " . ICT_TIME_ENTRIES_TABLE . " WHERE id = %d", $id ),
+			$wpdb->prepare( 'SELECT * FROM ' . ICT_TIME_ENTRIES_TABLE . ' WHERE id = %d', $id ),
 			ARRAY_A
 		);
 
@@ -347,20 +347,20 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 		global $wpdb;
 
 		$data = array(
-			'project_id'      => absint( $request->get_param( 'project_id' ) ),
-			'technician_id'   => get_current_user_id(),
-			'task_type'       => sanitize_text_field( $request->get_param( 'task_type' ) ?? 'general' ),
-			'clock_in'        => current_time( 'mysql' ),
-			'clock_out'       => null,
-			'total_hours'     => 0,
-			'billable_hours'  => 0,
-			'notes'           => sanitize_textarea_field( $request->get_param( 'notes' ) ?? '' ),
-			'status'          => 'in-progress',
-			'gps_latitude'    => $request->get_param( 'gps_latitude' ),
-			'gps_longitude'   => $request->get_param( 'gps_longitude' ),
-			'sync_status'     => 'pending',
-			'created_at'      => current_time( 'mysql' ),
-			'updated_at'      => current_time( 'mysql' ),
+			'project_id'     => absint( $request->get_param( 'project_id' ) ),
+			'technician_id'  => get_current_user_id(),
+			'task_type'      => sanitize_text_field( $request->get_param( 'task_type' ) ?? 'general' ),
+			'clock_in'       => current_time( 'mysql' ),
+			'clock_out'      => null,
+			'total_hours'    => 0,
+			'billable_hours' => 0,
+			'notes'          => sanitize_textarea_field( $request->get_param( 'notes' ) ?? '' ),
+			'status'         => 'in-progress',
+			'gps_latitude'   => $request->get_param( 'gps_latitude' ),
+			'gps_longitude'  => $request->get_param( 'gps_longitude' ),
+			'sync_status'    => 'pending',
+			'created_at'     => current_time( 'mysql' ),
+			'updated_at'     => current_time( 'mysql' ),
 		);
 
 		$result = $wpdb->insert( ICT_TIME_ENTRIES_TABLE, $data );
@@ -401,7 +401,7 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 		$id = absint( $request['id'] );
 
 		// Check if entry exists.
-		$exists = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM " . ICT_TIME_ENTRIES_TABLE . " WHERE id = %d", $id ) );
+		$exists = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . ICT_TIME_ENTRIES_TABLE . ' WHERE id = %d', $id ) );
 		if ( ! $exists ) {
 			return new WP_Error(
 				'ict_time_entry_not_found',
@@ -500,7 +500,7 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 		// Check if user already has an active entry.
 		$active_entry = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_TIME_ENTRIES_TABLE . " WHERE technician_id = %d AND clock_out IS NULL ORDER BY clock_in DESC LIMIT 1",
+				'SELECT * FROM ' . ICT_TIME_ENTRIES_TABLE . ' WHERE technician_id = %d AND clock_out IS NULL ORDER BY clock_in DESC LIMIT 1',
 				$user_id
 			),
 			ARRAY_A
@@ -510,29 +510,32 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 			return new WP_Error(
 				'ict_already_clocked_in',
 				__( 'You already have an active time entry. Please clock out first.', 'ict-platform' ),
-				array( 'status' => 400, 'active_entry' => $active_entry )
+				array(
+					'status'       => 400,
+					'active_entry' => $active_entry,
+				)
 			);
 		}
 
 		$data = array(
-			'project_id'      => absint( $request->get_param( 'project_id' ) ),
-			'technician_id'   => $user_id,
-			'task_type'       => sanitize_text_field( $request->get_param( 'task_type' ) ?? 'general' ),
-			'clock_in'        => current_time( 'mysql' ),
-			'clock_out'       => null,
-			'total_hours'     => 0,
-			'billable_hours'  => 0,
-			'notes'           => sanitize_textarea_field( $request->get_param( 'notes' ) ?? '' ),
-			'status'          => 'in-progress',
-			'location_in'     => null,
-			'sync_status'     => 'pending',
-			'created_at'      => current_time( 'mysql' ),
-			'updated_at'      => current_time( 'mysql' ),
+			'project_id'     => absint( $request->get_param( 'project_id' ) ),
+			'technician_id'  => $user_id,
+			'task_type'      => sanitize_text_field( $request->get_param( 'task_type' ) ?? 'general' ),
+			'clock_in'       => current_time( 'mysql' ),
+			'clock_out'      => null,
+			'total_hours'    => 0,
+			'billable_hours' => 0,
+			'notes'          => sanitize_textarea_field( $request->get_param( 'notes' ) ?? '' ),
+			'status'         => 'in-progress',
+			'location_in'    => null,
+			'sync_status'    => 'pending',
+			'created_at'     => current_time( 'mysql' ),
+			'updated_at'     => current_time( 'mysql' ),
 		);
 
 		// Combine GPS into a single validated location string if provided
 		if ( null !== $request->get_param( 'gps_latitude' ) && null !== $request->get_param( 'gps_longitude' ) ) {
-			$coords = $request->get_param( 'gps_latitude' ) . ',' . $request->get_param( 'gps_longitude' );
+			$coords    = $request->get_param( 'gps_latitude' ) . ',' . $request->get_param( 'gps_longitude' );
 			$sanitized = ICT_Helper::sanitize_coordinates( $coords );
 			if ( null === $sanitized ) {
 				return new WP_Error( 'invalid_gps', __( 'Invalid coordinates.', 'ict-platform' ), array( 'status' => 400 ) );
@@ -556,7 +559,7 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 		$this->queue_sync( $id, 'create' );
 
 		$entry = $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM " . ICT_TIME_ENTRIES_TABLE . " WHERE id = %d", $id ),
+			$wpdb->prepare( 'SELECT * FROM ' . ICT_TIME_ENTRIES_TABLE . ' WHERE id = %d', $id ),
 			ARRAY_A
 		);
 
@@ -578,14 +581,14 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 	public function clock_out( $request ) {
 		global $wpdb;
 
-		$user_id = get_current_user_id();
+		$user_id  = get_current_user_id();
 		$entry_id = $request->get_param( 'entry_id' );
 
 		// If entry_id provided, use it; otherwise find the active entry.
 		if ( $entry_id ) {
 			$entry = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT * FROM " . ICT_TIME_ENTRIES_TABLE . " WHERE id = %d AND technician_id = %d AND clock_out IS NULL",
+					'SELECT * FROM ' . ICT_TIME_ENTRIES_TABLE . ' WHERE id = %d AND technician_id = %d AND clock_out IS NULL',
 					absint( $entry_id ),
 					$user_id
 				),
@@ -594,7 +597,7 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 		} else {
 			$entry = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT * FROM " . ICT_TIME_ENTRIES_TABLE . " WHERE technician_id = %d AND clock_out IS NULL ORDER BY clock_in DESC LIMIT 1",
+					'SELECT * FROM ' . ICT_TIME_ENTRIES_TABLE . ' WHERE technician_id = %d AND clock_out IS NULL ORDER BY clock_in DESC LIMIT 1',
 					$user_id
 				),
 				ARRAY_A
@@ -609,22 +612,22 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 			);
 		}
 
-		$clock_out = current_time( 'mysql' );
-		$clock_in_time = strtotime( $entry['clock_in'] );
+		$clock_out      = current_time( 'mysql' );
+		$clock_in_time  = strtotime( $entry['clock_in'] );
 		$clock_out_time = strtotime( $clock_out );
-		$total_hours = round( ( $clock_out_time - $clock_in_time ) / 3600, 2 );
+		$total_hours    = round( ( $clock_out_time - $clock_in_time ) / 3600, 2 );
 
 		$data = array(
-			'clock_out'       => $clock_out,
-			'total_hours'     => $total_hours,
-			'billable_hours'  => $total_hours, // Default to same as total.
-			'status'          => 'submitted',
-			'location_out'    => null,
-			'updated_at'      => current_time( 'mysql' ),
+			'clock_out'      => $clock_out,
+			'total_hours'    => $total_hours,
+			'billable_hours' => $total_hours, // Default to same as total.
+			'status'         => 'submitted',
+			'location_out'   => null,
+			'updated_at'     => current_time( 'mysql' ),
 		);
 
 		if ( null !== $request->get_param( 'gps_latitude' ) && null !== $request->get_param( 'gps_longitude' ) ) {
-			$coords = $request->get_param( 'gps_latitude' ) . ',' . $request->get_param( 'gps_longitude' );
+			$coords    = $request->get_param( 'gps_latitude' ) . ',' . $request->get_param( 'gps_longitude' );
 			$sanitized = ICT_Helper::sanitize_coordinates( $coords );
 			if ( null === $sanitized ) {
 				return new WP_Error( 'invalid_gps', __( 'Invalid coordinates.', 'ict-platform' ), array( 'status' => 400 ) );
@@ -635,8 +638,8 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 		// Append notes if provided.
 		if ( $request->has_param( 'notes' ) ) {
 			$existing_notes = $entry['notes'] ?? '';
-			$new_notes = sanitize_textarea_field( $request->get_param( 'notes' ) );
-			$data['notes'] = trim( $existing_notes . "\n" . $new_notes );
+			$new_notes      = sanitize_textarea_field( $request->get_param( 'notes' ) );
+			$data['notes']  = trim( $existing_notes . "\n" . $new_notes );
 		}
 
 		$result = $wpdb->update(
@@ -657,7 +660,7 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 		$this->queue_sync( $entry['id'], 'update' );
 
 		$updated_entry = $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM " . ICT_TIME_ENTRIES_TABLE . " WHERE id = %d", $entry['id'] ),
+			$wpdb->prepare( 'SELECT * FROM ' . ICT_TIME_ENTRIES_TABLE . ' WHERE id = %d', $entry['id'] ),
 			ARRAY_A
 		);
 
@@ -683,7 +686,7 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 
 		$entry = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_TIME_ENTRIES_TABLE . " WHERE technician_id = %d AND clock_out IS NULL ORDER BY clock_in DESC LIMIT 1",
+				'SELECT * FROM ' . ICT_TIME_ENTRIES_TABLE . ' WHERE technician_id = %d AND clock_out IS NULL ORDER BY clock_in DESC LIMIT 1',
 				$user_id
 			),
 			ARRAY_A
@@ -964,30 +967,30 @@ class ICT_REST_Time_Entries_Controller extends WP_REST_Controller {
 	 */
 	public function get_collection_params() {
 		return array(
-			'per_page' => array(
+			'per_page'      => array(
 				'default'           => 20,
 				'sanitize_callback' => 'absint',
 			),
-			'page' => array(
+			'page'          => array(
 				'default'           => 1,
 				'sanitize_callback' => 'absint',
 			),
-			'status' => array(
+			'status'        => array(
 				'sanitize_callback' => 'sanitize_text_field',
 			),
-			'project_id' => array(
+			'project_id'    => array(
 				'sanitize_callback' => 'absint',
 			),
 			'technician_id' => array(
 				'sanitize_callback' => 'absint',
 			),
-			'date_from' => array(
+			'date_from'     => array(
 				'sanitize_callback' => 'sanitize_text_field',
 			),
-			'date_to' => array(
+			'date_to'       => array(
 				'sanitize_callback' => 'sanitize_text_field',
 			),
-			'search' => array(
+			'search'        => array(
 				'sanitize_callback' => 'sanitize_text_field',
 			),
 		);

@@ -28,7 +28,7 @@ class ICT_Sync_Engine {
 
 		// Get pending queue items (limit to prevent timeout)
 		$queue_items = $wpdb->get_results(
-			"SELECT * FROM " . ICT_SYNC_QUEUE_TABLE . "
+			'SELECT * FROM ' . ICT_SYNC_QUEUE_TABLE . "
 			WHERE status = 'pending'
 			AND attempts < max_attempts
 			ORDER BY priority DESC, scheduled_at ASC
@@ -58,8 +58,8 @@ class ICT_Sync_Engine {
 		$wpdb->update(
 			ICT_SYNC_QUEUE_TABLE,
 			array(
-				'status'     => 'processing',
-				'attempts'   => $item->attempts + 1,
+				'status'   => 'processing',
+				'attempts' => $item->attempts + 1,
 			),
 			array( 'id' => $item->id ),
 			array( '%s', '%d' ),

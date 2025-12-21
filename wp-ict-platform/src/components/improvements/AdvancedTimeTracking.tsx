@@ -7,7 +7,7 @@
  * @since   2.1.0
  */
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 interface TimeEntry {
   id: string;
@@ -67,8 +67,8 @@ const AdvancedTimeTracking: React.FC<AdvancedTimeTrackingProps> = ({
     availableRates.find((r) => r.isDefault) || availableRates[0]
   );
   const [notes, setNotes] = useState('');
-  const [weeklyHours, setWeeklyHours] = useState(0);
-  const [dailyHours, setDailyHours] = useState(0);
+  const [weeklyHours, _setWeeklyHours] = useState(0);
+  const [dailyHours, _setDailyHours] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [showRateSelector, setShowRateSelector] = useState(false);
   const [trackLocation, setTrackLocation] = useState(true);

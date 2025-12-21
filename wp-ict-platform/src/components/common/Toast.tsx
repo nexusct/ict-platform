@@ -19,7 +19,6 @@ interface ToastProps {
 
 export const ToastContainer: React.FC<ToastProps> = ({
   position = 'top-right',
-  maxToasts = 5,
 }) => {
   const dispatch = useAppDispatch();
   const toast = useAppSelector((state) => state.ui.toast);

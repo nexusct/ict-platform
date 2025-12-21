@@ -5,7 +5,6 @@
  * @since   1.0.0
  */
 
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import {
   Skeleton,

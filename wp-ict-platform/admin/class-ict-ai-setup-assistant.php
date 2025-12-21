@@ -124,7 +124,7 @@ class ICT_AI_Setup_Assistant {
 	 */
 	private function get_company_recommendations( $company_info ) {
 		$industry = $company_info['industry'];
-		$size = $company_info['size'];
+		$size     = $company_info['size'];
 
 		$recommendations = array();
 
@@ -186,9 +186,9 @@ class ICT_AI_Setup_Assistant {
 	 */
 	private function get_zoho_recommendations( $company_info ) {
 		$use_cases = $company_info['use_cases'];
-		$size = $company_info['size'];
+		$size      = $company_info['size'];
 
-		$recommendations = array();
+		$recommendations   = array();
 		$recommendations[] = __( '**Recommended Zoho Services for Your Business:**', 'ict-platform' );
 		$recommendations[] = '';
 
@@ -239,7 +239,7 @@ class ICT_AI_Setup_Assistant {
 	private function get_teams_recommendations( $company_info ) {
 		$size = $company_info['size'];
 
-		$recommendations = array();
+		$recommendations   = array();
 		$recommendations[] = __( '**Microsoft Teams Integration Guide:**', 'ict-platform' );
 		$recommendations[] = '';
 
@@ -285,10 +285,10 @@ class ICT_AI_Setup_Assistant {
 	 * @return string Recommendations.
 	 */
 	private function get_notification_recommendations( $company_info ) {
-		$size = $company_info['size'];
+		$size     = $company_info['size'];
 		$industry = $company_info['industry'];
 
-		$recommendations = array();
+		$recommendations   = array();
 		$recommendations[] = __( '**Notification Strategy Recommendations:**', 'ict-platform' );
 		$recommendations[] = '';
 
@@ -339,7 +339,7 @@ class ICT_AI_Setup_Assistant {
 	private function get_security_recommendations( $company_info ) {
 		$size = $company_info['size'];
 
-		$recommendations = array();
+		$recommendations   = array();
 		$recommendations[] = __( '**Security Best Practices:**', 'ict-platform' );
 		$recommendations[] = '';
 
@@ -384,9 +384,9 @@ class ICT_AI_Setup_Assistant {
 	 */
 	private function get_features_recommendations( $company_info ) {
 		$use_cases = $company_info['use_cases'];
-		$industry = $company_info['industry'];
+		$industry  = $company_info['industry'];
 
-		$recommendations = array();
+		$recommendations   = array();
 		$recommendations[] = __( '**Feature Recommendations for Your Business:**', 'ict-platform' );
 		$recommendations[] = '';
 
@@ -460,10 +460,10 @@ class ICT_AI_Setup_Assistant {
 	 * @return string Recommendations.
 	 */
 	private function get_getting_started_recommendations( $company_info ) {
-		$size = $company_info['size'];
+		$size      = $company_info['size'];
 		$use_cases = $company_info['use_cases'];
 
-		$recommendations = array();
+		$recommendations   = array();
 		$recommendations[] = __( '**Your Personalized Getting Started Guide:**', 'ict-platform' );
 		$recommendations[] = '';
 
@@ -533,7 +533,7 @@ class ICT_AI_Setup_Assistant {
 	 * @return string|WP_Error Response or error.
 	 */
 	private function get_external_ai_response( $question ) {
-		$api_key = $this->get_ai_api_key();
+		$api_key      = $this->get_ai_api_key();
 		$company_info = $this->get_company_context();
 
 		// Build system context
@@ -555,12 +555,12 @@ class ICT_AI_Setup_Assistant {
 	 * @return string System prompt.
 	 */
 	private function build_system_prompt( $company_info ) {
-		$prompt = "You are an AI assistant helping set up the ICT Platform, a WordPress plugin for ICT/electrical contracting business operations management.\n\n";
+		$prompt  = "You are an AI assistant helping set up the ICT Platform, a WordPress plugin for ICT/electrical contracting business operations management.\n\n";
 		$prompt .= "Company Context:\n";
 		$prompt .= "- Company Name: {$company_info['name']}\n";
 		$prompt .= "- Industry: {$company_info['industry']}\n";
 		$prompt .= "- Company Size: {$company_info['size']}\n";
-		$prompt .= "- Primary Use Cases: " . implode( ', ', $company_info['use_cases'] ) . "\n\n";
+		$prompt .= '- Primary Use Cases: ' . implode( ', ', $company_info['use_cases'] ) . "\n\n";
 		$prompt .= "Platform Features:\n";
 		$prompt .= "- Zoho Integration (CRM, FSM, Books, People, Desk)\n";
 		$prompt .= "- Microsoft Teams notifications\n";
@@ -570,9 +570,9 @@ class ICT_AI_Setup_Assistant {
 		$prompt .= "- Custom role management\n";
 		$prompt .= "- Custom field builder\n";
 		$prompt .= "- Advanced reporting with multiple export formats\n\n";
-		$prompt .= "Provide helpful, concise answers relevant to setting up and configuring this platform. ";
-		$prompt .= "Focus on practical advice and step-by-step guidance when appropriate. ";
-		$prompt .= "Format responses using markdown for better readability.";
+		$prompt .= 'Provide helpful, concise answers relevant to setting up and configuring this platform. ';
+		$prompt .= 'Focus on practical advice and step-by-step guidance when appropriate. ';
+		$prompt .= 'Format responses using markdown for better readability.';
 
 		return $prompt;
 	}
@@ -586,22 +586,33 @@ class ICT_AI_Setup_Assistant {
 	 * @return string|WP_Error Response or error.
 	 */
 	private function call_openai_api( $system_prompt, $question, $api_key ) {
-		$response = wp_remote_post( $this->openai_endpoint, array(
-			'headers' => array(
-				'Authorization' => 'Bearer ' . $api_key,
-				'Content-Type'  => 'application/json',
-			),
-			'body'    => wp_json_encode( array(
-				'model'    => 'gpt-4o-mini',
-				'messages' => array(
-					array( 'role' => 'system', 'content' => $system_prompt ),
-					array( 'role' => 'user', 'content' => $question ),
+		$response = wp_remote_post(
+			$this->openai_endpoint,
+			array(
+				'headers' => array(
+					'Authorization' => 'Bearer ' . $api_key,
+					'Content-Type'  => 'application/json',
 				),
-				'max_tokens'  => 1000,
-				'temperature' => 0.7,
-			) ),
-			'timeout' => 30,
-		) );
+				'body'    => wp_json_encode(
+					array(
+						'model'       => 'gpt-4o-mini',
+						'messages'    => array(
+							array(
+								'role'    => 'system',
+								'content' => $system_prompt,
+							),
+							array(
+								'role'    => 'user',
+								'content' => $question,
+							),
+						),
+						'max_tokens'  => 1000,
+						'temperature' => 0.7,
+					)
+				),
+				'timeout' => 30,
+			)
+		);
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
@@ -629,22 +640,30 @@ class ICT_AI_Setup_Assistant {
 	 * @return string|WP_Error Response or error.
 	 */
 	private function call_anthropic_api( $system_prompt, $question, $api_key ) {
-		$response = wp_remote_post( $this->anthropic_endpoint, array(
-			'headers' => array(
-				'x-api-key'         => $api_key,
-				'anthropic-version' => '2023-06-01',
-				'Content-Type'      => 'application/json',
-			),
-			'body'    => wp_json_encode( array(
-				'model'      => 'claude-3-haiku-20240307',
-				'max_tokens' => 1000,
-				'system'     => $system_prompt,
-				'messages'   => array(
-					array( 'role' => 'user', 'content' => $question ),
+		$response = wp_remote_post(
+			$this->anthropic_endpoint,
+			array(
+				'headers' => array(
+					'x-api-key'         => $api_key,
+					'anthropic-version' => '2023-06-01',
+					'Content-Type'      => 'application/json',
 				),
-			) ),
-			'timeout' => 30,
-		) );
+				'body'    => wp_json_encode(
+					array(
+						'model'      => 'claude-3-haiku-20240307',
+						'max_tokens' => 1000,
+						'system'     => $system_prompt,
+						'messages'   => array(
+							array(
+								'role'    => 'user',
+								'content' => $question,
+							),
+						),
+					)
+				),
+				'timeout' => 30,
+			)
+		);
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
@@ -675,17 +694,17 @@ class ICT_AI_Setup_Assistant {
 		// Knowledge base - common questions and answers
 		$knowledge_base = array(
 			// Zoho questions
-			'zoho' => array(
+			'zoho'      => array(
 				'keywords' => array( 'zoho', 'crm', 'fsm', 'books', 'people', 'desk', 'oauth', 'sync' ),
 				'response' => __( "**Zoho Integration Help:**\n\nTo connect Zoho services:\n1. Go to [api-console.zoho.com](https://api-console.zoho.com)\n2. Create a 'Server-based Application'\n3. Add your redirect URI (shown in the wizard)\n4. Copy the Client ID and Client Secret\n\n**Which services do you need?**\n- **CRM**: Customer and project management\n- **FSM**: Field service scheduling\n- **Books**: Invoicing and inventory\n- **People**: Employee time tracking\n- **Desk**: Support tickets", 'ict-platform' ),
 			),
 			// Teams questions
-			'teams' => array(
+			'teams'     => array(
 				'keywords' => array( 'teams', 'microsoft', 'webhook', 'channel', 'notification' ),
 				'response' => __( "**Microsoft Teams Setup:**\n\n**Quick Setup (Webhook):**\n1. In Teams, click '...' next to your channel\n2. Select 'Connectors' → 'Incoming Webhook'\n3. Name it 'ICT Platform' and create\n4. Copy the URL to the wizard\n\n**Full Integration (OAuth):**\nRequires Azure AD app registration. Best for interactive features and user-specific notifications.\n\nWebhook is recommended for most users - it takes less than 5 minutes!", 'ict-platform' ),
 			),
 			// Twilio/SMS questions
-			'twilio' => array(
+			'twilio'    => array(
 				'keywords' => array( 'twilio', 'sms', 'text', 'message', 'phone' ),
 				'response' => __( "**Twilio SMS Setup:**\n\n1. Sign up at [twilio.com](https://www.twilio.com/try-twilio)\n2. Get your Account SID and Auth Token from the Console\n3. Purchase or use a trial phone number\n4. Enter credentials in the wizard\n\n**Pricing:** ~$0.0075 per SMS in the US. Free trial includes $15 credit.\n\n**Best for:** Urgent alerts, dispatch notifications, schedule changes for field technicians.", 'ict-platform' ),
 			),
@@ -695,7 +714,7 @@ class ICT_AI_Setup_Assistant {
 				'response' => __( "**Biometric Authentication:**\n\nRequirements:\n- HTTPS (SSL certificate)\n- Compatible browser (Chrome, Firefox, Safari, Edge)\n- Device with biometric sensor or security key\n\n**How it works:**\n1. Users register their device (one-time setup)\n2. On login, they can use fingerprint/face instead of password\n3. Credentials are stored securely on their device\n\n**Supported methods:**\n- Touch ID / Face ID (Mac/iOS)\n- Windows Hello\n- Android fingerprint\n- Hardware security keys (YubiKey, etc.)", 'ict-platform' ),
 			),
 			// Offline questions
-			'offline' => array(
+			'offline'   => array(
 				'keywords' => array( 'offline', 'sync', 'internet', 'connection', 'field' ),
 				'response' => __( "**Offline Mode:**\n\nHow it works:\n1. Data is cached locally on the device\n2. Changes are queued when offline\n3. Queue syncs automatically when connection returns\n\n**Conflict Resolution:**\n- **Server wins**: Safest - server data takes priority\n- **Client wins**: Local changes take priority\n- **Manual**: You review conflicts\n\n**Best practices:**\n- Use 'Server wins' for most setups\n- Keep queue size at 100 (default)\n- Sync interval of 30 seconds works well", 'ict-platform' ),
 			),
@@ -705,12 +724,12 @@ class ICT_AI_Setup_Assistant {
 				'response' => __( "**Advanced Reporting:**\n\n**Available Reports:**\n- Project Summary\n- Time Entry Analysis\n- Resource Utilization\n- Inventory Status\n- Financial Summary\n- Technician Performance\n- Overtime Analysis\n\n**Export Formats:**\n- PDF (for clients/printing)\n- Excel (XLSX) for analysis\n- CSV for imports\n- JSON for developers\n\n**Scheduled Reports:**\nEnable to automatically generate and email reports on a schedule.", 'ict-platform' ),
 			),
 			// Custom fields questions
-			'custom' => array(
+			'custom'    => array(
 				'keywords' => array( 'custom', 'field', 'form', 'data' ),
 				'response' => __( "**Custom Field Builder:**\n\n**Supported Field Types:**\nText, Number, Email, Phone, URL, Date, Time, DateTime, Select, Multi-select, Checkbox, Radio, Textarea, File Upload, Image, GPS Location, Signature, Formula, Lookup, Currency\n\n**Add fields to:**\n- Projects\n- Time Entries\n- Inventory Items\n- Purchase Orders\n- Users\n\n**Features:**\n- Validation rules\n- Field groups\n- Conditional display\n- Required fields", 'ict-platform' ),
 			),
 			// Role/permission questions
-			'role' => array(
+			'role'      => array(
 				'keywords' => array( 'role', 'permission', 'access', 'user', 'capability' ),
 				'response' => __( "**Role Management:**\n\n**Default Roles:**\n- **Administrator**: Full access\n- **Project Manager**: Manage projects, resources, reports\n- **Technician**: Log time, view assigned projects\n- **Inventory Manager**: Manage inventory, purchase orders\n- **Accountant**: Financial reports, invoicing\n- **Viewer**: Read-only access\n\n**Dynamic Permissions:**\nWhen enabled, users can have different access levels per project. Useful for contractors who work on specific projects only.", 'ict-platform' ),
 			),
@@ -724,7 +743,7 @@ class ICT_AI_Setup_Assistant {
 			$score = 0;
 			foreach ( $data['keywords'] as $keyword ) {
 				if ( strpos( $question_lower, $keyword ) !== false ) {
-					$score++;
+					++$score;
 				}
 			}
 			if ( $score > $best_score ) {

@@ -361,7 +361,7 @@ class ICT_Core {
 
 		$wpdb->query(
 			$wpdb->prepare(
-				"DELETE FROM " . ICT_SYNC_LOG_TABLE . " WHERE synced_at < %s",
+				'DELETE FROM ' . ICT_SYNC_LOG_TABLE . ' WHERE synced_at < %s',
 				$date_cutoff
 			)
 		);
@@ -380,8 +380,8 @@ class ICT_Core {
 
 		$low_stock_items = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_INVENTORY_ITEMS_TABLE . "
-				WHERE quantity_available <= %d AND is_active = 1",
+				'SELECT * FROM ' . ICT_INVENTORY_ITEMS_TABLE . '
+				WHERE quantity_available <= %d AND is_active = 1',
 				$threshold
 			)
 		);

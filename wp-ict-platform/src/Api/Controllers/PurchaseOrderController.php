@@ -15,181 +15,210 @@ use WP_Error;
  * @package ICT_Platform\Api\Controllers
  * @since   2.0.0
  */
-class PurchaseOrderController extends AbstractController
-{
-    protected string $rest_base = 'purchase-orders';
+class PurchaseOrderController extends AbstractController {
 
-    public function registerRoutes(): void
-    {
-        register_rest_route($this->namespace, '/' . $this->rest_base, [
-            'methods'             => WP_REST_Server::READABLE,
-            'callback'            => [$this, 'getItems'],
-            'permission_callback' => [$this, 'getItemsPermissionsCheck'],
-        ]);
+	protected string $rest_base = 'purchase-orders';
 
-        register_rest_route($this->namespace, '/' . $this->rest_base, [
-            'methods'             => WP_REST_Server::CREATABLE,
-            'callback'            => [$this, 'createItem'],
-            'permission_callback' => [$this, 'createItemPermissionsCheck'],
-        ]);
+	public function registerRoutes(): void {
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base,
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'getItems' ),
+				'permission_callback' => array( $this, 'getItemsPermissionsCheck' ),
+			)
+		);
 
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', [
-            'methods'             => WP_REST_Server::READABLE,
-            'callback'            => [$this, 'getItem'],
-            'permission_callback' => [$this, 'getItemsPermissionsCheck'],
-        ]);
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base,
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'createItem' ),
+				'permission_callback' => array( $this, 'createItemPermissionsCheck' ),
+			)
+		);
 
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', [
-            'methods'             => WP_REST_Server::EDITABLE,
-            'callback'            => [$this, 'updateItem'],
-            'permission_callback' => [$this, 'updateItemPermissionsCheck'],
-        ]);
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/(?P<id>[\d]+)',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'getItem' ),
+				'permission_callback' => array( $this, 'getItemsPermissionsCheck' ),
+			)
+		);
 
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)/approve', [
-            'methods'             => WP_REST_Server::CREATABLE,
-            'callback'            => [$this, 'approveOrder'],
-            'permission_callback' => [$this, 'approvePermissionsCheck'],
-        ]);
-    }
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/(?P<id>[\d]+)',
+			array(
+				'methods'             => WP_REST_Server::EDITABLE,
+				'callback'            => array( $this, 'updateItem' ),
+				'permission_callback' => array( $this, 'updateItemPermissionsCheck' ),
+			)
+		);
 
-    public function getItems(WP_REST_Request $request): WP_REST_Response|WP_Error
-    {
-        global $wpdb;
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/(?P<id>[\d]+)/approve',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'approveOrder' ),
+				'permission_callback' => array( $this, 'approvePermissionsCheck' ),
+			)
+		);
+	}
 
-        $pagination = $this->getPaginationParams($request);
-        $status = $request->get_param('status');
+	public function getItems( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		global $wpdb;
 
-        $where = ['1=1'];
-        $values = [];
+		$pagination = $this->getPaginationParams( $request );
+		$status     = $request->get_param( 'status' );
 
-        if ($status) {
-            $where[] = 'status = %s';
-            $values[] = $status;
-        }
+		$where  = array( '1=1' );
+		$values = array();
 
-        $total = (int) $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM " . ICT_PURCHASE_ORDERS_TABLE . " WHERE " . implode(' AND ', $where),
-            $values
-        ));
+		if ( $status ) {
+			$where[]  = 'status = %s';
+			$values[] = $status;
+		}
 
-        $values[] = $pagination['per_page'];
-        $values[] = $pagination['offset'];
+		$total = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM ' . ICT_PURCHASE_ORDERS_TABLE . ' WHERE ' . implode( ' AND ', $where ),
+				$values
+			)
+		);
 
-        $orders = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM " . ICT_PURCHASE_ORDERS_TABLE . "
-            WHERE " . implode(' AND ', $where) . "
-            ORDER BY created_at DESC LIMIT %d OFFSET %d",
-            $values
-        ));
+		$values[] = $pagination['per_page'];
+		$values[] = $pagination['offset'];
 
-        return $this->paginated(array_map([$this, 'prepareItem'], $orders), $total, $pagination['page'], $pagination['per_page']);
-    }
+		$orders = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT * FROM ' . ICT_PURCHASE_ORDERS_TABLE . '
+            WHERE ' . implode( ' AND ', $where ) . '
+            ORDER BY created_at DESC LIMIT %d OFFSET %d',
+				$values
+			)
+		);
 
-    public function getItem(WP_REST_Request $request): WP_REST_Response|WP_Error
-    {
-        global $wpdb;
+		return $this->paginated( array_map( array( $this, 'prepareItem' ), $orders ), $total, $pagination['page'], $pagination['per_page'] );
+	}
 
-        $order = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM " . ICT_PURCHASE_ORDERS_TABLE . " WHERE id = %d",
-            (int) $request->get_param('id')
-        ));
+	public function getItem( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		global $wpdb;
 
-        if (!$order) {
-            return $this->error('not_found', __('Purchase order not found.', 'ict-platform'), 404);
-        }
+		$order = $wpdb->get_row(
+			$wpdb->prepare(
+				'SELECT * FROM ' . ICT_PURCHASE_ORDERS_TABLE . ' WHERE id = %d',
+				(int) $request->get_param( 'id' )
+			)
+		);
 
-        return $this->success($this->prepareItem($order));
-    }
+		if ( ! $order ) {
+			return $this->error( 'not_found', __( 'Purchase order not found.', 'ict-platform' ), 404 );
+		}
 
-    public function createItem(WP_REST_Request $request): WP_REST_Response|WP_Error
-    {
-        global $wpdb;
+		return $this->success( $this->prepareItem( $order ) );
+	}
 
-        $data = [
-            'po_number'     => $this->helper->generatePoNumber(),
-            'vendor_name'   => sanitize_text_field($request->get_param('vendor_name')),
-            'project_id'    => (int) ($request->get_param('project_id') ?? 0),
-            'total_amount'  => (float) ($request->get_param('total_amount') ?? 0),
-            'status'        => 'draft',
-            'created_by'    => $this->getCurrentUserId(),
-            'notes'         => sanitize_textarea_field($request->get_param('notes') ?? ''),
-        ];
+	public function createItem( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		global $wpdb;
 
-        $result = $wpdb->insert(ICT_PURCHASE_ORDERS_TABLE, $data);
+		$data = array(
+			'po_number'    => $this->helper->generatePoNumber(),
+			'vendor_name'  => sanitize_text_field( $request->get_param( 'vendor_name' ) ),
+			'project_id'   => (int) ( $request->get_param( 'project_id' ) ?? 0 ),
+			'total_amount' => (float) ( $request->get_param( 'total_amount' ) ?? 0 ),
+			'status'       => 'draft',
+			'created_by'   => $this->getCurrentUserId(),
+			'notes'        => sanitize_textarea_field( $request->get_param( 'notes' ) ?? '' ),
+		);
 
-        if (!$result) {
-            return $this->error('create_failed', __('Failed to create purchase order.', 'ict-platform'), 500);
-        }
+		$result = $wpdb->insert( ICT_PURCHASE_ORDERS_TABLE, $data );
 
-        $order = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM " . ICT_PURCHASE_ORDERS_TABLE . " WHERE id = %d",
-            $wpdb->insert_id
-        ));
+		if ( ! $result ) {
+			return $this->error( 'create_failed', __( 'Failed to create purchase order.', 'ict-platform' ), 500 );
+		}
 
-        return $this->success($this->prepareItem($order), 201);
-    }
+		$order = $wpdb->get_row(
+			$wpdb->prepare(
+				'SELECT * FROM ' . ICT_PURCHASE_ORDERS_TABLE . ' WHERE id = %d',
+				$wpdb->insert_id
+			)
+		);
 
-    public function updateItem(WP_REST_Request $request): WP_REST_Response|WP_Error
-    {
-        global $wpdb;
+		return $this->success( $this->prepareItem( $order ), 201 );
+	}
 
-        $id = (int) $request->get_param('id');
-        $data = [];
+	public function updateItem( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		global $wpdb;
 
-        foreach (['vendor_name', 'total_amount', 'status', 'notes'] as $field) {
-            $value = $request->get_param($field);
-            if ($value !== null) {
-                $data[$field] = $field === 'total_amount' ? (float) $value : sanitize_text_field($value);
-            }
-        }
+		$id   = (int) $request->get_param( 'id' );
+		$data = array();
 
-        if (empty($data)) {
-            return $this->error('no_data', __('No data to update.', 'ict-platform'), 400);
-        }
+		foreach ( array( 'vendor_name', 'total_amount', 'status', 'notes' ) as $field ) {
+			$value = $request->get_param( $field );
+			if ( $value !== null ) {
+				$data[ $field ] = $field === 'total_amount' ? (float) $value : sanitize_text_field( $value );
+			}
+		}
 
-        $wpdb->update(ICT_PURCHASE_ORDERS_TABLE, $data, ['id' => $id]);
+		if ( empty( $data ) ) {
+			return $this->error( 'no_data', __( 'No data to update.', 'ict-platform' ), 400 );
+		}
 
-        $order = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . ICT_PURCHASE_ORDERS_TABLE . " WHERE id = %d", $id));
+		$wpdb->update( ICT_PURCHASE_ORDERS_TABLE, $data, array( 'id' => $id ) );
 
-        return $this->success($this->prepareItem($order));
-    }
+		$order = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . ICT_PURCHASE_ORDERS_TABLE . ' WHERE id = %d', $id ) );
 
-    public function approveOrder(WP_REST_Request $request): WP_REST_Response|WP_Error
-    {
-        global $wpdb;
+		return $this->success( $this->prepareItem( $order ) );
+	}
 
-        $id = (int) $request->get_param('id');
+	public function approveOrder( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		global $wpdb;
 
-        $wpdb->update(
-            ICT_PURCHASE_ORDERS_TABLE,
-            ['status' => 'approved', 'approved_by' => $this->getCurrentUserId(), 'approved_at' => current_time('mysql')],
-            ['id' => $id]
-        );
+		$id = (int) $request->get_param( 'id' );
 
-        $order = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . ICT_PURCHASE_ORDERS_TABLE . " WHERE id = %d", $id));
+		$wpdb->update(
+			ICT_PURCHASE_ORDERS_TABLE,
+			array(
+				'status'      => 'approved',
+				'approved_by' => $this->getCurrentUserId(),
+				'approved_at' => current_time( 'mysql' ),
+			),
+			array( 'id' => $id )
+		);
 
-        return $this->success($this->prepareItem($order));
-    }
+		$order = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . ICT_PURCHASE_ORDERS_TABLE . ' WHERE id = %d', $id ) );
 
-    public function getItemsPermissionsCheck(): bool { return current_user_can('manage_ict_purchase_orders'); }
-    public function createItemPermissionsCheck(): bool { return current_user_can('manage_ict_purchase_orders'); }
-    public function updateItemPermissionsCheck(): bool { return current_user_can('manage_ict_purchase_orders'); }
-    public function approvePermissionsCheck(): bool { return current_user_can('approve_ict_purchase_orders'); }
+		return $this->success( $this->prepareItem( $order ) );
+	}
 
-    private function prepareItem(object $order): array
-    {
-        return [
-            'id'           => (int) $order->id,
-            'po_number'    => $order->po_number,
-            'vendor_name'  => $order->vendor_name,
-            'project_id'   => (int) ($order->project_id ?? 0),
-            'total_amount' => (float) ($order->total_amount ?? 0),
-            'status'       => $order->status,
-            'notes'        => $order->notes ?? '',
-            'created_by'   => (int) $order->created_by,
-            'approved_by'  => $order->approved_by ? (int) $order->approved_by : null,
-            'created_at'   => $order->created_at,
-            'approved_at'  => $order->approved_at,
-        ];
-    }
+	public function getItemsPermissionsCheck(): bool {
+		return current_user_can( 'manage_ict_purchase_orders' ); }
+	public function createItemPermissionsCheck(): bool {
+		return current_user_can( 'manage_ict_purchase_orders' ); }
+	public function updateItemPermissionsCheck(): bool {
+		return current_user_can( 'manage_ict_purchase_orders' ); }
+	public function approvePermissionsCheck(): bool {
+		return current_user_can( 'approve_ict_purchase_orders' ); }
+
+	private function prepareItem( object $order ): array {
+		return array(
+			'id'           => (int) $order->id,
+			'po_number'    => $order->po_number,
+			'vendor_name'  => $order->vendor_name,
+			'project_id'   => (int) ( $order->project_id ?? 0 ),
+			'total_amount' => (float) ( $order->total_amount ?? 0 ),
+			'status'       => $order->status,
+			'notes'        => $order->notes ?? '',
+			'created_by'   => (int) $order->created_by,
+			'approved_by'  => $order->approved_by ? (int) $order->approved_by : null,
+			'created_at'   => $order->created_at,
+			'approved_at'  => $order->approved_at,
+		);
+	}
 }

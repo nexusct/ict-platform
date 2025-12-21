@@ -27,7 +27,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<GlobalSearchResult[]>([]);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
-  const [savedFilters, setSavedFilters] = useState<SavedFilter[]>([]);
+  const [_savedFilters, _setSavedFilters] = useState<SavedFilter[]>([]);
   const [activeIndex, setActiveIndex] = useState(-1);
 
   const inputRef = useRef<HTMLInputElement>(null);

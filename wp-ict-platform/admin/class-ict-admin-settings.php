@@ -757,9 +757,9 @@ class ICT_Admin_Settings {
 
 		// Simple encryption (in production, use proper encryption)
 		if ( function_exists( 'openssl_encrypt' ) ) {
-			$key    = wp_salt( 'auth' );
-			$iv     = substr( wp_salt( 'secure_auth' ), 0, 16 );
-			$value  = openssl_encrypt( $value, 'AES-256-CBC', $key, 0, $iv );
+			$key   = wp_salt( 'auth' );
+			$iv    = substr( wp_salt( 'secure_auth' ), 0, 16 );
+			$value = openssl_encrypt( $value, 'AES-256-CBC', $key, 0, $iv );
 		}
 
 		return $value;
