@@ -8,7 +8,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { BarCodeScanner } from 'expo-barcode-scanner';
+import { CameraView, useCameraPermissions, BarcodeScanningResult } from 'expo-camera';
 import { useDispatch } from 'react-redux';
 import { useTheme } from '../../context/ThemeContext';
 import type { AppDispatch } from '../../store';
@@ -19,24 +19,25 @@ export const BarcodeScannerScreen: React.FC = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch<AppDispatch>();
 
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
 
   useEffect(() => {
-    const getPermission = async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
-    };
-    getPermission();
-  }, []);
+    if (!permission?.granted) {
+      requestPermission();
+    }
+  }, [permission, requestPermission]);
 
-  const handleBarCodeScanned = async ({ type, data }: { type: string; data: string }) => {
+  const handleBarCodeScanned = async (result: BarcodeScanningResult) => {
+    if (scanned) return;
     setScanned(true);
 
+    const { data } = result;
+
     try {
-      const result = await dispatch(fetchItemByBarcode(data));
-      if (fetchItemByBarcode.fulfilled.match(result)) {
-        navigation.navigate('InventoryDetail', { itemId: result.payload.id } as never);
+      const fetchResult = await dispatch(fetchItemByBarcode(data));
+      if (fetchItemByBarcode.fulfilled.match(fetchResult)) {
+        navigation.navigate('InventoryDetail', { itemId: fetchResult.payload.id } as never);
       } else {
         Alert.alert(
           'Item Not Found',
@@ -56,7 +57,7 @@ export const BarcodeScannerScreen: React.FC = () => {
 
   const styles = createStyles(theme);
 
-  if (hasPermission === null) {
+  if (!permission) {
     return (
       <View style={styles.container}>
         <Text style={styles.message}>Requesting camera permission...</Text>
@@ -64,11 +65,14 @@ export const BarcodeScannerScreen: React.FC = () => {
     );
   }
 
-  if (hasPermission === false) {
+  if (!permission.granted) {
     return (
       <View style={styles.container}>
         <Text style={styles.message}>Camera permission denied</Text>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
+        <TouchableOpacity style={styles.button} onPress={requestPermission}>
+          <Text style={styles.buttonText}>Grant Permission</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, { marginTop: 12 }]} onPress={() => navigation.goBack()}>
           <Text style={styles.buttonText}>Go Back</Text>
         </TouchableOpacity>
       </View>
@@ -77,9 +81,27 @@ export const BarcodeScannerScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <BarCodeScanner
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+      <CameraView
         style={StyleSheet.absoluteFillObject}
+        facing="back"
+        barcodeScannerSettings={{
+          barcodeTypes: [
+            'qr',
+            'ean13',
+            'ean8',
+            'upc_a',
+            'upc_e',
+            'code39',
+            'code93',
+            'code128',
+            'codabar',
+            'itf14',
+            'pdf417',
+            'aztec',
+            'datamatrix',
+          ],
+        }}
+        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
       />
 
       {/* Overlay */}
