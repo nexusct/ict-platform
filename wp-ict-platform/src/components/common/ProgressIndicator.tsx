@@ -90,7 +90,7 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
             >
               <div className="ict-step-indicator__marker">
                 {status === 'completed' ? (
-                  <Icon name="check" size={14} aria-hidden="true" />
+                  <Icon name="check" size={14} aria-hidden={true} />
                 ) : (
                   <span aria-hidden="true">{index + 1}</span>
                 )}

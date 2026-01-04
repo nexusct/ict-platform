@@ -87,39 +87,58 @@ class ICT_Advanced_Reporting {
 	 * @return void
 	 */
 	public function register_endpoints() {
-		register_rest_route( 'ict/v1', '/reports/(?P<type>[a-z_]+)', array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'get_report' ),
-			'permission_callback' => array( $this, 'check_report_permission' ),
-			'args'                => array(
-				'type'       => array(
-					'required'          => true,
-					'validate_callback' => array( $this, 'validate_report_type' ),
+		register_rest_route(
+			'ict/v1',
+			'/reports/(?P<type>[a-z_]+)',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_report' ),
+				'permission_callback' => array( $this, 'check_report_permission' ),
+				'args'                => array(
+					'type'       => array(
+						'required'          => true,
+						'validate_callback' => array( $this, 'validate_report_type' ),
+					),
+					'start_date' => array( 'type' => 'string' ),
+					'end_date'   => array( 'type' => 'string' ),
+					'format'     => array(
+						'type'    => 'string',
+						'default' => 'json',
+					),
+					'filters'    => array( 'type' => 'object' ),
 				),
-				'start_date' => array( 'type' => 'string' ),
-				'end_date'   => array( 'type' => 'string' ),
-				'format'     => array( 'type' => 'string', 'default' => 'json' ),
-				'filters'    => array( 'type' => 'object' ),
-			),
-		) );
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/reports/export/(?P<type>[a-z_]+)', array(
-			'methods'             => 'POST',
-			'callback'            => array( $this, 'export_report' ),
-			'permission_callback' => array( $this, 'check_report_permission' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/reports/export/(?P<type>[a-z_]+)',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'export_report' ),
+				'permission_callback' => array( $this, 'check_report_permission' ),
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/reports/schedule', array(
-			'methods'             => 'POST',
-			'callback'            => array( $this, 'schedule_report' ),
-			'permission_callback' => array( $this, 'check_report_permission' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/reports/schedule',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'schedule_report' ),
+				'permission_callback' => array( $this, 'check_report_permission' ),
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/reports/templates', array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'get_report_templates' ),
-			'permission_callback' => array( $this, 'check_report_permission' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/reports/templates',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_report_templates' ),
+				'permission_callback' => array( $this, 'check_report_permission' ),
+			)
+		);
 	}
 
 	/**
@@ -164,16 +183,19 @@ class ICT_Advanced_Reporting {
 			return $this->export_report_data( $data, $type, $format );
 		}
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'report'  => array(
-				'type'       => $type,
-				'start_date' => $start_date,
-				'end_date'   => $end_date,
-				'generated'  => current_time( 'mysql' ),
-				'data'       => $data,
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'report'  => array(
+					'type'       => $type,
+					'start_date' => $start_date,
+					'end_date'   => $end_date,
+					'generated'  => current_time( 'mysql' ),
+					'data'       => $data,
+				),
 			),
-		), 200 );
+			200
+		);
 	}
 
 	/**
@@ -235,21 +257,21 @@ class ICT_Advanced_Reporting {
 	private function get_project_summary_report( $start_date, $end_date, $filters ) {
 		global $wpdb;
 
-		$where_clauses = array( "1=1" );
+		$where_clauses = array( '1=1' );
 		$where_values  = array();
 
 		if ( $start_date ) {
-			$where_clauses[] = "created_at >= %s";
+			$where_clauses[] = 'created_at >= %s';
 			$where_values[]  = $start_date;
 		}
 
 		if ( $end_date ) {
-			$where_clauses[] = "created_at <= %s";
+			$where_clauses[] = 'created_at <= %s';
 			$where_values[]  = $end_date . ' 23:59:59';
 		}
 
 		if ( ! empty( $filters['status'] ) ) {
-			$where_clauses[] = "status = %s";
+			$where_clauses[] = 'status = %s';
 			$where_values[]  = $filters['status'];
 		}
 
@@ -278,12 +300,12 @@ class ICT_Advanced_Reporting {
 		// Projects list
 		$projects = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT
+				'SELECT
 					id, project_name, project_number, status, priority,
 					start_date, end_date, progress_percentage,
 					budget_amount, actual_cost, estimated_hours, actual_hours,
 					created_at
-				FROM " . ICT_PROJECTS_TABLE . "
+				FROM ' . ICT_PROJECTS_TABLE . "
 				WHERE {$where_sql}
 				ORDER BY created_at DESC",
 				...$where_values
@@ -294,8 +316,8 @@ class ICT_Advanced_Reporting {
 		// Status breakdown for chart
 		$status_breakdown = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT status, COUNT(*) as count
-				FROM " . ICT_PROJECTS_TABLE . "
+				'SELECT status, COUNT(*) as count
+				FROM ' . ICT_PROJECTS_TABLE . "
 				WHERE {$where_sql}
 				GROUP BY status",
 				...$where_values
@@ -324,16 +346,16 @@ class ICT_Advanced_Reporting {
 	private function get_time_entries_report( $start_date, $end_date, $filters ) {
 		global $wpdb;
 
-		$where_clauses = array( "t.clock_in >= %s", "t.clock_in <= %s" );
+		$where_clauses = array( 't.clock_in >= %s', 't.clock_in <= %s' );
 		$where_values  = array( $start_date, $end_date . ' 23:59:59' );
 
 		if ( ! empty( $filters['technician_id'] ) ) {
-			$where_clauses[] = "t.technician_id = %d";
+			$where_clauses[] = 't.technician_id = %d';
 			$where_values[]  = $filters['technician_id'];
 		}
 
 		if ( ! empty( $filters['project_id'] ) ) {
-			$where_clauses[] = "t.project_id = %d";
+			$where_clauses[] = 't.project_id = %d';
 			$where_values[]  = $filters['project_id'];
 		}
 
@@ -342,7 +364,7 @@ class ICT_Advanced_Reporting {
 		// Summary
 		$summary = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT
+				'SELECT
 					COUNT(*) as total_entries,
 					SUM(total_hours) as total_hours,
 					SUM(total_cost) as total_cost,
@@ -350,7 +372,7 @@ class ICT_Advanced_Reporting {
 					AVG(total_hours) as avg_hours_per_entry,
 					COUNT(DISTINCT technician_id) as unique_technicians,
 					COUNT(DISTINCT project_id) as unique_projects
-				FROM " . ICT_TIME_ENTRIES_TABLE . " t
+				FROM ' . ICT_TIME_ENTRIES_TABLE . " t
 				WHERE {$where_sql}",
 				...$where_values
 			),
@@ -360,12 +382,12 @@ class ICT_Advanced_Reporting {
 		// Daily breakdown
 		$daily = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT
+				'SELECT
 					DATE(clock_in) as date,
 					COUNT(*) as entries,
 					SUM(total_hours) as hours,
 					SUM(total_cost) as cost
-				FROM " . ICT_TIME_ENTRIES_TABLE . " t
+				FROM ' . ICT_TIME_ENTRIES_TABLE . " t
 				WHERE {$where_sql}
 				GROUP BY DATE(clock_in)
 				ORDER BY date",
@@ -377,14 +399,14 @@ class ICT_Advanced_Reporting {
 		// By technician
 		$by_technician = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT
+				'SELECT
 					t.technician_id,
 					u.display_name as technician_name,
 					COUNT(*) as entries,
 					SUM(t.total_hours) as hours,
 					SUM(t.total_cost) as cost,
 					SUM(CASE WHEN t.is_overtime = 1 THEN t.total_hours ELSE 0 END) as overtime_hours
-				FROM " . ICT_TIME_ENTRIES_TABLE . " t
+				FROM ' . ICT_TIME_ENTRIES_TABLE . " t
 				LEFT JOIN {$wpdb->users} u ON t.technician_id = u.ID
 				WHERE {$where_sql}
 				GROUP BY t.technician_id
@@ -397,15 +419,15 @@ class ICT_Advanced_Reporting {
 		// By project
 		$by_project = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT
+				'SELECT
 					t.project_id,
 					p.project_name,
 					p.project_number,
 					COUNT(*) as entries,
 					SUM(t.total_hours) as hours,
 					SUM(t.total_cost) as cost
-				FROM " . ICT_TIME_ENTRIES_TABLE . " t
-				LEFT JOIN " . ICT_PROJECTS_TABLE . " p ON t.project_id = p.id
+				FROM ' . ICT_TIME_ENTRIES_TABLE . ' t
+				LEFT JOIN ' . ICT_PROJECTS_TABLE . " p ON t.project_id = p.id
 				WHERE {$where_sql}
 				GROUP BY t.project_id
 				ORDER BY hours DESC",
@@ -435,9 +457,9 @@ class ICT_Advanced_Reporting {
 		global $wpdb;
 
 		// Calculate working days in period
-		$start = new DateTime( $start_date );
-		$end   = new DateTime( $end_date );
-		$diff  = $start->diff( $end );
+		$start        = new DateTime( $start_date );
+		$end          = new DateTime( $end_date );
+		$diff         = $start->diff( $end );
 		$working_days = $diff->days * 5 / 7; // Approximate
 
 		$hours_per_day   = get_option( 'ict_working_hours_per_day', 8 );
@@ -452,9 +474,9 @@ class ICT_Advanced_Reporting {
 					COALESCE(SUM(t.total_hours), 0) as actual_hours,
 					COALESCE(SUM(r.estimated_hours), 0) as allocated_hours
 				FROM {$wpdb->users} u
-				LEFT JOIN " . ICT_TIME_ENTRIES_TABLE . " t ON u.ID = t.technician_id
+				LEFT JOIN " . ICT_TIME_ENTRIES_TABLE . ' t ON u.ID = t.technician_id
 					AND t.clock_in BETWEEN %s AND %s
-				LEFT JOIN " . ICT_PROJECT_RESOURCES_TABLE . " r ON u.ID = r.resource_id
+				LEFT JOIN ' . ICT_PROJECT_RESOURCES_TABLE . " r ON u.ID = r.resource_id
 					AND r.resource_type = 'user'
 					AND r.allocation_start <= %s AND r.allocation_end >= %s
 				WHERE u.ID IN (
@@ -473,9 +495,9 @@ class ICT_Advanced_Reporting {
 		);
 
 		foreach ( $utilization as &$row ) {
-			$row['utilization_rate']  = $available_hours > 0 ? round( ( $row['actual_hours'] / $available_hours ) * 100, 1 ) : 0;
-			$row['available_hours']   = $available_hours;
-			$row['allocation_rate']   = $available_hours > 0 ? round( ( $row['allocated_hours'] / $available_hours ) * 100, 1 ) : 0;
+			$row['utilization_rate'] = $available_hours > 0 ? round( ( $row['actual_hours'] / $available_hours ) * 100, 1 ) : 0;
+			$row['available_hours']  = $available_hours;
+			$row['allocation_rate']  = $available_hours > 0 ? round( ( $row['allocated_hours'] / $available_hours ) * 100, 1 ) : 0;
 		}
 
 		// Overall summary
@@ -483,18 +505,18 @@ class ICT_Advanced_Reporting {
 		$total_available = count( $utilization ) * $available_hours;
 
 		return array(
-			'period' => array(
-				'start_date'       => $start_date,
-				'end_date'         => $end_date,
-				'working_days'     => round( $working_days ),
-				'hours_per_day'    => $hours_per_day,
-				'available_hours'  => $available_hours,
+			'period'        => array(
+				'start_date'      => $start_date,
+				'end_date'        => $end_date,
+				'working_days'    => round( $working_days ),
+				'hours_per_day'   => $hours_per_day,
+				'available_hours' => $available_hours,
 			),
-			'summary' => array(
-				'total_technicians'    => count( $utilization ),
-				'total_hours_worked'   => $total_actual,
-				'total_available'      => $total_available,
-				'overall_utilization'  => $total_available > 0 ? round( ( $total_actual / $total_available ) * 100, 1 ) : 0,
+			'summary'       => array(
+				'total_technicians'   => count( $utilization ),
+				'total_hours_worked'  => $total_actual,
+				'total_available'     => $total_available,
+				'overall_utilization' => $total_available > 0 ? round( ( $total_actual / $total_available ) * 100, 1 ) : 0,
 			),
 			'by_technician' => $utilization,
 		);
@@ -510,11 +532,11 @@ class ICT_Advanced_Reporting {
 	private function get_inventory_status_report( $filters ) {
 		global $wpdb;
 
-		$where_clauses = array( "is_active = 1" );
+		$where_clauses = array( 'is_active = 1' );
 		$where_values  = array();
 
 		if ( ! empty( $filters['category'] ) ) {
-			$where_clauses[] = "category = %s";
+			$where_clauses[] = 'category = %s';
 			$where_values[]  = $filters['category'];
 		}
 
@@ -524,23 +546,23 @@ class ICT_Advanced_Reporting {
 		$summary = $wpdb->get_row(
 			count( $where_values ) > 0
 				? $wpdb->prepare(
-					"SELECT
+					'SELECT
 						COUNT(*) as total_items,
 						SUM(quantity_on_hand) as total_quantity,
 						SUM(quantity_on_hand * unit_cost) as total_value,
 						SUM(CASE WHEN quantity_available <= reorder_level THEN 1 ELSE 0 END) as low_stock_count,
 						SUM(CASE WHEN quantity_on_hand = 0 THEN 1 ELSE 0 END) as out_of_stock_count
-					FROM " . ICT_INVENTORY_ITEMS_TABLE . "
+					FROM ' . ICT_INVENTORY_ITEMS_TABLE . "
 					WHERE {$where_sql}",
 					...$where_values
 				)
-				: "SELECT
+				: 'SELECT
 					COUNT(*) as total_items,
 					SUM(quantity_on_hand) as total_quantity,
 					SUM(quantity_on_hand * unit_cost) as total_value,
 					SUM(CASE WHEN quantity_available <= reorder_level THEN 1 ELSE 0 END) as low_stock_count,
 					SUM(CASE WHEN quantity_on_hand = 0 THEN 1 ELSE 0 END) as out_of_stock_count
-				FROM " . ICT_INVENTORY_ITEMS_TABLE . "
+				FROM ' . ICT_INVENTORY_ITEMS_TABLE . "
 				WHERE {$where_sql}",
 			ARRAY_A
 		);
@@ -549,23 +571,23 @@ class ICT_Advanced_Reporting {
 		$by_category = $wpdb->get_results(
 			count( $where_values ) > 0
 				? $wpdb->prepare(
-					"SELECT
+					'SELECT
 						category,
 						COUNT(*) as item_count,
 						SUM(quantity_on_hand) as total_quantity,
 						SUM(quantity_on_hand * unit_cost) as total_value
-					FROM " . ICT_INVENTORY_ITEMS_TABLE . "
+					FROM ' . ICT_INVENTORY_ITEMS_TABLE . "
 					WHERE {$where_sql}
 					GROUP BY category
 					ORDER BY total_value DESC",
 					...$where_values
 				)
-				: "SELECT
+				: 'SELECT
 					category,
 					COUNT(*) as item_count,
 					SUM(quantity_on_hand) as total_quantity,
 					SUM(quantity_on_hand * unit_cost) as total_value
-				FROM " . ICT_INVENTORY_ITEMS_TABLE . "
+				FROM ' . ICT_INVENTORY_ITEMS_TABLE . "
 				WHERE {$where_sql}
 				GROUP BY category
 				ORDER BY total_value DESC",
@@ -574,27 +596,27 @@ class ICT_Advanced_Reporting {
 
 		// Low stock items
 		$low_stock = $wpdb->get_results(
-			"SELECT
+			'SELECT
 				id, sku, item_name, category,
 				quantity_on_hand, quantity_available, reorder_level, reorder_quantity,
 				unit_cost, supplier_id
-			FROM " . ICT_INVENTORY_ITEMS_TABLE . "
+			FROM ' . ICT_INVENTORY_ITEMS_TABLE . '
 			WHERE is_active = 1 AND quantity_available <= reorder_level
 			ORDER BY (reorder_level - quantity_available) DESC
-			LIMIT 50",
+			LIMIT 50',
 			ARRAY_A
 		);
 
 		// Top value items
 		$top_value = $wpdb->get_results(
-			"SELECT
+			'SELECT
 				id, sku, item_name, category,
 				quantity_on_hand, unit_cost,
 				(quantity_on_hand * unit_cost) as total_value
-			FROM " . ICT_INVENTORY_ITEMS_TABLE . "
+			FROM ' . ICT_INVENTORY_ITEMS_TABLE . '
 			WHERE is_active = 1
 			ORDER BY total_value DESC
-			LIMIT 20",
+			LIMIT 20',
 			ARRAY_A
 		);
 
@@ -628,8 +650,8 @@ class ICT_Advanced_Reporting {
 					SUM(CASE WHEN status = 'pending' THEN total_amount ELSE 0 END) as pending_value,
 					SUM(CASE WHEN status = 'received' THEN total_amount ELSE 0 END) as received_value,
 					AVG(total_amount) as avg_order_value
-				FROM " . ICT_PURCHASE_ORDERS_TABLE . "
-				WHERE po_date BETWEEN %s AND %s",
+				FROM " . ICT_PURCHASE_ORDERS_TABLE . '
+				WHERE po_date BETWEEN %s AND %s',
 				$start_date,
 				$end_date
 			),
@@ -639,13 +661,13 @@ class ICT_Advanced_Reporting {
 		// By status
 		$by_status = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT
+				'SELECT
 					status,
 					COUNT(*) as count,
 					SUM(total_amount) as total_value
-				FROM " . ICT_PURCHASE_ORDERS_TABLE . "
+				FROM ' . ICT_PURCHASE_ORDERS_TABLE . '
 				WHERE po_date BETWEEN %s AND %s
-				GROUP BY status",
+				GROUP BY status',
 				$start_date,
 				$end_date
 			),
@@ -672,13 +694,13 @@ class ICT_Advanced_Reporting {
 		// Orders list
 		$orders = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT
+				'SELECT
 					po_number, po_date, status, total_amount,
 					delivery_date, received_date
-				FROM " . ICT_PURCHASE_ORDERS_TABLE . "
+				FROM ' . ICT_PURCHASE_ORDERS_TABLE . '
 				WHERE po_date BETWEEN %s AND %s
 				ORDER BY po_date DESC
-				LIMIT 100",
+				LIMIT 100',
 				$start_date,
 				$end_date
 			),
@@ -708,11 +730,11 @@ class ICT_Advanced_Reporting {
 		// Project financials
 		$project_totals = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT
+				'SELECT
 					SUM(budget_amount) as total_budget,
 					SUM(actual_cost) as total_actual_cost
-				FROM " . ICT_PROJECTS_TABLE . "
-				WHERE created_at BETWEEN %s AND %s",
+				FROM ' . ICT_PROJECTS_TABLE . '
+				WHERE created_at BETWEEN %s AND %s',
 				$start_date,
 				$end_date . ' 23:59:59'
 			),
@@ -722,9 +744,9 @@ class ICT_Advanced_Reporting {
 		// Labor costs
 		$labor_costs = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT SUM(total_cost)
-				FROM " . ICT_TIME_ENTRIES_TABLE . "
-				WHERE clock_in BETWEEN %s AND %s",
+				'SELECT SUM(total_cost)
+				FROM ' . ICT_TIME_ENTRIES_TABLE . '
+				WHERE clock_in BETWEEN %s AND %s',
 				$start_date,
 				$end_date . ' 23:59:59'
 			)
@@ -733,8 +755,8 @@ class ICT_Advanced_Reporting {
 		// PO costs
 		$po_costs = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT SUM(total_amount)
-				FROM " . ICT_PURCHASE_ORDERS_TABLE . "
+				'SELECT SUM(total_amount)
+				FROM ' . ICT_PURCHASE_ORDERS_TABLE . "
 				WHERE po_date BETWEEN %s AND %s AND status != 'cancelled'",
 				$start_date,
 				$end_date
@@ -834,15 +856,15 @@ class ICT_Advanced_Reporting {
 		// Hours by day of week
 		$by_day = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT
+				'SELECT
 					DAYOFWEEK(clock_in) as day_num,
 					DAYNAME(clock_in) as day_name,
 					SUM(total_hours) as hours,
 					COUNT(*) as entries
-				FROM " . ICT_TIME_ENTRIES_TABLE . "
+				FROM ' . ICT_TIME_ENTRIES_TABLE . '
 				WHERE clock_in BETWEEN %s AND %s
 				GROUP BY DAYOFWEEK(clock_in), DAYNAME(clock_in)
-				ORDER BY day_num",
+				ORDER BY day_num',
 				$start_date,
 				$end_date . ' 23:59:59'
 			),
@@ -852,13 +874,13 @@ class ICT_Advanced_Reporting {
 		// Hours by hour of day
 		$by_hour = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT
+				'SELECT
 					HOUR(clock_in) as hour,
 					COUNT(*) as clock_ins
-				FROM " . ICT_TIME_ENTRIES_TABLE . "
+				FROM ' . ICT_TIME_ENTRIES_TABLE . '
 				WHERE clock_in BETWEEN %s AND %s
 				GROUP BY HOUR(clock_in)
-				ORDER BY hour",
+				ORDER BY hour',
 				$start_date,
 				$end_date . ' 23:59:59'
 			),
@@ -885,7 +907,7 @@ class ICT_Advanced_Reporting {
 
 		$projects = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT
+				'SELECT
 					p.id, p.project_name, p.project_number, p.status,
 					p.budget_amount, p.actual_cost,
 					(p.budget_amount - p.actual_cost) as profit,
@@ -895,14 +917,14 @@ class ICT_Advanced_Reporting {
 					END as margin_percent,
 					p.estimated_hours, p.actual_hours,
 					COALESCE(labor.labor_cost, 0) as labor_cost
-				FROM " . ICT_PROJECTS_TABLE . " p
+				FROM ' . ICT_PROJECTS_TABLE . ' p
 				LEFT JOIN (
 					SELECT project_id, SUM(total_cost) as labor_cost
-					FROM " . ICT_TIME_ENTRIES_TABLE . "
+					FROM ' . ICT_TIME_ENTRIES_TABLE . '
 					GROUP BY project_id
 				) labor ON p.id = labor.project_id
 				WHERE p.created_at BETWEEN %s AND %s
-				ORDER BY profit DESC",
+				ORDER BY profit DESC',
 				$start_date,
 				$end_date . ' 23:59:59'
 			),
@@ -915,7 +937,7 @@ class ICT_Advanced_Reporting {
 		$total_profit = array_sum( array_column( $projects, 'profit' ) );
 
 		return array(
-			'summary' => array(
+			'summary'  => array(
 				'total_projects' => count( $projects ),
 				'total_budget'   => $total_budget,
 				'total_cost'     => $total_actual,
@@ -941,13 +963,13 @@ class ICT_Advanced_Reporting {
 		// Summary
 		$summary = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT
+				'SELECT
 					SUM(total_hours) as total_hours,
 					SUM(CASE WHEN is_overtime = 1 THEN total_hours ELSE 0 END) as overtime_hours,
 					SUM(total_cost) as total_cost,
 					SUM(CASE WHEN is_overtime = 1 THEN total_cost ELSE 0 END) as overtime_cost
-				FROM " . ICT_TIME_ENTRIES_TABLE . "
-				WHERE clock_in BETWEEN %s AND %s",
+				FROM ' . ICT_TIME_ENTRIES_TABLE . '
+				WHERE clock_in BETWEEN %s AND %s',
 				$start_date,
 				$end_date . ' 23:59:59'
 			),
@@ -957,13 +979,13 @@ class ICT_Advanced_Reporting {
 		// By technician
 		$by_technician = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT
+				'SELECT
 					t.technician_id,
 					u.display_name as name,
 					SUM(t.total_hours) as total_hours,
 					SUM(CASE WHEN t.is_overtime = 1 THEN t.total_hours ELSE 0 END) as overtime_hours,
 					SUM(CASE WHEN t.is_overtime = 1 THEN t.total_cost ELSE 0 END) as overtime_cost
-				FROM " . ICT_TIME_ENTRIES_TABLE . " t
+				FROM ' . ICT_TIME_ENTRIES_TABLE . " t
 				LEFT JOIN {$wpdb->users} u ON t.technician_id = u.ID
 				WHERE t.clock_in BETWEEN %s AND %s
 				GROUP BY t.technician_id
@@ -978,15 +1000,15 @@ class ICT_Advanced_Reporting {
 		// Weekly trend
 		$weekly = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT
+				'SELECT
 					YEARWEEK(clock_in) as week,
 					MIN(DATE(clock_in)) as week_start,
 					SUM(total_hours) as total_hours,
 					SUM(CASE WHEN is_overtime = 1 THEN total_hours ELSE 0 END) as overtime_hours
-				FROM " . ICT_TIME_ENTRIES_TABLE . "
+				FROM ' . ICT_TIME_ENTRIES_TABLE . '
 				WHERE clock_in BETWEEN %s AND %s
 				GROUP BY YEARWEEK(clock_in)
-				ORDER BY week",
+				ORDER BY week',
 				$start_date,
 				$end_date . ' 23:59:59'
 			),
@@ -1019,10 +1041,13 @@ class ICT_Advanced_Reporting {
 		$filters    = $request->get_param( 'filters' ) ?? array();
 
 		if ( ! in_array( $format, $this->export_formats, true ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Invalid export format',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Invalid export format',
+				),
+				400
+			);
 		}
 
 		$data = $this->generate_report_data( $type, $start_date, $end_date, $filters );
@@ -1040,7 +1065,7 @@ class ICT_Advanced_Reporting {
 	 * @return WP_REST_Response Response with download URL.
 	 */
 	private function export_report_data( $data, $type, $format ) {
-		$filename = "ict-report-{$type}-" . date( 'Y-m-d-His' );
+		$filename   = "ict-report-{$type}-" . date( 'Y-m-d-His' );
 		$upload_dir = wp_upload_dir();
 		$export_dir = $upload_dir['basedir'] . '/ict-platform/exports';
 
@@ -1067,20 +1092,26 @@ class ICT_Advanced_Reporting {
 				break;
 
 			default:
-				return new WP_REST_Response( array(
-					'success' => false,
-					'error'   => 'Unsupported format',
-				), 400 );
+				return new WP_REST_Response(
+					array(
+						'success' => false,
+						'error'   => 'Unsupported format',
+					),
+					400
+				);
 		}
 
 		$file_url = str_replace( $upload_dir['basedir'], $upload_dir['baseurl'], $file_path );
 
-		return new WP_REST_Response( array(
-			'success'      => true,
-			'download_url' => $file_url,
-			'filename'     => basename( $file_path ),
-			'expires'      => time() + 3600, // 1 hour
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success'      => true,
+				'download_url' => $file_url,
+				'filename'     => basename( $file_path ),
+				'expires'      => time() + 3600, // 1 hour
+			),
+			200
+		);
 	}
 
 	/**
@@ -1094,7 +1125,7 @@ class ICT_Advanced_Reporting {
 	 */
 	private function export_to_csv( $data, $dir, $filename ) {
 		$file_path = "{$dir}/{$filename}.csv";
-		$fp = fopen( $file_path, 'w' );
+		$fp        = fopen( $file_path, 'w' );
 
 		// Flatten and write data
 		foreach ( $data as $section => $rows ) {
@@ -1179,7 +1210,7 @@ class ICT_Advanced_Reporting {
 	private function generate_pdf_html( $data, $type ) {
 		$title = str_replace( '_', ' ', ucwords( $type, '_' ) );
 
-		$html = '<!DOCTYPE html><html><head><meta charset="utf-8">';
+		$html  = '<!DOCTYPE html><html><head><meta charset="utf-8">';
 		$html .= '<title>' . esc_html( $title ) . ' Report</title>';
 		$html .= '<style>
 			body { font-family: Arial, sans-serif; font-size: 12px; }
@@ -1248,10 +1279,13 @@ class ICT_Advanced_Reporting {
 		$filters    = $request->get_param( 'filters' ) ?? array();
 
 		if ( ! in_array( $frequency, array( 'daily', 'weekly', 'monthly' ), true ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Invalid frequency',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Invalid frequency',
+				),
+				400
+			);
 		}
 
 		$schedule_id = wp_generate_uuid4();
@@ -1276,10 +1310,13 @@ class ICT_Advanced_Reporting {
 
 		wp_schedule_event( $timestamp, $frequency, $hook, array( $schedule_id ) );
 
-		return new WP_REST_Response( array(
-			'success'     => true,
-			'schedule_id' => $schedule_id,
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success'     => true,
+				'schedule_id' => $schedule_id,
+			),
+			200
+		);
 	}
 
 	/**
@@ -1390,7 +1427,7 @@ class ICT_Advanced_Reporting {
 			$data = array(
 				'title'   => sprintf( __( 'Scheduled Report: %s', 'ict-platform' ), $title ),
 				'message' => sprintf(
-					__( 'Your scheduled %s report for %s to %s is attached.', 'ict-platform' ),
+					__( 'Your scheduled %1$s report for %2$s to %3$s is attached.', 'ict-platform' ),
 					strtolower( $title ),
 					$start_date,
 					$end_date
@@ -1474,9 +1511,12 @@ class ICT_Advanced_Reporting {
 			),
 		);
 
-		return new WP_REST_Response( array(
-			'success'   => true,
-			'templates' => $templates,
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success'   => true,
+				'templates' => $templates,
+			),
+			200
+		);
 	}
 }

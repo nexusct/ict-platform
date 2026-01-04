@@ -139,7 +139,7 @@ export function parseApiError(error: unknown): {
       case 409:
         result.message = 'A conflict occurred. Please refresh and try again.';
         break;
-      case 422:
+      case 422: {
         result.message = (data as { message?: string })?.message || 'Validation failed';
         const errors = (data as { errors?: Record<string, string[]> })?.errors;
         if (errors) {
@@ -147,6 +147,7 @@ export function parseApiError(error: unknown): {
           result.details = errors[firstField]?.[0];
         }
         break;
+      }
       case 429:
         result.message = 'Too many requests. Please wait a moment.';
         break;

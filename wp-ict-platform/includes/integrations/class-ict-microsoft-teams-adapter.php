@@ -177,7 +177,7 @@ class ICT_Microsoft_Teams_Adapter {
 		$response = wp_remote_post(
 			"{$this->oauth_base_url}/{$tenant_id}/oauth2/v2.0/token",
 			array(
-				'body' => array(
+				'body'    => array(
 					'client_id'     => $client_id,
 					'client_secret' => $client_secret,
 					'refresh_token' => ICT_Admin_Settings::decrypt( $refresh_token ),
@@ -255,7 +255,7 @@ class ICT_Microsoft_Teams_Adapter {
 		$response = wp_remote_post(
 			"{$this->oauth_base_url}/{$tenant_id}/oauth2/v2.0/token",
 			array(
-				'body' => array(
+				'body'    => array(
 					'client_id'     => $client_id,
 					'client_secret' => $client_secret,
 					'code'          => $code,
@@ -341,26 +341,30 @@ class ICT_Microsoft_Teams_Adapter {
 		);
 
 		if ( is_wp_error( $response ) ) {
-			ICT_Helper::log_sync( array(
-				'entity_type'   => 'teams_notification',
-				'direction'     => 'outbound',
-				'zoho_service'  => 'teams',
-				'action'        => 'send_message',
-				'status'        => 'error',
-				'error_message' => $response->get_error_message(),
-			) );
+			ICT_Helper::log_sync(
+				array(
+					'entity_type'   => 'teams_notification',
+					'direction'     => 'outbound',
+					'zoho_service'  => 'teams',
+					'action'        => 'send_message',
+					'status'        => 'error',
+					'error_message' => $response->get_error_message(),
+				)
+			);
 			return false;
 		}
 
 		$status_code = wp_remote_retrieve_response_code( $response );
 
-		ICT_Helper::log_sync( array(
-			'entity_type'  => 'teams_notification',
-			'direction'    => 'outbound',
-			'zoho_service' => 'teams',
-			'action'       => 'send_message',
-			'status'       => ( $status_code >= 200 && $status_code < 300 ) ? 'success' : 'error',
-		) );
+		ICT_Helper::log_sync(
+			array(
+				'entity_type'  => 'teams_notification',
+				'direction'    => 'outbound',
+				'zoho_service' => 'teams',
+				'action'       => 'send_message',
+				'status'       => ( $status_code >= 200 && $status_code < 300 ) ? 'success' : 'error',
+			)
+		);
 
 		return $status_code >= 200 && $status_code < 300;
 	}
@@ -388,11 +392,13 @@ class ICT_Microsoft_Teams_Adapter {
 					'Authorization' => 'Bearer ' . $access_token,
 					'Content-Type'  => 'application/json',
 				),
-				'body'    => wp_json_encode( array(
-					'body' => array(
-						'content' => $message,
-					),
-				) ),
+				'body'    => wp_json_encode(
+					array(
+						'body' => array(
+							'content' => $message,
+						),
+					)
+				),
 				'timeout' => 30,
 			)
 		);
@@ -473,7 +479,7 @@ class ICT_Microsoft_Teams_Adapter {
 	 * Send project update notification to Teams.
 	 *
 	 * @since  1.1.0
-	 * @param  array $project Project data.
+	 * @param  array  $project Project data.
 	 * @param  string $action  Action type (created, updated, completed).
 	 * @return bool True on success.
 	 */
@@ -513,7 +519,7 @@ class ICT_Microsoft_Teams_Adapter {
 							'value' => ( $project['progress_percentage'] ?? 0 ) . '%',
 						),
 					),
-					'markdown' => true,
+					'markdown'         => true,
 				),
 			),
 		);
@@ -572,7 +578,7 @@ class ICT_Microsoft_Teams_Adapter {
 			$facts[] = array(
 				'name'  => $item->item_name,
 				'value' => sprintf(
-					__( '%d available (reorder at %d)', 'ict-platform' ),
+					__( '%1$d available (reorder at %2$d)', 'ict-platform' ),
 					$item->quantity_available,
 					$item->reorder_level
 				),
@@ -586,13 +592,13 @@ class ICT_Microsoft_Teams_Adapter {
 			'summary'    => __( 'Low Stock Alert', 'ict-platform' ),
 			'sections'   => array(
 				array(
-					'activityTitle' => __( '⚠️ Low Stock Alert', 'ict-platform' ),
+					'activityTitle'    => __( '⚠️ Low Stock Alert', 'ict-platform' ),
 					'activitySubtitle' => sprintf(
 						__( '%d items below reorder level', 'ict-platform' ),
 						count( $items )
 					),
-					'facts'    => $facts,
-					'markdown' => true,
+					'facts'            => $facts,
+					'markdown'         => true,
 				),
 			),
 		);

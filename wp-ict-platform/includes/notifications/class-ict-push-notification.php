@@ -105,7 +105,10 @@ class ICT_Push_Notification {
 	 */
 	public function send( $type, $recipients, $data ) {
 		if ( ! $this->is_configured() ) {
-			return array( 'success' => false, 'error' => 'not_configured' );
+			return array(
+				'success' => false,
+				'error'   => 'not_configured',
+			);
 		}
 
 		$results = array(
@@ -125,9 +128,9 @@ class ICT_Push_Notification {
 				$result  = $this->send_to_subscription( $subscription, $payload );
 
 				if ( $result['success'] ) {
-					$results['sent']++;
+					++$results['sent'];
 				} else {
-					$results['failed']++;
+					++$results['failed'];
 
 					// Remove invalid subscriptions
 					if ( $result['error'] === 'gone' ) {
@@ -222,9 +225,12 @@ class ICT_Push_Notification {
 	public function remove_subscription( $user_id, $endpoint ) {
 		$subscriptions = $this->get_user_subscriptions( $user_id );
 
-		$subscriptions = array_filter( $subscriptions, function( $sub ) use ( $endpoint ) {
-			return $sub['endpoint'] !== $endpoint;
-		} );
+		$subscriptions = array_filter(
+			$subscriptions,
+			function ( $sub ) use ( $endpoint ) {
+				return $sub['endpoint'] !== $endpoint;
+			}
+		);
 
 		return update_user_meta( $user_id, 'ict_push_subscriptions', array_values( $subscriptions ) );
 	}
@@ -255,22 +261,40 @@ class ICT_Push_Notification {
 		switch ( $type ) {
 			case 'task_assigned':
 				$payload['actions'] = array(
-					array( 'action' => 'view', 'title' => __( 'View Task', 'ict-platform' ) ),
-					array( 'action' => 'accept', 'title' => __( 'Accept', 'ict-platform' ) ),
+					array(
+						'action' => 'view',
+						'title'  => __( 'View Task', 'ict-platform' ),
+					),
+					array(
+						'action' => 'accept',
+						'title'  => __( 'Accept', 'ict-platform' ),
+					),
 				);
 				break;
 
 			case 'time_entry_submitted':
 				$payload['actions'] = array(
-					array( 'action' => 'approve', 'title' => __( 'Approve', 'ict-platform' ) ),
-					array( 'action' => 'review', 'title' => __( 'Review', 'ict-platform' ) ),
+					array(
+						'action' => 'approve',
+						'title'  => __( 'Approve', 'ict-platform' ),
+					),
+					array(
+						'action' => 'review',
+						'title'  => __( 'Review', 'ict-platform' ),
+					),
 				);
 				break;
 
 			default:
 				$payload['actions'] = array(
-					array( 'action' => 'view', 'title' => __( 'View', 'ict-platform' ) ),
-					array( 'action' => 'dismiss', 'title' => __( 'Dismiss', 'ict-platform' ) ),
+					array(
+						'action' => 'view',
+						'title'  => __( 'View', 'ict-platform' ),
+					),
+					array(
+						'action' => 'dismiss',
+						'title'  => __( 'Dismiss', 'ict-platform' ),
+					),
 				);
 		}
 
@@ -291,14 +315,20 @@ class ICT_Push_Notification {
 		$auth     = $subscription['keys']['auth'] ?? '';
 
 		if ( empty( $endpoint ) || empty( $p256dh ) || empty( $auth ) ) {
-			return array( 'success' => false, 'error' => 'invalid_subscription' );
+			return array(
+				'success' => false,
+				'error'   => 'invalid_subscription',
+			);
 		}
 
 		// Create encrypted payload
 		$encrypted = $this->encrypt_payload( $payload, $p256dh, $auth );
 
 		if ( ! $encrypted ) {
-			return array( 'success' => false, 'error' => 'encryption_failed' );
+			return array(
+				'success' => false,
+				'error'   => 'encryption_failed',
+			);
 		}
 
 		// Create VAPID headers
@@ -323,7 +353,10 @@ class ICT_Push_Notification {
 		);
 
 		if ( is_wp_error( $response ) ) {
-			return array( 'success' => false, 'error' => $response->get_error_message() );
+			return array(
+				'success' => false,
+				'error'   => $response->get_error_message(),
+			);
 		}
 
 		$status_code = wp_remote_retrieve_response_code( $response );
@@ -333,10 +366,16 @@ class ICT_Push_Notification {
 		}
 
 		if ( 404 === $status_code || 410 === $status_code ) {
-			return array( 'success' => false, 'error' => 'gone' );
+			return array(
+				'success' => false,
+				'error'   => 'gone',
+			);
 		}
 
-		return array( 'success' => false, 'error' => "status_{$status_code}" );
+		return array(
+			'success' => false,
+			'error'   => "status_{$status_code}",
+		);
 	}
 
 	/**
@@ -360,10 +399,12 @@ class ICT_Push_Notification {
 		}
 
 		// Generate local key pair
-		$local_key = openssl_pkey_new( array(
-			'curve_name'       => 'prime256v1',
-			'private_key_type' => OPENSSL_KEYTYPE_EC,
-		) );
+		$local_key = openssl_pkey_new(
+			array(
+				'curve_name'       => 'prime256v1',
+				'private_key_type' => OPENSSL_KEYTYPE_EC,
+			)
+		);
 
 		if ( ! $local_key ) {
 			return false;
@@ -379,7 +420,7 @@ class ICT_Push_Notification {
 		// For simplicity, we return the raw payload
 		// Real implementation should use proper Web Push encryption
 		return array(
-			'cipherText'    => $payload,
+			'cipherText'     => $payload,
 			'localPublicKey' => $local_details['key'] ?? '',
 		);
 	}
@@ -410,7 +451,7 @@ class ICT_Push_Notification {
 		$payload_encoded = rtrim( strtr( base64_encode( wp_json_encode( $payload ) ), '+/', '-_' ), '=' );
 
 		// Note: Real implementation needs proper ES256 signing
-		$signature = hash_hmac( 'sha256', "{$header_encoded}.{$payload_encoded}", $this->vapid_private_key, true );
+		$signature         = hash_hmac( 'sha256', "{$header_encoded}.{$payload_encoded}", $this->vapid_private_key, true );
 		$signature_encoded = rtrim( strtr( base64_encode( $signature ), '+/', '-_' ), '=' );
 
 		return array(

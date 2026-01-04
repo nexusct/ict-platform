@@ -36,10 +36,10 @@ class ICT_Integration_Manager {
 
 		foreach ( $this->services as $service ) {
 			$status[ $service ] = array(
-				'connected'    => $this->is_service_connected( $service ),
-				'last_sync'    => get_option( "ict_zoho_{$service}_last_sync" ),
-				'sync_status'  => get_option( "ict_zoho_{$service}_sync_status", 'idle' ),
-				'error_count'  => $this->get_service_error_count( $service ),
+				'connected'   => $this->is_service_connected( $service ),
+				'last_sync'   => get_option( "ict_zoho_{$service}_last_sync" ),
+				'sync_status' => get_option( "ict_zoho_{$service}_sync_status", 'idle' ),
+				'error_count' => $this->get_service_error_count( $service ),
 			);
 		}
 
@@ -70,7 +70,7 @@ class ICT_Integration_Manager {
 
 		$count = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(*) FROM " . ICT_SYNC_LOG_TABLE . "
+				'SELECT COUNT(*) FROM ' . ICT_SYNC_LOG_TABLE . "
 				WHERE zoho_service = %s
 				AND status = 'error'
 				AND synced_at > DATE_SUB(NOW(), INTERVAL 24 HOUR)",

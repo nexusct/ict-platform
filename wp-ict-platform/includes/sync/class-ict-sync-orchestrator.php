@@ -52,10 +52,10 @@ class ICT_Sync_Orchestrator {
 	 * Constructor.
 	 */
 	public function __construct() {
-		$this->quotewerks  = new ICT_QuoteWerks_Adapter();
-		$this->zoho_crm    = new ICT_Zoho_CRM_Adapter();
-		$this->zoho_books  = new ICT_Zoho_Books_Adapter();
-		$this->zoho_fsm    = new ICT_Zoho_FSM_Adapter();
+		$this->quotewerks = new ICT_QuoteWerks_Adapter();
+		$this->zoho_crm   = new ICT_Zoho_CRM_Adapter();
+		$this->zoho_books = new ICT_Zoho_Books_Adapter();
+		$this->zoho_fsm   = new ICT_Zoho_FSM_Adapter();
 	}
 
 	/**
@@ -117,7 +117,7 @@ class ICT_Sync_Orchestrator {
 
 		$project = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_PROJECTS_TABLE . " WHERE id = %d",
+				'SELECT * FROM ' . ICT_PROJECTS_TABLE . ' WHERE id = %d',
 				$project_id
 			),
 			ARRAY_A
@@ -129,11 +129,11 @@ class ICT_Sync_Orchestrator {
 
 		// Map to CRM deal format
 		$deal_data = array(
-			'Deal_Name'     => $project['name'],
-			'Stage'         => $this->map_status_to_crm_stage( $project['status'] ),
-			'Amount'        => $project['budget_amount'],
-			'Closing_Date'  => $project['end_date'] ?? date( 'Y-m-d', strtotime( '+30 days' ) ),
-			'Description'   => $project['description'],
+			'Deal_Name'    => $project['name'],
+			'Stage'        => $this->map_status_to_crm_stage( $project['status'] ),
+			'Amount'       => $project['budget_amount'],
+			'Closing_Date' => $project['end_date'] ?? date( 'Y-m-d', strtotime( '+30 days' ) ),
+			'Description'  => $project['description'],
 		);
 
 		// Check if already synced
@@ -173,7 +173,7 @@ class ICT_Sync_Orchestrator {
 
 		$project = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_PROJECTS_TABLE . " WHERE id = %d",
+				'SELECT * FROM ' . ICT_PROJECTS_TABLE . ' WHERE id = %d',
 				$project_id
 			),
 			ARRAY_A
@@ -185,12 +185,12 @@ class ICT_Sync_Orchestrator {
 
 		// Map to FSM work order format
 		$wo_data = array(
-			'Subject'           => $project['name'],
-			'Status'            => $this->map_status_to_fsm_status( $project['status'] ),
-			'Priority'          => ucfirst( $project['priority'] ),
-			'Scheduled_Start'   => $project['start_date'],
-			'Scheduled_End'     => $project['end_date'],
-			'Description'       => $project['description'],
+			'Subject'         => $project['name'],
+			'Status'          => $this->map_status_to_fsm_status( $project['status'] ),
+			'Priority'        => ucfirst( $project['priority'] ),
+			'Scheduled_Start' => $project['start_date'],
+			'Scheduled_End'   => $project['end_date'],
+			'Description'     => $project['description'],
 		);
 
 		// Check if already synced
@@ -227,7 +227,7 @@ class ICT_Sync_Orchestrator {
 
 		$item = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_INVENTORY_ITEMS_TABLE . " WHERE id = %d",
+				'SELECT * FROM ' . ICT_INVENTORY_ITEMS_TABLE . ' WHERE id = %d',
 				$item_id
 			),
 			ARRAY_A
@@ -238,12 +238,12 @@ class ICT_Sync_Orchestrator {
 		}
 
 		$item_data = array(
-			'name'         => $item['name'],
-			'sku'          => $item['sku'],
-			'unit'         => $item['unit'] ?? 'pcs',
-			'rate'         => $item['unit_price'],
-			'description'  => $item['description'] ?? '',
-			'stock'        => $item['quantity'],
+			'name'        => $item['name'],
+			'sku'         => $item['sku'],
+			'unit'        => $item['unit'] ?? 'pcs',
+			'rate'        => $item['unit_price'],
+			'description' => $item['description'] ?? '',
+			'stock'       => $item['quantity'],
 		);
 
 		if ( ! empty( $item['zoho_books_id'] ) ) {
@@ -284,7 +284,7 @@ class ICT_Sync_Orchestrator {
 		$all_success = true;
 		foreach ( $results as $service => $result ) {
 			if ( is_wp_error( $result ) ) {
-				$all_success = false;
+				$all_success         = false;
 				$results[ $service ] = array(
 					'success' => false,
 					'error'   => $result->get_error_message(),
@@ -345,20 +345,20 @@ class ICT_Sync_Orchestrator {
 
 		// Get failed syncs in last 24 hours
 		$failed_syncs = $wpdb->get_var(
-			"SELECT COUNT(*) FROM " . ICT_SYNC_LOG_TABLE . "
+			'SELECT COUNT(*) FROM ' . ICT_SYNC_LOG_TABLE . "
 			WHERE status = 'error'
 			AND created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)"
 		);
 
 		// Get pending queue items
 		$pending_queue = $wpdb->get_var(
-			"SELECT COUNT(*) FROM " . ICT_SYNC_QUEUE_TABLE . "
+			'SELECT COUNT(*) FROM ' . ICT_SYNC_QUEUE_TABLE . "
 			WHERE status = 'pending'"
 		);
 
 		// Get last successful sync
 		$last_sync = $wpdb->get_var(
-			"SELECT MAX(created_at) FROM " . ICT_SYNC_LOG_TABLE . "
+			'SELECT MAX(created_at) FROM ' . ICT_SYNC_LOG_TABLE . "
 			WHERE status = 'success'"
 		);
 
@@ -370,11 +370,11 @@ class ICT_Sync_Orchestrator {
 		}
 
 		return array(
-			'status'              => $health_status,
-			'failed_syncs_24h'    => (int) $failed_syncs,
-			'pending_queue_items' => (int) $pending_queue,
+			'status'               => $health_status,
+			'failed_syncs_24h'     => (int) $failed_syncs,
+			'pending_queue_items'  => (int) $pending_queue,
 			'last_successful_sync' => $last_sync,
-			'connections'         => $this->test_all_connections(),
+			'connections'          => $this->test_all_connections(),
 		);
 	}
 }

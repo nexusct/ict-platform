@@ -75,15 +75,17 @@ export const Tooltip: React.FC<TooltipProps> = ({
   }, [position]);
 
   useEffect(() => {
-    if (isVisible) {
-      calculatePosition();
-      window.addEventListener('scroll', calculatePosition, true);
-      window.addEventListener('resize', calculatePosition);
-      return () => {
-        window.removeEventListener('scroll', calculatePosition, true);
-        window.removeEventListener('resize', calculatePosition);
-      };
+    if (!isVisible) {
+      return;
     }
+
+    calculatePosition();
+    window.addEventListener('scroll', calculatePosition, true);
+    window.addEventListener('resize', calculatePosition);
+    return () => {
+      window.removeEventListener('scroll', calculatePosition, true);
+      window.removeEventListener('resize', calculatePosition);
+    };
   }, [isVisible, calculatePosition]);
 
   const showTooltip = () => {

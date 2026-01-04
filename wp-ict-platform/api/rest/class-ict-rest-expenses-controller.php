@@ -142,11 +142,11 @@ class ICT_REST_Expenses_Controller extends WP_REST_Controller {
 		$status  = $request->get_param( 'status' );
 
 		// Build query
-		$where = "WHERE user_id = %d";
+		$where  = 'WHERE user_id = %d';
 		$params = array( $user_id );
 
 		if ( $status ) {
-			$where .= " AND status = %s";
+			$where   .= ' AND status = %s';
 			$params[] = $status;
 		}
 
@@ -218,16 +218,16 @@ class ICT_REST_Expenses_Controller extends WP_REST_Controller {
 		$this->maybe_create_expenses_table();
 
 		$data = array(
-			'user_id'      => get_current_user_id(),
-			'project_id'   => absint( $request->get_param( 'project_id' ) ),
-			'description'  => sanitize_text_field( $request->get_param( 'description' ) ),
-			'category'     => sanitize_text_field( $request->get_param( 'category' ) ),
-			'amount'       => floatval( $request->get_param( 'amount' ) ),
-			'currency'     => sanitize_text_field( $request->get_param( 'currency' ) ?: 'USD' ),
-			'date'         => $request->get_param( 'date' ),
-			'status'       => 'draft',
-			'notes'        => sanitize_textarea_field( $request->get_param( 'notes' ) ),
-			'created_at'   => current_time( 'mysql' ),
+			'user_id'     => get_current_user_id(),
+			'project_id'  => absint( $request->get_param( 'project_id' ) ),
+			'description' => sanitize_text_field( $request->get_param( 'description' ) ),
+			'category'    => sanitize_text_field( $request->get_param( 'category' ) ),
+			'amount'      => floatval( $request->get_param( 'amount' ) ),
+			'currency'    => sanitize_text_field( $request->get_param( 'currency' ) ?: 'USD' ),
+			'date'        => $request->get_param( 'date' ),
+			'status'      => 'draft',
+			'notes'       => sanitize_textarea_field( $request->get_param( 'notes' ) ),
+			'created_at'  => current_time( 'mysql' ),
 		);
 
 		$result = $wpdb->insert(
@@ -245,7 +245,7 @@ class ICT_REST_Expenses_Controller extends WP_REST_Controller {
 		}
 
 		$expense_id = $wpdb->insert_id;
-		$expense = $wpdb->get_row(
+		$expense    = $wpdb->get_row(
 			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}ict_expenses WHERE id = %d", $expense_id ),
 			ARRAY_A
 		);
@@ -297,14 +297,14 @@ class ICT_REST_Expenses_Controller extends WP_REST_Controller {
 		}
 
 		// Update data
-		$update_data = array();
+		$update_data   = array();
 		$update_format = array();
 
 		$fields = array( 'project_id', 'description', 'category', 'amount', 'currency', 'date', 'notes' );
 		foreach ( $fields as $field ) {
 			if ( $request->has_param( $field ) ) {
 				$update_data[ $field ] = $request->get_param( $field );
-				$update_format[] = in_array( $field, array( 'project_id' ) ) ? '%d' : ( $field === 'amount' ? '%f' : '%s' );
+				$update_format[]       = in_array( $field, array( 'project_id' ) ) ? '%d' : ( $field === 'amount' ? '%f' : '%s' );
 			}
 		}
 

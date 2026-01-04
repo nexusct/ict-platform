@@ -7,7 +7,7 @@
  * @since   2.1.0
  */
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface DashboardWidget {
   id: string;
@@ -18,7 +18,7 @@ interface DashboardWidget {
   config?: Record<string, any>;
 }
 
-interface KPIData {
+export interface KPIData {
   label: string;
   value: number | string;
   change?: number;
@@ -27,7 +27,7 @@ interface KPIData {
   color?: string;
 }
 
-interface ChartData {
+export interface ChartData {
   labels: string[];
   datasets: {
     label: string;
@@ -62,7 +62,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
   dateRange,
   onWidgetAdd,
   onWidgetRemove,
-  onWidgetReorder,
+  onWidgetReorder: _onWidgetReorder,
 }) => {
   const [dashboardData, setDashboardData] = useState<Record<string, any>>({});
   const [isLoading, setIsLoading] = useState(true);

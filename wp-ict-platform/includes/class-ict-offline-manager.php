@@ -77,29 +77,45 @@ class ICT_Offline_Manager {
 	 * @return void
 	 */
 	public function register_sync_endpoints() {
-		register_rest_route( 'ict/v1', '/offline/sync', array(
-			'methods'             => 'POST',
-			'callback'            => array( $this, 'handle_sync_request' ),
-			'permission_callback' => array( $this, 'check_sync_permission' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/offline/sync',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'handle_sync_request' ),
+				'permission_callback' => array( $this, 'check_sync_permission' ),
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/offline/manifest', array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'get_sync_manifest' ),
-			'permission_callback' => array( $this, 'check_sync_permission' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/offline/manifest',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_sync_manifest' ),
+				'permission_callback' => array( $this, 'check_sync_permission' ),
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/offline/conflicts', array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'get_conflicts' ),
-			'permission_callback' => array( $this, 'check_sync_permission' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/offline/conflicts',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_conflicts' ),
+				'permission_callback' => array( $this, 'check_sync_permission' ),
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/offline/conflicts/(?P<id>\d+)', array(
-			'methods'             => 'POST',
-			'callback'            => array( $this, 'resolve_conflict' ),
-			'permission_callback' => array( $this, 'check_sync_permission' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/offline/conflicts/(?P<id>\d+)',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'resolve_conflict' ),
+				'permission_callback' => array( $this, 'check_sync_permission' ),
+			)
+		);
 	}
 
 	/**
@@ -125,10 +141,13 @@ class ICT_Offline_Manager {
 		$client_data = $request->get_json_params();
 
 		if ( empty( $client_data ) || ! is_array( $client_data ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Invalid sync data',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Invalid sync data',
+				),
+				400
+			);
 		}
 
 		$results = array(
@@ -164,15 +183,18 @@ class ICT_Offline_Manager {
 		}
 
 		// Get server changes since last sync
-		$last_sync     = $request->get_param( 'last_sync' ) ?? 0;
+		$last_sync      = $request->get_param( 'last_sync' ) ?? 0;
 		$server_changes = $this->get_server_changes( $user_id, $last_sync );
 
-		return new WP_REST_Response( array(
-			'success'        => true,
-			'results'        => $results,
-			'server_changes' => $server_changes,
-			'server_time'    => current_time( 'timestamp' ),
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success'        => true,
+				'results'        => $results,
+				'server_changes' => $server_changes,
+				'server_time'    => current_time( 'timestamp' ),
+			),
+			200
+		);
 	}
 
 	/**
@@ -218,7 +240,7 @@ class ICT_Offline_Manager {
 
 				if ( $server_version > $client_version ) {
 					// Conflict detected
-					$conflict_id = $this->create_conflict( $entity_type, $server_id, $data, $timestamp, $user_id );
+					$conflict_id           = $this->create_conflict( $entity_type, $server_id, $data, $timestamp, $user_id );
 					$result['conflict']    = true;
 					$result['conflict_id'] = $conflict_id;
 					$result['server_data'] = $this->get_entity( $entity_type, $server_id );
@@ -236,7 +258,7 @@ class ICT_Offline_Manager {
 			case 'delete':
 				$server_id = $data['id'] ?? $data['server_id'] ?? null;
 				if ( $server_id ) {
-					$deleted = $this->delete_entity( $entity_type, $server_id, $user_id );
+					$deleted           = $this->delete_entity( $entity_type, $server_id, $user_id );
 					$result['success'] = $deleted;
 				} else {
 					$result['error'] = 'Missing server ID for delete';
@@ -286,10 +308,13 @@ class ICT_Offline_Manager {
 			$entity_id = $wpdb->insert_id;
 
 			// Trigger sync to Zoho
-			do_action( "ict_{$entity_type}_created", $wpdb->get_row(
-				$wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $entity_id ),
-				ARRAY_A
-			) );
+			do_action(
+				"ict_{$entity_type}_created",
+				$wpdb->get_row(
+					$wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $entity_id ),
+					ARRAY_A
+				)
+			);
 
 			return $entity_id;
 		}
@@ -329,10 +354,14 @@ class ICT_Offline_Manager {
 
 		if ( false !== $result ) {
 			// Trigger update action
-			do_action( "ict_{$entity_type}_updated", $wpdb->get_row(
-				$wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $entity_id ),
-				ARRAY_A
-			), array_keys( $data ) );
+			do_action(
+				"ict_{$entity_type}_updated",
+				$wpdb->get_row(
+					$wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $entity_id ),
+					ARRAY_A
+				),
+				array_keys( $data )
+			);
 
 			return true;
 		}
@@ -476,14 +505,14 @@ class ICT_Offline_Manager {
 		$wpdb->insert(
 			$table,
 			array(
-				'entity_type'    => $entity_type,
-				'entity_id'      => $entity_id,
-				'client_data'    => wp_json_encode( $client_data ),
-				'client_time'    => date( 'Y-m-d H:i:s', $timestamp ),
-				'server_data'    => wp_json_encode( $this->get_entity( $entity_type, $entity_id ) ),
-				'user_id'        => $user_id,
-				'status'         => 'pending',
-				'created_at'     => current_time( 'mysql' ),
+				'entity_type' => $entity_type,
+				'entity_id'   => $entity_id,
+				'client_data' => wp_json_encode( $client_data ),
+				'client_time' => date( 'Y-m-d H:i:s', $timestamp ),
+				'server_data' => wp_json_encode( $this->get_entity( $entity_type, $entity_id ) ),
+				'user_id'     => $user_id,
+				'status'      => 'pending',
+				'created_at'  => current_time( 'mysql' ),
 			),
 			array( '%s', '%d', '%s', '%s', '%s', '%d', '%s', '%s' )
 		);
@@ -517,10 +546,13 @@ class ICT_Offline_Manager {
 			$conflict['server_data'] = json_decode( $conflict['server_data'], true );
 		}
 
-		return new WP_REST_Response( array(
-			'success'   => true,
-			'conflicts' => $conflicts,
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success'   => true,
+				'conflicts' => $conflicts,
+			),
+			200
+		);
 	}
 
 	/**
@@ -544,19 +576,25 @@ class ICT_Offline_Manager {
 		);
 
 		if ( ! $conflict ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Conflict not found',
-			), 404 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Conflict not found',
+				),
+				404
+			);
 		}
 
 		$user_id = get_current_user_id();
 
 		if ( (int) $conflict['user_id'] !== $user_id ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Unauthorized',
-			), 403 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Unauthorized',
+				),
+				403
+			);
 		}
 
 		switch ( $resolution ) {
@@ -587,9 +625,12 @@ class ICT_Offline_Manager {
 			array( 'id' => $conflict_id )
 		);
 
-		return new WP_REST_Response( array(
-			'success' => true,
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+			),
+			200
+		);
 	}
 
 	/**
@@ -603,14 +644,14 @@ class ICT_Offline_Manager {
 	private function get_server_changes( $user_id, $last_sync ) {
 		global $wpdb;
 
-		$changes     = array();
+		$changes        = array();
 		$last_sync_date = $last_sync ? date( 'Y-m-d H:i:s', $last_sync ) : '1970-01-01 00:00:00';
 
 		// Get time entry changes
 		$time_entries = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_TIME_ENTRIES_TABLE . "
-				WHERE technician_id = %d AND updated_at > %s",
+				'SELECT * FROM ' . ICT_TIME_ENTRIES_TABLE . '
+				WHERE technician_id = %d AND updated_at > %s',
 				$user_id,
 				$last_sync_date
 			),
@@ -629,7 +670,7 @@ class ICT_Offline_Manager {
 		// Get project changes (for assigned projects)
 		$assigned_projects = $wpdb->get_col(
 			$wpdb->prepare(
-				"SELECT DISTINCT project_id FROM " . ICT_PROJECT_RESOURCES_TABLE . "
+				'SELECT DISTINCT project_id FROM ' . ICT_PROJECT_RESOURCES_TABLE . "
 				WHERE resource_type = 'user' AND resource_id = %d",
 				$user_id
 			)
@@ -640,7 +681,7 @@ class ICT_Offline_Manager {
 
 			$projects = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT * FROM " . ICT_PROJECTS_TABLE . "
+					'SELECT * FROM ' . ICT_PROJECTS_TABLE . "
 					WHERE id IN ({$placeholders}) AND updated_at > %s",
 					array_merge( $assigned_projects, array( $last_sync_date ) )
 				),
@@ -676,11 +717,11 @@ class ICT_Offline_Manager {
 			'user_id'      => $user_id,
 			'capabilities' => $this->get_user_offline_capabilities( $user_id ),
 			'endpoints'    => array(
-				'sync'       => rest_url( 'ict/v1/offline/sync' ),
-				'conflicts'  => rest_url( 'ict/v1/offline/conflicts' ),
+				'sync'      => rest_url( 'ict/v1/offline/sync' ),
+				'conflicts' => rest_url( 'ict/v1/offline/conflicts' ),
 			),
 			'cache_config' => array(
-				'max_age'        => 86400, // 24 hours
+				'max_age'                => 86400, // 24 hours
 				'stale_while_revalidate' => 3600, // 1 hour
 			),
 			'entities'     => $this->supported_entities,

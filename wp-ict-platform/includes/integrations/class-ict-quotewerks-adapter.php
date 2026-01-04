@@ -90,7 +90,7 @@ class ICT_QuoteWerks_Adapter {
 		global $wpdb;
 		$existing_project = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT id FROM " . ICT_PROJECTS_TABLE . " WHERE quotewerks_id = %s",
+				'SELECT id FROM ' . ICT_PROJECTS_TABLE . ' WHERE quotewerks_id = %s',
 				$quote_id
 			)
 		);
@@ -162,18 +162,18 @@ class ICT_QuoteWerks_Adapter {
 
 		// Prepare project data
 		$project_data = array(
-			'name'                => sanitize_text_field( $quote['quote_name'] ?? $quote['doc_number'] ),
-			'description'         => sanitize_textarea_field( $quote['description'] ?? '' ),
-			'client_name'         => sanitize_text_field( $quote['customer_name'] ?? '' ),
-			'status'              => $this->map_quote_status( $quote['status'] ?? 'pending' ),
-			'priority'            => $this->map_priority( $quote['priority'] ?? 'medium' ),
-			'budget_amount'       => floatval( $quote['total_amount'] ?? 0 ),
-			'start_date'          => $quote['start_date'] ?? null,
-			'end_date'            => $quote['due_date'] ?? null,
-			'quotewerks_id'       => sanitize_text_field( $quote['doc_number'] ),
-			'quotewerks_sync_at'  => current_time( 'mysql' ),
-			'created_at'          => current_time( 'mysql' ),
-			'updated_at'          => current_time( 'mysql' ),
+			'name'               => sanitize_text_field( $quote['quote_name'] ?? $quote['doc_number'] ),
+			'description'        => sanitize_textarea_field( $quote['description'] ?? '' ),
+			'client_name'        => sanitize_text_field( $quote['customer_name'] ?? '' ),
+			'status'             => $this->map_quote_status( $quote['status'] ?? 'pending' ),
+			'priority'           => $this->map_priority( $quote['priority'] ?? 'medium' ),
+			'budget_amount'      => floatval( $quote['total_amount'] ?? 0 ),
+			'start_date'         => $quote['start_date'] ?? null,
+			'end_date'           => $quote['due_date'] ?? null,
+			'quotewerks_id'      => sanitize_text_field( $quote['doc_number'] ),
+			'quotewerks_sync_at' => current_time( 'mysql' ),
+			'created_at'         => current_time( 'mysql' ),
+			'updated_at'         => current_time( 'mysql' ),
 		);
 
 		// Insert project
@@ -223,12 +223,12 @@ class ICT_QuoteWerks_Adapter {
 		global $wpdb;
 
 		$update_data = array(
-			'name'                => sanitize_text_field( $quote['quote_name'] ?? $quote['doc_number'] ),
-			'description'         => sanitize_textarea_field( $quote['description'] ?? '' ),
-			'status'              => $this->map_quote_status( $quote['status'] ?? 'pending' ),
-			'budget_amount'       => floatval( $quote['total_amount'] ?? 0 ),
-			'quotewerks_sync_at'  => current_time( 'mysql' ),
-			'updated_at'          => current_time( 'mysql' ),
+			'name'               => sanitize_text_field( $quote['quote_name'] ?? $quote['doc_number'] ),
+			'description'        => sanitize_textarea_field( $quote['description'] ?? '' ),
+			'status'             => $this->map_quote_status( $quote['status'] ?? 'pending' ),
+			'budget_amount'      => floatval( $quote['total_amount'] ?? 0 ),
+			'quotewerks_sync_at' => current_time( 'mysql' ),
+			'updated_at'         => current_time( 'mysql' ),
 		);
 
 		$result = $wpdb->update(
@@ -273,7 +273,7 @@ class ICT_QuoteWerks_Adapter {
 			// Check if inventory item exists by SKU
 			$inventory_item = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT * FROM " . ICT_INVENTORY_ITEMS_TABLE . " WHERE sku = %s",
+					'SELECT * FROM ' . ICT_INVENTORY_ITEMS_TABLE . ' WHERE sku = %s',
 					$item['sku'] ?? ''
 				)
 			);
@@ -283,15 +283,15 @@ class ICT_QuoteWerks_Adapter {
 				$wpdb->insert(
 					ICT_INVENTORY_ITEMS_TABLE,
 					array(
-						'name'              => sanitize_text_field( $item['description'] ?? '' ),
-						'sku'               => sanitize_text_field( $item['sku'] ),
-						'category'          => 'Parts',
-						'unit_price'        => floatval( $item['unit_price'] ?? 0 ),
-						'quantity'          => 0,
-						'reorder_level'     => 5,
+						'name'               => sanitize_text_field( $item['description'] ?? '' ),
+						'sku'                => sanitize_text_field( $item['sku'] ),
+						'category'           => 'Parts',
+						'unit_price'         => floatval( $item['unit_price'] ?? 0 ),
+						'quantity'           => 0,
+						'reorder_level'      => 5,
 						'quotewerks_item_id' => sanitize_text_field( $item['line_number'] ?? '' ),
-						'created_at'        => current_time( 'mysql' ),
-						'updated_at'        => current_time( 'mysql' ),
+						'created_at'         => current_time( 'mysql' ),
+						'updated_at'         => current_time( 'mysql' ),
 					)
 				);
 			}
@@ -310,7 +310,7 @@ class ICT_QuoteWerks_Adapter {
 		// Get project
 		$project = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_PROJECTS_TABLE . " WHERE id = %d",
+				'SELECT * FROM ' . ICT_PROJECTS_TABLE . ' WHERE id = %d',
 				$project_id
 			),
 			ARRAY_A
@@ -327,15 +327,15 @@ class ICT_QuoteWerks_Adapter {
 
 		// Prepare quote data
 		$quote_data = array(
-			'doc_type'       => 'Quote',
-			'customer_name'  => $project['client_name'],
-			'quote_name'     => $project['name'],
-			'description'    => $project['description'],
-			'total_amount'   => $project['budget_amount'],
-			'status'         => $this->map_project_status( $project['status'] ),
-			'start_date'     => $project['start_date'],
-			'due_date'       => $project['end_date'],
-			'line_items'     => $this->get_project_line_items( $project_id ),
+			'doc_type'      => 'Quote',
+			'customer_name' => $project['client_name'],
+			'quote_name'    => $project['name'],
+			'description'   => $project['description'],
+			'total_amount'  => $project['budget_amount'],
+			'status'        => $this->map_project_status( $project['status'] ),
+			'start_date'    => $project['start_date'],
+			'due_date'      => $project['end_date'],
+			'line_items'    => $this->get_project_line_items( $project_id ),
 		);
 
 		// Create quote in QuoteWerks
@@ -377,11 +377,11 @@ class ICT_QuoteWerks_Adapter {
 	 */
 	private function update_quote_in_quotewerks( $project ) {
 		$quote_data = array(
-			'customer_name'  => $project['client_name'],
-			'quote_name'     => $project['name'],
-			'description'    => $project['description'],
-			'total_amount'   => $project['budget_amount'],
-			'status'         => $this->map_project_status( $project['status'] ),
+			'customer_name' => $project['client_name'],
+			'quote_name'    => $project['name'],
+			'description'   => $project['description'],
+			'total_amount'  => $project['budget_amount'],
+			'status'        => $this->map_project_status( $project['status'] ),
 		);
 
 		$response = $this->make_request(
@@ -409,8 +409,8 @@ class ICT_QuoteWerks_Adapter {
 
 		$items = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_INVENTORY_ITEMS_TABLE . "
-				WHERE project_id = %d",
+				'SELECT * FROM ' . ICT_INVENTORY_ITEMS_TABLE . '
+				WHERE project_id = %d',
 				$project_id
 			),
 			ARRAY_A
@@ -438,13 +438,13 @@ class ICT_QuoteWerks_Adapter {
 	 */
 	private function map_quote_status( $qw_status ) {
 		$status_map = array(
-			'draft'       => 'planning',
-			'pending'     => 'planning',
-			'approved'    => 'in-progress',
-			'won'         => 'in-progress',
-			'lost'        => 'cancelled',
-			'expired'     => 'cancelled',
-			'on_hold'     => 'on-hold',
+			'draft'    => 'planning',
+			'pending'  => 'planning',
+			'approved' => 'in-progress',
+			'won'      => 'in-progress',
+			'lost'     => 'cancelled',
+			'expired'  => 'cancelled',
+			'on_hold'  => 'on-hold',
 		);
 
 		return $status_map[ strtolower( $qw_status ) ] ?? 'planning';
@@ -544,9 +544,9 @@ class ICT_QuoteWerks_Adapter {
 			array(
 				'body'    => wp_json_encode(
 					array(
-						'username'    => $username,
-						'password'    => $password,
-						'company_id'  => $this->company_id,
+						'username'   => $username,
+						'password'   => $password,
+						'company_id' => $this->company_id,
 					)
 				),
 				'headers' => array( 'Content-Type' => 'application/json' ),
