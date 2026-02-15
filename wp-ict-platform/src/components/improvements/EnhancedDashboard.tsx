@@ -163,7 +163,13 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
         <div className="ict-kpi-value">{formatValue(kpiKey, kpiData.value)}</div>
         {kpiData.change !== undefined && (
           <div className={`ict-kpi-change ${kpiData.changeType}`}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <svg 
+              width="12" 
+              height="12" 
+              viewBox="0 0 24 24" 
+              fill="currentColor"
+              aria-label={`${kpiData.changeType === 'increase' ? 'Increased' : 'Decreased'} by ${Math.abs(kpiData.change)}%`}
+            >
               {kpiData.changeType === 'increase' ? (
                 <path d="M7 14l5-5 5 5H7z" />
               ) : (
@@ -416,19 +422,32 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
         ))}
 
         {isEditMode && (
-          <div className="ict-dashboard-widget ict-widget-add" onClick={() => onWidgetAdd?.({
-            id: `widget-${Date.now()}`,
-            type: 'kpi',
-            title: 'New Widget',
-            size: 'small',
-            position: { row: 0, col: 0 },
-          })}>
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <button 
+            className="ict-dashboard-widget ict-widget-add" 
+            onClick={() => onWidgetAdd?.({
+              id: `widget-${Date.now()}`,
+              type: 'kpi',
+              title: 'New Widget',
+              size: 'small',
+              position: { row: 0, col: 0 },
+            })}
+            type="button"
+            aria-label="Add new widget"
+          >
+            <svg 
+              width="32" 
+              height="32" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2"
+              aria-hidden="true"
+            >
               <circle cx="12" cy="12" r="10" />
               <path d="M12 8v8M8 12h8" />
             </svg>
             <span>Add Widget</span>
-          </div>
+          </button>
         )}
       </div>
 

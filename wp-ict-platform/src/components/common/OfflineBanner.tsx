@@ -25,6 +25,7 @@ export const OfflineBanner: React.FC<OfflineBannerProps> = ({
   const isOnline = useIsOnline();
   const [wasOffline, setWasOffline] = useState(false);
   const [showReconnectedMessage, setShowReconnectedMessage] = useState(false);
+  const [isRetrying, setIsRetrying] = useState(false);
 
   useEffect(() => {
     if (!isOnline) {
@@ -54,7 +55,7 @@ export const OfflineBanner: React.FC<OfflineBannerProps> = ({
         <Icon
           name={showReconnectedMessage ? 'check-circle' : 'wifi-off'}
           size={18}
-          aria-hidden="true"
+          aria-hidden={true}
         />
         <span className="ict-offline-banner__message">
           {showReconnectedMessage
@@ -63,11 +64,16 @@ export const OfflineBanner: React.FC<OfflineBannerProps> = ({
         </span>
         {!isOnline && (
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => {
+              setIsRetrying(true);
+              window.location.reload();
+            }}
             className="ict-offline-banner__retry"
             type="button"
+            disabled={isRetrying}
+            aria-label="Retry connection"
           >
-            Retry
+            {isRetrying ? 'Retrying...' : 'Retry'}
           </button>
         )}
       </div>
