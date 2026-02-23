@@ -97,15 +97,15 @@ describe('ErrorBoundary', () => {
     // Error boundary should show error UI
     expect(screen.getByText('Something went wrong')).toBeInTheDocument();
 
-    // Click try again
-    fireEvent.click(screen.getByText('Try Again'));
-
-    // Re-render with a component that doesn't throw
+    // Re-render with a component that doesn't throw (parent provides new children)
     rerender(
       <ErrorBoundary>
         <ThrowError shouldThrow={false} />
       </ErrorBoundary>
     );
+
+    // Click try again to reset error state
+    fireEvent.click(screen.getByText('Try Again'));
 
     expect(screen.getByText('No error')).toBeInTheDocument();
   });
