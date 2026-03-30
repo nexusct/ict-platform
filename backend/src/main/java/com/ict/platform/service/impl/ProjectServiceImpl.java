@@ -153,12 +153,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private String generateProjectNumber() {
-        String prefix = "PRJ-" + LocalDate.now().getYear() + "-";
-        String suffix = String.format("%05d", (long) (Math.random() * 99999));
-        String number = prefix + suffix;
+        int year = LocalDate.now().getYear();
+        String prefix = "PRJ-" + year + "-";
+        long count = projectRepository.count() + 1;
+        String number = prefix + String.format("%05d", count);
+        // Ensure uniqueness in case of race conditions or gaps
         while (projectRepository.existsByProjectNumber(number)) {
-            suffix = String.format("%05d", (long) (Math.random() * 99999));
-            number = prefix + suffix;
+            count++;
+            number = prefix + String.format("%05d", count);
         }
         return number;
     }

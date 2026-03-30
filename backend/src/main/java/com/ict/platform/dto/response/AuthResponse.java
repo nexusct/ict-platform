@@ -13,10 +13,8 @@ public class AuthResponse {
 
     private String accessToken;
     private String refreshToken;
-    private String tokenType;
+    @Builder.Default
+    private String tokenType = "Bearer";
     private Long expiresIn;
     private UserResponse user;
-
-    @Builder.Default
-    private String tokenType2 = "Bearer";
 }
