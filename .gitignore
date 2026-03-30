@@ -130,6 +130,11 @@ $RECYCLE.BIN/
 *.tar.gz
 *.rar
 
+# Java / Spring Boot
+backend/target/
+backend/*.jar
+backend/*.war
+
 # Backup files
 *.bak
 *.backup

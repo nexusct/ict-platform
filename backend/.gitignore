@@ -1,0 +1,14 @@
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+.mvn/
+mvnw
+mvnw.cmd
+*.iml
+.idea/
+*.DS_Store
+logs/
+spring-shell.log
