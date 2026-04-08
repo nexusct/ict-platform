@@ -44,16 +44,40 @@ class ICT_Deactivator {
 	 */
 	private static function clear_scheduled_hooks() {
 		$hooks = array(
+			// Core sync jobs (registered in class-ict-activator.php)
 			'ict_platform_sync_job',
 			'ict_platform_cleanup_job',
 			'ict_platform_stock_check',
+			// Email / reporting jobs (registered in class-ict-core.php)
+			'ict_process_email_queue',
+			'ict_send_email_digest',
+			'ict_process_scheduled_reports',
+			'ict_cleanup_old_reports',
+			// Feature module jobs
+			'ict_collect_metrics',
+			'ict_cleanup_2fa_data',
+			'ict_process_scheduled_push',
+			'ict_cleanup_push_data',
+			'ict_calculate_kpis',
+			'ict_process_recurring_invoices',
+			'ict_send_payment_reminders',
+			'ict_run_scheduled_reports',
+			'ict_cleanup_rate_limit_data',
+			'ict_scheduled_backup',
+			'ict_check_certification_expirations',
+			'ict_cleanup_old_notifications',
+			'ict_check_quote_expirations',
+			'ict_update_exchange_rates',
+			'ict_sync_calendars',
+			'ict_process_recurring_tasks',
+			'ict_check_sla_compliance',
+			'ict_check_maintenance_schedules',
+			'ict_check_warranty_expirations',
+			// Dynamic per-schedule report jobs (registered in class-ict-advanced-reporting.php)
+			'ict_generate_scheduled_report',
 		);
 
 		foreach ( $hooks as $hook ) {
-			$timestamp = wp_next_scheduled( $hook );
-			if ( $timestamp ) {
-				wp_unschedule_event( $timestamp, $hook );
-			}
 			wp_clear_scheduled_hook( $hook );
 		}
 	}
