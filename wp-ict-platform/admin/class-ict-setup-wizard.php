@@ -175,7 +175,7 @@ class ICT_Setup_Wizard {
 	 * @return void
 	 */
 	public function wizard_notice() {
-		$wizard_url = admin_url( 'admin.php?page=ict-setup-wizard' );
+		$wizard_url  = admin_url( 'admin.php?page=ict-setup-wizard' );
 		$dismiss_url = wp_nonce_url( admin_url( 'admin.php?page=ict-platform&dismiss-wizard=1' ), 'ict_dismiss_wizard' );
 		?>
 		<div class="notice notice-info is-dismissible ict-wizard-notice">
@@ -268,7 +268,7 @@ class ICT_Setup_Wizard {
 	 */
 	private function get_current_step() {
 		$saved_step = get_option( 'ict_wizard_current_step', 'welcome' );
-		$step = isset( $_GET['step'] ) ? sanitize_key( $_GET['step'] ) : $saved_step;
+		$step       = isset( $_GET['step'] ) ? sanitize_key( $_GET['step'] ) : $saved_step;
 
 		if ( ! isset( $this->steps[ $step ] ) ) {
 			$step = 'welcome';
@@ -283,10 +283,10 @@ class ICT_Setup_Wizard {
 	 * @return void
 	 */
 	public function render_wizard_page() {
-		$this->step = $this->get_current_step();
-		$step_keys = array_keys( $this->steps );
+		$this->step    = $this->get_current_step();
+		$step_keys     = array_keys( $this->steps );
 		$current_index = array_search( $this->step, $step_keys, true );
-		$progress = ( $current_index / ( count( $step_keys ) - 1 ) ) * 100;
+		$progress      = ( $current_index / ( count( $step_keys ) - 1 ) ) * 100;
 		?>
 		<div class="ict-wizard-wrap">
 			<div class="ict-wizard-header">
@@ -307,10 +307,10 @@ class ICT_Setup_Wizard {
 			<div class="ict-wizard-steps">
 				<?php foreach ( $this->steps as $key => $step ) : ?>
 					<?php
-					$step_index = array_search( $key, $step_keys, true );
+					$step_index  = array_search( $key, $step_keys, true );
 					$is_complete = $step_index < $current_index;
-					$is_current = $key === $this->step;
-					$classes = array( 'ict-wizard-step-indicator' );
+					$is_current  = $key === $this->step;
+					$classes     = array( 'ict-wizard-step-indicator' );
 					if ( $is_complete ) {
 						$classes[] = 'complete';
 					}
@@ -437,10 +437,10 @@ class ICT_Setup_Wizard {
 	 */
 	private function render_company_step() {
 		$company_name = get_option( 'ict_company_name', get_bloginfo( 'name' ) );
-		$industry = get_option( 'ict_industry', 'electrical' );
+		$industry     = get_option( 'ict_industry', 'electrical' );
 		$company_size = get_option( 'ict_company_size', 'small' );
-		$currency = get_option( 'ict_currency', 'USD' );
-		$timezone = get_option( 'timezone_string', 'UTC' );
+		$currency     = get_option( 'ict_currency', 'USD' );
+		$timezone     = get_option( 'timezone_string', 'UTC' );
 		?>
 		<div class="ict-wizard-step-content company-step">
 			<h2><?php esc_html_e( 'Company Information', 'ict-platform' ); ?></h2>
@@ -526,11 +526,11 @@ class ICT_Setup_Wizard {
 	 * @return void
 	 */
 	private function render_zoho_step() {
-		$crm_enabled = get_option( 'ict_zoho_crm_enabled', false );
-		$fsm_enabled = get_option( 'ict_zoho_fsm_enabled', false );
-		$books_enabled = get_option( 'ict_zoho_books_enabled', false );
+		$crm_enabled    = get_option( 'ict_zoho_crm_enabled', false );
+		$fsm_enabled    = get_option( 'ict_zoho_fsm_enabled', false );
+		$books_enabled  = get_option( 'ict_zoho_books_enabled', false );
 		$people_enabled = get_option( 'ict_zoho_people_enabled', false );
-		$desk_enabled = get_option( 'ict_zoho_desk_enabled', false );
+		$desk_enabled   = get_option( 'ict_zoho_desk_enabled', false );
 		?>
 		<div class="ict-wizard-step-content zoho-step">
 			<h2><?php esc_html_e( 'Zoho Integration', 'ict-platform' ); ?></h2>
@@ -837,9 +837,9 @@ class ICT_Setup_Wizard {
 	 * @return void
 	 */
 	private function render_notifications_step() {
-		$email_enabled = get_option( 'ict_email_enabled', true );
+		$email_enabled  = get_option( 'ict_email_enabled', true );
 		$twilio_enabled = get_option( 'ict_twilio_enabled', false );
-		$push_enabled = get_option( 'ict_push_enabled', false );
+		$push_enabled   = get_option( 'ict_push_enabled', false );
 		?>
 		<div class="ict-wizard-step-content notifications-step">
 			<h2><?php esc_html_e( 'Notification Channels', 'ict-platform' ); ?></h2>
@@ -978,7 +978,7 @@ class ICT_Setup_Wizard {
 	 * @return void
 	 */
 	private function render_security_step() {
-		$biometric_enabled = get_option( 'ict_biometric_enabled', false );
+		$biometric_enabled       = get_option( 'ict_biometric_enabled', false );
 		$role_management_enabled = get_option( 'ict_role_management_enabled', true );
 		?>
 		<div class="ict-wizard-step-content security-step">
@@ -1101,8 +1101,8 @@ class ICT_Setup_Wizard {
 	 * @return void
 	 */
 	private function render_features_step() {
-		$offline_enabled = get_option( 'ict_offline_enabled', true );
-		$reporting_enabled = get_option( 'ict_reporting_auto_schedule_enabled', false );
+		$offline_enabled       = get_option( 'ict_offline_enabled', true );
+		$reporting_enabled     = get_option( 'ict_reporting_auto_schedule_enabled', false );
 		$custom_fields_enabled = get_option( 'ict_custom_fields_enabled', true );
 		?>
 		<div class="ict-wizard-step-content features-step">
@@ -1300,17 +1300,17 @@ class ICT_Setup_Wizard {
 	 */
 	private function render_setup_summary() {
 		$summary_items = array(
-			'company' => array(
+			'company'       => array(
 				'label' => __( 'Company', 'ict-platform' ),
 				'value' => get_option( 'ict_company_name', get_bloginfo( 'name' ) ),
 				'icon'  => 'dashicons-building',
 			),
-			'zoho' => array(
+			'zoho'          => array(
 				'label' => __( 'Zoho Services', 'ict-platform' ),
 				'value' => $this->get_enabled_zoho_services(),
 				'icon'  => 'dashicons-cloud',
 			),
-			'teams' => array(
+			'teams'         => array(
 				'label' => __( 'Microsoft Teams', 'ict-platform' ),
 				'value' => get_option( 'ict_teams_enabled' ) ? __( 'Connected', 'ict-platform' ) : __( 'Not configured', 'ict-platform' ),
 				'icon'  => 'dashicons-groups',
@@ -1320,12 +1320,12 @@ class ICT_Setup_Wizard {
 				'value' => $this->get_enabled_notification_channels(),
 				'icon'  => 'dashicons-bell',
 			),
-			'security' => array(
+			'security'      => array(
 				'label' => __( 'Security', 'ict-platform' ),
 				'value' => $this->get_security_features(),
 				'icon'  => 'dashicons-shield',
 			),
-			'features' => array(
+			'features'      => array(
 				'label' => __( 'Features', 'ict-platform' ),
 				'value' => $this->get_enabled_features(),
 				'icon'  => 'dashicons-admin-generic',
@@ -1352,11 +1352,21 @@ class ICT_Setup_Wizard {
 	 */
 	private function get_enabled_zoho_services() {
 		$services = array();
-		if ( get_option( 'ict_zoho_crm_enabled' ) ) $services[] = 'CRM';
-		if ( get_option( 'ict_zoho_fsm_enabled' ) ) $services[] = 'FSM';
-		if ( get_option( 'ict_zoho_books_enabled' ) ) $services[] = 'Books';
-		if ( get_option( 'ict_zoho_people_enabled' ) ) $services[] = 'People';
-		if ( get_option( 'ict_zoho_desk_enabled' ) ) $services[] = 'Desk';
+		if ( get_option( 'ict_zoho_crm_enabled' ) ) {
+			$services[] = 'CRM';
+		}
+		if ( get_option( 'ict_zoho_fsm_enabled' ) ) {
+			$services[] = 'FSM';
+		}
+		if ( get_option( 'ict_zoho_books_enabled' ) ) {
+			$services[] = 'Books';
+		}
+		if ( get_option( 'ict_zoho_people_enabled' ) ) {
+			$services[] = 'People';
+		}
+		if ( get_option( 'ict_zoho_desk_enabled' ) ) {
+			$services[] = 'Desk';
+		}
 
 		return empty( $services ) ? __( 'None configured', 'ict-platform' ) : implode( ', ', $services );
 	}
@@ -1368,9 +1378,15 @@ class ICT_Setup_Wizard {
 	 */
 	private function get_enabled_notification_channels() {
 		$channels = array();
-		if ( get_option( 'ict_email_enabled', true ) ) $channels[] = __( 'Email', 'ict-platform' );
-		if ( get_option( 'ict_twilio_enabled' ) ) $channels[] = __( 'SMS', 'ict-platform' );
-		if ( get_option( 'ict_push_enabled' ) ) $channels[] = __( 'Push', 'ict-platform' );
+		if ( get_option( 'ict_email_enabled', true ) ) {
+			$channels[] = __( 'Email', 'ict-platform' );
+		}
+		if ( get_option( 'ict_twilio_enabled' ) ) {
+			$channels[] = __( 'SMS', 'ict-platform' );
+		}
+		if ( get_option( 'ict_push_enabled' ) ) {
+			$channels[] = __( 'Push', 'ict-platform' );
+		}
 
 		return empty( $channels ) ? __( 'None', 'ict-platform' ) : implode( ', ', $channels );
 	}
@@ -1382,8 +1398,12 @@ class ICT_Setup_Wizard {
 	 */
 	private function get_security_features() {
 		$features = array();
-		if ( get_option( 'ict_biometric_enabled' ) ) $features[] = __( 'Biometric', 'ict-platform' );
-		if ( get_option( 'ict_role_management_enabled', true ) ) $features[] = __( 'Role Management', 'ict-platform' );
+		if ( get_option( 'ict_biometric_enabled' ) ) {
+			$features[] = __( 'Biometric', 'ict-platform' );
+		}
+		if ( get_option( 'ict_role_management_enabled', true ) ) {
+			$features[] = __( 'Role Management', 'ict-platform' );
+		}
 
 		return empty( $features ) ? __( 'Standard', 'ict-platform' ) : implode( ', ', $features );
 	}
@@ -1395,8 +1415,12 @@ class ICT_Setup_Wizard {
 	 */
 	private function get_enabled_features() {
 		$features = array();
-		if ( get_option( 'ict_offline_enabled', true ) ) $features[] = __( 'Offline', 'ict-platform' );
-		if ( get_option( 'ict_custom_fields_enabled', true ) ) $features[] = __( 'Custom Fields', 'ict-platform' );
+		if ( get_option( 'ict_offline_enabled', true ) ) {
+			$features[] = __( 'Offline', 'ict-platform' );
+		}
+		if ( get_option( 'ict_custom_fields_enabled', true ) ) {
+			$features[] = __( 'Custom Fields', 'ict-platform' );
+		}
 		$features[] = __( 'Reporting', 'ict-platform' ); // Always enabled
 
 		return implode( ', ', $features );
@@ -1470,11 +1494,11 @@ class ICT_Setup_Wizard {
 	 * @return void
 	 */
 	private function render_navigation() {
-		$step_keys = array_keys( $this->steps );
+		$step_keys     = array_keys( $this->steps );
 		$current_index = array_search( $this->step, $step_keys, true );
-		$prev_step = $current_index > 0 ? $step_keys[ $current_index - 1 ] : null;
-		$next_step = $current_index < count( $step_keys ) - 1 ? $step_keys[ $current_index + 1 ] : null;
-		$is_last_step = $this->step === 'complete';
+		$prev_step     = $current_index > 0 ? $step_keys[ $current_index - 1 ] : null;
+		$next_step     = $current_index < count( $step_keys ) - 1 ? $step_keys[ $current_index + 1 ] : null;
+		$is_last_step  = $this->step === 'complete';
 		?>
 		<div class="wizard-nav-buttons">
 			<?php if ( $prev_step && $this->step !== 'welcome' ) : ?>
@@ -1536,15 +1560,17 @@ class ICT_Setup_Wizard {
 		}
 
 		// Update current step
-		$step_keys = array_keys( $this->steps );
+		$step_keys     = array_keys( $this->steps );
 		$current_index = array_search( $step, $step_keys, true );
-		$next_step = isset( $step_keys[ $current_index + 1 ] ) ? $step_keys[ $current_index + 1 ] : 'complete';
+		$next_step     = isset( $step_keys[ $current_index + 1 ] ) ? $step_keys[ $current_index + 1 ] : 'complete';
 		update_option( 'ict_wizard_current_step', $next_step );
 
-		wp_send_json_success( array(
-			'message'   => __( 'Settings saved successfully', 'ict-platform' ),
-			'next_step' => $next_step,
-		) );
+		wp_send_json_success(
+			array(
+				'message'   => __( 'Settings saved successfully', 'ict-platform' ),
+				'next_step' => $next_step,
+			)
+		);
 	}
 
 	/**
@@ -1613,8 +1639,8 @@ class ICT_Setup_Wizard {
 		$settings = new ICT_Admin_Settings();
 
 		foreach ( $services as $service ) {
-			$enabled_key = "zoho_{$service}_enabled";
-			$client_id_key = "zoho_{$service}_client_id";
+			$enabled_key       = "zoho_{$service}_enabled";
+			$client_id_key     = "zoho_{$service}_client_id";
 			$client_secret_key = "zoho_{$service}_client_secret";
 
 			update_option( "ict_{$enabled_key}", ! empty( $data[ $enabled_key ] ) );
@@ -1812,10 +1838,12 @@ class ICT_Setup_Wizard {
 		update_option( 'ict_wizard_completed', true );
 		update_option( 'ict_wizard_completed_at', current_time( 'mysql' ) );
 
-		wp_send_json_success( array(
-			'message'      => __( 'Setup completed successfully!', 'ict-platform' ),
-			'redirect_url' => admin_url( 'admin.php?page=ict-platform' ),
-		) );
+		wp_send_json_success(
+			array(
+				'message'      => __( 'Setup completed successfully!', 'ict-platform' ),
+				'redirect_url' => admin_url( 'admin.php?page=ict-platform' ),
+			)
+		);
 	}
 
 	/**
@@ -1900,29 +1928,34 @@ class ICT_Setup_Wizard {
 		}
 
 		// Send test message
-		$response = wp_remote_post( $webhook_url, array(
-			'headers' => array( 'Content-Type' => 'application/json' ),
-			'body'    => wp_json_encode( array(
-				'@type'      => 'MessageCard',
-				'@context'   => 'http://schema.org/extensions',
-				'themeColor' => '0076D7',
-				'summary'    => 'ICT Platform Test',
-				'sections'   => array(
+		$response = wp_remote_post(
+			$webhook_url,
+			array(
+				'headers' => array( 'Content-Type' => 'application/json' ),
+				'body'    => wp_json_encode(
 					array(
-						'activityTitle' => __( 'ICT Platform Setup Wizard', 'ict-platform' ),
-						'activitySubtitle' => __( 'Test message successful!', 'ict-platform' ),
-						'facts' => array(
+						'@type'      => 'MessageCard',
+						'@context'   => 'http://schema.org/extensions',
+						'themeColor' => '0076D7',
+						'summary'    => 'ICT Platform Test',
+						'sections'   => array(
 							array(
-								'name'  => __( 'Status', 'ict-platform' ),
-								'value' => __( 'Connected', 'ict-platform' ),
+								'activityTitle'    => __( 'ICT Platform Setup Wizard', 'ict-platform' ),
+								'activitySubtitle' => __( 'Test message successful!', 'ict-platform' ),
+								'facts'            => array(
+									array(
+										'name'  => __( 'Status', 'ict-platform' ),
+										'value' => __( 'Connected', 'ict-platform' ),
+									),
+								),
+								'markdown'         => true,
 							),
 						),
-						'markdown' => true,
-					),
+					)
 				),
-			) ),
-			'timeout' => 15,
-		) );
+				'timeout' => 15,
+			)
+		);
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
@@ -1945,7 +1978,7 @@ class ICT_Setup_Wizard {
 	 * @return array|WP_Error
 	 */
 	private function test_email_connection() {
-		$to = get_option( 'admin_email' );
+		$to      = get_option( 'admin_email' );
 		$subject = __( 'ICT Platform - Test Email', 'ict-platform' );
 		$message = __( 'This is a test email from the ICT Platform setup wizard. If you received this, email notifications are working correctly!', 'ict-platform' );
 		$headers = array( 'Content-Type: text/html; charset=UTF-8' );
@@ -1969,7 +2002,7 @@ class ICT_Setup_Wizard {
 	 */
 	private function test_twilio_connection() {
 		$account_sid = get_option( 'ict_twilio_account_sid' );
-		$auth_token = ICT_Admin_Settings::decrypt( get_option( 'ict_twilio_auth_token' ) );
+		$auth_token  = ICT_Admin_Settings::decrypt( get_option( 'ict_twilio_auth_token' ) );
 
 		if ( empty( $account_sid ) || empty( $auth_token ) ) {
 			return new WP_Error( 'missing_credentials', __( 'Account SID and Auth Token are required', 'ict-platform' ) );
@@ -2007,7 +2040,7 @@ class ICT_Setup_Wizard {
 	 * @return array|WP_Error
 	 */
 	private function test_push_connection() {
-		$public_key = get_option( 'ict_push_vapid_public_key' );
+		$public_key  = get_option( 'ict_push_vapid_public_key' );
 		$private_key = get_option( 'ict_push_vapid_private_key' );
 
 		if ( empty( $public_key ) || empty( $private_key ) ) {
@@ -2032,7 +2065,7 @@ class ICT_Setup_Wizard {
 			wp_send_json_error( array( 'message' => __( 'Permission denied', 'ict-platform' ) ) );
 		}
 
-		$context = isset( $_POST['context'] ) ? sanitize_key( $_POST['context'] ) : '';
+		$context  = isset( $_POST['context'] ) ? sanitize_key( $_POST['context'] ) : '';
 		$question = isset( $_POST['question'] ) ? sanitize_text_field( $_POST['question'] ) : '';
 
 		// Get AI assistant

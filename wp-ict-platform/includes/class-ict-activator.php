@@ -63,7 +63,7 @@ class ICT_Activator {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 		// Projects table
-		$projects_table = "CREATE TABLE " . ICT_PROJECTS_TABLE . " (
+		$projects_table = 'CREATE TABLE ' . ICT_PROJECTS_TABLE . " (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			zoho_crm_id varchar(100) DEFAULT NULL,
 			client_id bigint(20) UNSIGNED DEFAULT NULL,
@@ -93,7 +93,7 @@ class ICT_Activator {
 		) $charset_collate;";
 
 		// Time entries table
-		$time_entries_table = "CREATE TABLE " . ICT_TIME_ENTRIES_TABLE . " (
+		$time_entries_table = 'CREATE TABLE ' . ICT_TIME_ENTRIES_TABLE . " (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			technician_id bigint(20) UNSIGNED NOT NULL,
 			project_id bigint(20) UNSIGNED NOT NULL,
@@ -126,7 +126,7 @@ class ICT_Activator {
 		) $charset_collate;";
 
 		// Inventory items table
-		$inventory_table = "CREATE TABLE " . ICT_INVENTORY_ITEMS_TABLE . " (
+		$inventory_table = 'CREATE TABLE ' . ICT_INVENTORY_ITEMS_TABLE . " (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			zoho_books_item_id varchar(100) DEFAULT NULL,
 			sku varchar(100) NOT NULL,
@@ -158,7 +158,7 @@ class ICT_Activator {
 		) $charset_collate;";
 
 		// Purchase orders table
-		$purchase_orders_table = "CREATE TABLE " . ICT_PURCHASE_ORDERS_TABLE . " (
+		$purchase_orders_table = 'CREATE TABLE ' . ICT_PURCHASE_ORDERS_TABLE . " (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			zoho_books_po_id varchar(100) DEFAULT NULL,
 			po_number varchar(50) NOT NULL,
@@ -189,7 +189,7 @@ class ICT_Activator {
 		) $charset_collate;";
 
 		// Project resources table
-		$project_resources_table = "CREATE TABLE " . ICT_PROJECT_RESOURCES_TABLE . " (
+		$project_resources_table = 'CREATE TABLE ' . ICT_PROJECT_RESOURCES_TABLE . " (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			project_id bigint(20) UNSIGNED NOT NULL,
 			resource_type varchar(50) NOT NULL,
@@ -211,7 +211,7 @@ class ICT_Activator {
 		) $charset_collate;";
 
 		// Sync queue table
-		$sync_queue_table = "CREATE TABLE " . ICT_SYNC_QUEUE_TABLE . " (
+		$sync_queue_table = 'CREATE TABLE ' . ICT_SYNC_QUEUE_TABLE . " (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			entity_type varchar(50) NOT NULL,
 			entity_id bigint(20) UNSIGNED NOT NULL,
@@ -235,7 +235,7 @@ class ICT_Activator {
 		) $charset_collate;";
 
 		// Sync log table
-		$sync_log_table = "CREATE TABLE " . ICT_SYNC_LOG_TABLE . " (
+		$sync_log_table = 'CREATE TABLE ' . ICT_SYNC_LOG_TABLE . " (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			entity_type varchar(50) NOT NULL,
 			entity_id bigint(20) UNSIGNED DEFAULT NULL,
@@ -256,7 +256,7 @@ class ICT_Activator {
 		) $charset_collate;";
 
 		// Documents table (NEW FEATURE)
-		$documents_table = "CREATE TABLE " . ICT_DOCUMENTS_TABLE . " (
+		$documents_table = 'CREATE TABLE ' . ICT_DOCUMENTS_TABLE . " (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			project_id bigint(20) UNSIGNED DEFAULT NULL,
 			entity_type varchar(50) DEFAULT 'project',
@@ -284,7 +284,7 @@ class ICT_Activator {
 		) $charset_collate;";
 
 		// Equipment table (NEW FEATURE)
-		$equipment_table = "CREATE TABLE " . ICT_EQUIPMENT_TABLE . " (
+		$equipment_table = 'CREATE TABLE ' . ICT_EQUIPMENT_TABLE . " (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			equipment_name varchar(255) NOT NULL,
 			equipment_number varchar(50) DEFAULT NULL,
@@ -317,7 +317,7 @@ class ICT_Activator {
 		) $charset_collate;";
 
 		// Expenses table (NEW FEATURE)
-		$expenses_table = "CREATE TABLE " . ICT_EXPENSES_TABLE . " (
+		$expenses_table = 'CREATE TABLE ' . ICT_EXPENSES_TABLE . " (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			project_id bigint(20) UNSIGNED DEFAULT NULL,
 			technician_id bigint(20) UNSIGNED NOT NULL,
@@ -349,7 +349,7 @@ class ICT_Activator {
 		) $charset_collate;";
 
 		// Digital signatures table (NEW FEATURE)
-		$signatures_table = "CREATE TABLE " . ICT_SIGNATURES_TABLE . " (
+		$signatures_table = 'CREATE TABLE ' . ICT_SIGNATURES_TABLE . " (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			entity_type varchar(50) NOT NULL,
 			entity_id bigint(20) UNSIGNED NOT NULL,
@@ -371,7 +371,7 @@ class ICT_Activator {
 		) $charset_collate;";
 
 		// Voice notes table (NEW FEATURE)
-		$voice_notes_table = "CREATE TABLE " . ICT_VOICE_NOTES_TABLE . " (
+		$voice_notes_table = 'CREATE TABLE ' . ICT_VOICE_NOTES_TABLE . " (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			project_id bigint(20) UNSIGNED DEFAULT NULL,
 			entity_type varchar(50) DEFAULT 'project',
@@ -393,7 +393,7 @@ class ICT_Activator {
 		) $charset_collate;";
 
 		// Activity log table (NEW FEATURE)
-		$activity_log_table = "CREATE TABLE " . ICT_ACTIVITY_LOG_TABLE . " (
+		$activity_log_table = 'CREATE TABLE ' . ICT_ACTIVITY_LOG_TABLE . " (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			user_id bigint(20) UNSIGNED NOT NULL,
 			action varchar(50) NOT NULL,
@@ -414,7 +414,7 @@ class ICT_Activator {
 		) $charset_collate;";
 
 		// Fleet/vehicles table (NEW FEATURE)
-		$fleet_table = "CREATE TABLE " . ICT_FLEET_TABLE . " (
+		$fleet_table = 'CREATE TABLE ' . ICT_FLEET_TABLE . " (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			vehicle_name varchar(255) NOT NULL,
 			vehicle_number varchar(50) DEFAULT NULL,
@@ -450,7 +450,7 @@ class ICT_Activator {
 		) $charset_collate;";
 
 		// Fleet location tracking table (NEW FEATURE)
-		$fleet_locations_table = "CREATE TABLE " . ICT_FLEET_LOCATIONS_TABLE . " (
+		$fleet_locations_table = 'CREATE TABLE ' . ICT_FLEET_LOCATIONS_TABLE . " (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			vehicle_id bigint(20) UNSIGNED NOT NULL,
 			latitude decimal(10,8) NOT NULL,
@@ -469,7 +469,7 @@ class ICT_Activator {
 		) $charset_collate;";
 
 		// Push notifications table (NEW FEATURE)
-		$notifications_table = "CREATE TABLE " . ICT_NOTIFICATIONS_TABLE . " (
+		$notifications_table = 'CREATE TABLE ' . ICT_NOTIFICATIONS_TABLE . " (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			user_id bigint(20) UNSIGNED NOT NULL,
 			type varchar(50) NOT NULL,
@@ -493,7 +493,7 @@ class ICT_Activator {
 		) $charset_collate;";
 
 		// QR codes table (NEW FEATURE)
-		$qr_codes_table = "CREATE TABLE " . ICT_QR_CODES_TABLE . " (
+		$qr_codes_table = 'CREATE TABLE ' . ICT_QR_CODES_TABLE . " (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			code varchar(100) NOT NULL,
 			entity_type varchar(50) NOT NULL,
@@ -548,38 +548,38 @@ class ICT_Activator {
 	private static function set_default_options() {
 		$defaults = array(
 			// Core settings
-			'ict_sync_interval'          => 15, // minutes
-			'ict_sync_rate_limit'        => 60, // requests per minute
-			'ict_time_rounding'          => 15, // minutes
-			'ict_overtime_threshold'     => 8,  // hours per day
-			'ict_low_stock_threshold'    => 10, // units
-			'ict_default_tax_rate'       => 0,  // percentage
-			'ict_currency'               => 'USD',
-			'ict_date_format'            => 'Y-m-d',
-			'ict_time_format'            => 'H:i:s',
-			'ict_working_hours_per_day'  => 8,
+			'ict_sync_interval'              => 15, // minutes
+			'ict_sync_rate_limit'            => 60, // requests per minute
+			'ict_time_rounding'              => 15, // minutes
+			'ict_overtime_threshold'         => 8,  // hours per day
+			'ict_low_stock_threshold'        => 10, // units
+			'ict_default_tax_rate'           => 0,  // percentage
+			'ict_currency'                   => 'USD',
+			'ict_date_format'                => 'Y-m-d',
+			'ict_time_format'                => 'H:i:s',
+			'ict_working_hours_per_day'      => 8,
 
 			// Feature flags
-			'ict_enable_offline_mode'    => true,
-			'ict_enable_gps_tracking'    => true,
-			'ict_enable_notifications'   => true,
-			'ict_enable_biometric_auth'  => true,
-			'ict_notification_types'     => array( 'low_stock', 'overdue_tasks', 'time_approval' ),
+			'ict_enable_offline_mode'        => true,
+			'ict_enable_gps_tracking'        => true,
+			'ict_enable_notifications'       => true,
+			'ict_enable_biometric_auth'      => true,
+			'ict_notification_types'         => array( 'low_stock', 'overdue_tasks', 'time_approval' ),
 
 			// Email notification settings
 			'ict_enable_email_notifications' => true,
-			'ict_email_from_name'        => get_bloginfo( 'name' ),
-			'ict_email_from_address'     => get_option( 'admin_email' ),
-			'ict_email_primary_color'    => '#0073aa',
+			'ict_email_from_name'            => get_bloginfo( 'name' ),
+			'ict_email_from_address'         => get_option( 'admin_email' ),
+			'ict_email_primary_color'        => '#0073aa',
 
 			// SMS notification settings
-			'ict_enable_sms_notifications' => false,
+			'ict_enable_sms_notifications'   => false,
 
 			// Microsoft Teams settings
 			'ict_enable_teams_notifications' => false,
 
 			// Push notification settings
-			'ict_enable_push_notifications' => true,
+			'ict_enable_push_notifications'  => true,
 		);
 
 		foreach ( $defaults as $key => $value ) {
@@ -678,10 +678,10 @@ class ICT_Activator {
 			'ict_technician',
 			__( 'ICT Technician', 'ict-platform' ),
 			array(
-				'read'                 => true,
-				'edit_ict_time_entry'  => true,
-				'view_ict_projects'    => true,
-				'view_ict_tasks'       => true,
+				'read'                => true,
+				'edit_ict_time_entry' => true,
+				'view_ict_projects'   => true,
+				'view_ict_tasks'      => true,
 			)
 		);
 

@@ -70,21 +70,21 @@ class ICT_REST_Reports_Controller extends WP_REST_Controller {
 					'callback'            => array( $this, 'get_time_report' ),
 					'permission_callback' => array( $this, 'get_items_permissions_check' ),
 					'args'                => array(
-						'date_from'      => array(
+						'date_from'     => array(
 							'type'   => 'string',
 							'format' => 'date-time',
 						),
-						'date_to'        => array(
+						'date_to'       => array(
 							'type'   => 'string',
 							'format' => 'date-time',
 						),
-						'technician_id'  => array(
+						'technician_id' => array(
 							'type' => 'integer',
 						),
-						'project_id'     => array(
+						'project_id'    => array(
 							'type' => 'integer',
 						),
-						'group_by'       => array(
+						'group_by'      => array(
 							'type' => 'string',
 							'enum' => array( 'day', 'week', 'month', 'technician', 'project' ),
 						),
@@ -129,17 +129,17 @@ class ICT_REST_Reports_Controller extends WP_REST_Controller {
 					'callback'            => array( $this, 'get_inventory_report' ),
 					'permission_callback' => array( $this, 'get_items_permissions_check' ),
 					'args'                => array(
-						'category'   => array(
+						'category'  => array(
 							'type' => 'string',
 						),
-						'location'   => array(
+						'location'  => array(
 							'type' => 'string',
 						),
-						'date_from'  => array(
+						'date_from' => array(
 							'type'   => 'string',
 							'format' => 'date-time',
 						),
-						'date_to'    => array(
+						'date_to'   => array(
 							'type'   => 'string',
 							'format' => 'date-time',
 						),
@@ -406,7 +406,7 @@ class ICT_REST_Reports_Controller extends WP_REST_Controller {
 		$group_field = '';
 		switch ( $group_by ) {
 			case 'day':
-				$group_field = "DATE(clock_in) as group_key, DATE(clock_in) as label";
+				$group_field = 'DATE(clock_in) as group_key, DATE(clock_in) as label';
 				break;
 			case 'week':
 				$group_field = "YEARWEEK(clock_in) as group_key, CONCAT('Week ', WEEK(clock_in)) as label";
@@ -415,10 +415,10 @@ class ICT_REST_Reports_Controller extends WP_REST_Controller {
 				$group_field = "DATE_FORMAT(clock_in, '%Y-%m') as group_key, DATE_FORMAT(clock_in, '%b %Y') as label";
 				break;
 			case 'technician':
-				$group_field = "technician_id as group_key, technician_id as label";
+				$group_field = 'technician_id as group_key, technician_id as label';
 				break;
 			case 'project':
-				$group_field = "project_id as group_key, project_id as label";
+				$group_field = 'project_id as group_key, project_id as label';
 				break;
 		}
 
@@ -539,7 +539,7 @@ class ICT_REST_Reports_Controller extends WP_REST_Controller {
 		$overview = $wpdb->get_row( $query, ARRAY_A );
 
 		// Get labor costs
-		$time_where = $project_id ? "WHERE t.project_id = %d" : '';
+		$time_where = $project_id ? 'WHERE t.project_id = %d' : '';
 		$time_query = "SELECT
 			SUM(t.billable_hours * t.hourly_rate) as labor_cost,
 			SUM(t.billable_hours) as total_hours
@@ -553,7 +553,7 @@ class ICT_REST_Reports_Controller extends WP_REST_Controller {
 		$labor_costs = $wpdb->get_row( $time_query, ARRAY_A );
 
 		// Get material costs (from purchase orders)
-		$po_where = $project_id ? "WHERE po.project_id = %d" : "WHERE po.project_id IS NOT NULL";
+		$po_where = $project_id ? 'WHERE po.project_id = %d' : 'WHERE po.project_id IS NOT NULL';
 		$po_query = "SELECT
 			SUM(po.total_amount) as material_cost,
 			COUNT(*) as po_count
@@ -684,16 +684,16 @@ class ICT_REST_Reports_Controller extends WP_REST_Controller {
 		// Get stock movements (if date range provided)
 		$movements = array();
 		if ( $date_from || $date_to ) {
-			$history_where = array( '1=1' );
+			$history_where  = array( '1=1' );
 			$history_values = array();
 
 			if ( $date_from ) {
-				$history_where[] = 'created_at >= %s';
+				$history_where[]  = 'created_at >= %s';
 				$history_values[] = $date_from;
 			}
 
 			if ( $date_to ) {
-				$history_where[] = 'created_at <= %s';
+				$history_where[]  = 'created_at <= %s';
 				$history_values[] = $date_to;
 			}
 
@@ -758,7 +758,7 @@ class ICT_REST_Reports_Controller extends WP_REST_Controller {
 
 		// Projects summary
 		$projects_table = $wpdb->prefix . 'ict_projects';
-		$projects = $wpdb->get_row(
+		$projects       = $wpdb->get_row(
 			"SELECT
 				COUNT(*) as total,
 				SUM(CASE WHEN status = 'in-progress' THEN 1 ELSE 0 END) as active,
@@ -770,9 +770,9 @@ class ICT_REST_Reports_Controller extends WP_REST_Controller {
 		);
 
 		// Time entries summary (last 30 days)
-		$time_table = $wpdb->prefix . 'ict_time_entries';
+		$time_table      = $wpdb->prefix . 'ict_time_entries';
 		$thirty_days_ago = date( 'Y-m-d H:i:s', strtotime( '-30 days' ) );
-		$time = $wpdb->get_row(
+		$time            = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT
 					COUNT(*) as total_entries,
@@ -787,7 +787,7 @@ class ICT_REST_Reports_Controller extends WP_REST_Controller {
 
 		// Inventory summary
 		$inventory_table = $wpdb->prefix . 'ict_inventory_items';
-		$inventory = $wpdb->get_row(
+		$inventory       = $wpdb->get_row(
 			"SELECT
 				COUNT(*) as total_items,
 				SUM(quantity_on_hand * unit_cost) as total_value,
@@ -797,7 +797,7 @@ class ICT_REST_Reports_Controller extends WP_REST_Controller {
 		);
 
 		// Purchase orders summary
-		$po_table = $wpdb->prefix . 'ict_purchase_orders';
+		$po_table        = $wpdb->prefix . 'ict_purchase_orders';
 		$purchase_orders = $wpdb->get_row(
 			"SELECT
 				COUNT(*) as total,

@@ -7,7 +7,7 @@
  * @since   2.1.0
  */
 
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import type { GanttTask } from '../../types';
 
 interface GanttChartProps {
@@ -31,13 +31,13 @@ const GanttChart: React.FC<GanttChartProps> = ({
   startDate,
   endDate,
   onTaskClick,
-  onTaskUpdate,
+  onTaskUpdate: _onTaskUpdate,
   viewMode = 'week',
   showDependencies = true,
 }) => {
   const [hoveredTask, setHoveredTask] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollLeft, setScrollLeft] = useState(0);
+  const [_scrollLeft, _setScrollLeft] = useState(0);
 
   // Calculate date range
   const dateRange = useMemo<DateRange>(() => {
@@ -201,7 +201,7 @@ const GanttChart: React.FC<GanttChartProps> = ({
         <div
           className="ict-gantt-timeline"
           style={{ width: dateRange.days * cellWidth }}
-          onScroll={(e) => setScrollLeft(e.currentTarget.scrollLeft)}
+          onScroll={(e) => _setScrollLeft(e.currentTarget.scrollLeft)}
         >
           {/* Grid lines */}
           <div className="ict-gantt-grid">

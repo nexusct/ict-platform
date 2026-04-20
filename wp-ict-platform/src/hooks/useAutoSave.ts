@@ -101,9 +101,10 @@ export function useAutoSave<T>({
   );
 
   // Debounced save
-  const debouncedSave = useDebouncedCallback((dataToSave: T) => {
-    performSave(dataToSave);
-  }, delay);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const debouncedSave = useDebouncedCallback((...args: any[]) => {
+    performSave(args[0] as T);
+  }, delay) as (data: T) => void;
 
   // Auto-save on data change
   useEffect(() => {

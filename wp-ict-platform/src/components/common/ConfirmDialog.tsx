@@ -40,34 +40,36 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
   // Focus trap
   useEffect(() => {
-    if (isOpen && dialogRef.current) {
-      const focusableElements = dialogRef.current.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      );
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements[focusableElements.length - 1];
+    if (!isOpen || !dialogRef.current) {
+      return;
+    }
 
-      const handleTab = (e: KeyboardEvent) => {
-        if (e.key === 'Tab') {
-          if (e.shiftKey) {
-            if (document.activeElement === firstElement) {
-              e.preventDefault();
-              lastElement?.focus();
-            }
-          } else {
-            if (document.activeElement === lastElement) {
-              e.preventDefault();
-              firstElement?.focus();
-            }
+    const focusableElements = dialogRef.current.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement?.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement?.focus();
           }
         }
-      };
+      }
+    };
 
-      document.addEventListener('keydown', handleTab);
-      confirmButtonRef.current?.focus();
+    document.addEventListener('keydown', handleTab);
+    confirmButtonRef.current?.focus();
 
-      return () => document.removeEventListener('keydown', handleTab);
-    }
+    return () => document.removeEventListener('keydown', handleTab);
   }, [isOpen]);
 
   // Handle escape key
@@ -84,12 +86,14 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
   // Prevent body scroll when open
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = '';
-      };
+    if (!isOpen) {
+      return;
     }
+
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen]);
 
   const handleConfirm = useCallback(async () => {

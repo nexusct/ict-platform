@@ -7,10 +7,10 @@
  * @since   2.1.0
  */
 
-import React, { useState, useCallback } from 'react';
-import type { BulkOperation, BulkOperationResult } from '../../types';
+import { useState, useCallback } from 'react';
+import type { BulkOperationResult } from '../../types';
 
-interface BulkActionsProps<T> {
+interface BulkActionsProps {
   selectedIds: number[];
   entityType: string;
   onClearSelection: () => void;
@@ -35,14 +35,14 @@ const defaultActions: BulkActionConfig[] = [
   { id: 'sync', label: 'Sync to Zoho', icon: '🔄' },
 ];
 
-function BulkActions<T>({
+function BulkActions({
   selectedIds,
   entityType,
   onClearSelection,
   onOperationComplete,
   availableActions = defaultActions,
   apiEndpoint = '/wp-json/ict/v1',
-}: BulkActionsProps<T>) {
+}: BulkActionsProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState({ current: 0, total: 0 });
   const [showConfirm, setShowConfirm] = useState<BulkActionConfig | null>(null);

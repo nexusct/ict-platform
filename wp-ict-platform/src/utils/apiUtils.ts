@@ -179,7 +179,7 @@ export function parseApiError(error: unknown): ParsedError {
         case 409:
           parsed.message = 'A conflict occurred. Please refresh and try again.';
           break;
-        case 422:
+        case 422: {
           parsed.message = (data as { message?: string })?.message || 'Validation failed';
           parsed.isValidationError = true;
           // Extract field-level errors if available
@@ -190,6 +190,7 @@ export function parseApiError(error: unknown): ParsedError {
             parsed.details = errors[firstField]?.[0];
           }
           break;
+        }
         case 429:
           parsed.message = 'Too many requests. Please wait a moment and try again.';
           break;

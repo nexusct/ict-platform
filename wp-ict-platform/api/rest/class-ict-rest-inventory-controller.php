@@ -92,12 +92,12 @@ class ICT_REST_Inventory_Controller extends WP_REST_Controller {
 				'callback'            => array( $this, 'adjust_stock' ),
 				'permission_callback' => array( $this, 'update_item_permissions_check' ),
 				'args'                => array(
-					'id'             => array(
+					'id'              => array(
 						'description' => __( 'Unique identifier for the inventory item.', 'ict-platform' ),
 						'type'        => 'integer',
 						'required'    => true,
 					),
-					'adjustment'     => array(
+					'adjustment'      => array(
 						'description' => __( 'Stock adjustment quantity (positive or negative).', 'ict-platform' ),
 						'type'        => 'number',
 						'required'    => true,
@@ -108,16 +108,16 @@ class ICT_REST_Inventory_Controller extends WP_REST_Controller {
 						'enum'        => array( 'received', 'consumed', 'damaged', 'lost', 'returned', 'transfer', 'correction', 'initial' ),
 						'required'    => true,
 					),
-					'reason'         => array(
+					'reason'          => array(
 						'description' => __( 'Reason for adjustment.', 'ict-platform' ),
 						'type'        => 'string',
 						'required'    => true,
 					),
-					'project_id'     => array(
+					'project_id'      => array(
 						'description' => __( 'Project ID if related to project.', 'ict-platform' ),
 						'type'        => 'integer',
 					),
-					'reference'      => array(
+					'reference'       => array(
 						'description' => __( 'Reference number (PO, invoice, etc).', 'ict-platform' ),
 						'type'        => 'string',
 					),
@@ -167,27 +167,27 @@ class ICT_REST_Inventory_Controller extends WP_REST_Controller {
 				'callback'            => array( $this, 'transfer_stock' ),
 				'permission_callback' => array( $this, 'update_item_permissions_check' ),
 				'args'                => array(
-					'item_id'          => array(
+					'item_id'       => array(
 						'description' => __( 'Inventory item ID.', 'ict-platform' ),
 						'type'        => 'integer',
 						'required'    => true,
 					),
-					'from_location'    => array(
+					'from_location' => array(
 						'description' => __( 'Source location.', 'ict-platform' ),
 						'type'        => 'string',
 						'required'    => true,
 					),
-					'to_location'      => array(
+					'to_location'   => array(
 						'description' => __( 'Destination location.', 'ict-platform' ),
 						'type'        => 'string',
 						'required'    => true,
 					),
-					'quantity'         => array(
+					'quantity'      => array(
 						'description' => __( 'Quantity to transfer.', 'ict-platform' ),
 						'type'        => 'number',
 						'required'    => true,
 					),
-					'notes'            => array(
+					'notes'         => array(
 						'description' => __( 'Transfer notes.', 'ict-platform' ),
 						'type'        => 'string',
 					),
@@ -294,9 +294,9 @@ class ICT_REST_Inventory_Controller extends WP_REST_Controller {
 		$total = (int) $wpdb->get_var( $count_query );
 
 		// Get items
-		$query = "SELECT * FROM $table_name WHERE $where_clause ORDER BY item_name ASC LIMIT %d OFFSET %d";
+		$query        = "SELECT * FROM $table_name WHERE $where_clause ORDER BY item_name ASC LIMIT %d OFFSET %d";
 		$query_values = array_merge( $where_values, array( $per_page, $offset ) );
-		$items = $wpdb->get_results(
+		$items        = $wpdb->get_results(
 			$wpdb->prepare( $query, ...$query_values ),
 			ARRAY_A
 		);
@@ -356,23 +356,23 @@ class ICT_REST_Inventory_Controller extends WP_REST_Controller {
 		$table_name = ICT_INVENTORY_TABLE;
 
 		$data = array(
-			'sku'                 => sanitize_text_field( $request->get_param( 'sku' ) ),
-			'item_name'           => sanitize_text_field( $request->get_param( 'item_name' ) ),
-			'description'         => sanitize_textarea_field( $request->get_param( 'description' ) ?? '' ),
-			'category'            => sanitize_text_field( $request->get_param( 'category' ) ?? '' ),
-			'unit_of_measure'     => sanitize_text_field( $request->get_param( 'unit_of_measure' ) ?? 'ea' ),
-			'quantity_on_hand'    => floatval( $request->get_param( 'quantity_on_hand' ) ?? 0 ),
-			'quantity_allocated'  => 0,
-			'reorder_level'       => floatval( $request->get_param( 'reorder_level' ) ?? 0 ),
-			'reorder_quantity'    => floatval( $request->get_param( 'reorder_quantity' ) ?? 0 ),
-			'unit_cost'           => floatval( $request->get_param( 'unit_cost' ) ?? 0 ),
-			'unit_price'          => floatval( $request->get_param( 'unit_price' ) ?? 0 ),
-			'supplier_id'         => absint( $request->get_param( 'supplier_id' ) ?? 0 ),
-			'location'            => sanitize_text_field( $request->get_param( 'location' ) ?? '' ),
-			'barcode'             => sanitize_text_field( $request->get_param( 'barcode' ) ?? '' ),
-			'is_active'           => $request->get_param( 'is_active' ) !== false ? 1 : 0,
-			'created_at'          => current_time( 'mysql' ),
-			'updated_at'          => current_time( 'mysql' ),
+			'sku'                => sanitize_text_field( $request->get_param( 'sku' ) ),
+			'item_name'          => sanitize_text_field( $request->get_param( 'item_name' ) ),
+			'description'        => sanitize_textarea_field( $request->get_param( 'description' ) ?? '' ),
+			'category'           => sanitize_text_field( $request->get_param( 'category' ) ?? '' ),
+			'unit_of_measure'    => sanitize_text_field( $request->get_param( 'unit_of_measure' ) ?? 'ea' ),
+			'quantity_on_hand'   => floatval( $request->get_param( 'quantity_on_hand' ) ?? 0 ),
+			'quantity_allocated' => 0,
+			'reorder_level'      => floatval( $request->get_param( 'reorder_level' ) ?? 0 ),
+			'reorder_quantity'   => floatval( $request->get_param( 'reorder_quantity' ) ?? 0 ),
+			'unit_cost'          => floatval( $request->get_param( 'unit_cost' ) ?? 0 ),
+			'unit_price'         => floatval( $request->get_param( 'unit_price' ) ?? 0 ),
+			'supplier_id'        => absint( $request->get_param( 'supplier_id' ) ?? 0 ),
+			'location'           => sanitize_text_field( $request->get_param( 'location' ) ?? '' ),
+			'barcode'            => sanitize_text_field( $request->get_param( 'barcode' ) ?? '' ),
+			'is_active'          => $request->get_param( 'is_active' ) !== false ? 1 : 0,
+			'created_at'         => current_time( 'mysql' ),
+			'updated_at'         => current_time( 'mysql' ),
 		);
 
 		// Calculate quantity available
@@ -729,7 +729,7 @@ class ICT_REST_Inventory_Controller extends WP_REST_Controller {
 	 */
 	public function bulk_update( $request ) {
 		global $wpdb;
-		$items = $request->get_param( 'items' );
+		$items   = $request->get_param( 'items' );
 		$updated = 0;
 
 		foreach ( $items as $item_data ) {
@@ -747,7 +747,7 @@ class ICT_REST_Inventory_Controller extends WP_REST_Controller {
 			);
 
 			if ( false !== $result ) {
-				$updated++;
+				++$updated;
 			}
 		}
 
@@ -769,14 +769,14 @@ class ICT_REST_Inventory_Controller extends WP_REST_Controller {
 		$wpdb->insert(
 			$wpdb->prefix . 'ict_stock_history',
 			array(
-				'item_id'        => $item_id,
+				'item_id'         => $item_id,
 				'quantity_change' => $quantity,
 				'adjustment_type' => $type,
-				'reason'         => $reason,
-				'reference'      => $reference,
-				'project_id'     => $project_id,
-				'user_id'        => get_current_user_id(),
-				'created_at'     => current_time( 'mysql' ),
+				'reason'          => $reason,
+				'reference'       => $reference,
+				'project_id'      => $project_id,
+				'user_id'         => get_current_user_id(),
+				'created_at'      => current_time( 'mysql' ),
 			)
 		);
 	}

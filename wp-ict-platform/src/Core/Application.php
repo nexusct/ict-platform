@@ -19,166 +19,166 @@ use ICT_Platform\Util\SyncLogger;
  * @package ICT_Platform\Core
  * @since   2.0.0
  */
-class Application
-{
-    /**
-     * Container instance
-     */
-    private Container $container;
+class Application {
 
-    /**
-     * Plugin version
-     */
-    private string $version;
+	/**
+	 * Container instance
+	 */
+	private Container $container;
 
-    /**
-     * Plugin name
-     */
-    private string $pluginName;
+	/**
+	 * Plugin version
+	 */
+	private string $version;
 
-    /**
-     * Whether the application has been booted
-     */
-    private bool $booted = false;
+	/**
+	 * Plugin name
+	 */
+	private string $pluginName;
 
-    /**
-     * Constructor
-     *
-     * @param string $pluginName Plugin name
-     * @param string $version    Plugin version
-     */
-    public function __construct(string $pluginName, string $version)
-    {
-        $this->pluginName = $pluginName;
-        $this->version = $version;
-        $this->container = Container::getInstance();
-    }
+	/**
+	 * Whether the application has been booted
+	 */
+	private bool $booted = false;
 
-    /**
-     * Boot the application
-     */
-    public function boot(): void
-    {
-        if ($this->booted) {
-            return;
-        }
+	/**
+	 * Constructor
+	 *
+	 * @param string $pluginName Plugin name
+	 * @param string $version    Plugin version
+	 */
+	public function __construct( string $pluginName, string $version ) {
+		$this->pluginName = $pluginName;
+		$this->version    = $version;
+		$this->container  = Container::getInstance();
+	}
 
-        $this->registerServices();
-        $this->registerHooks();
+	/**
+	 * Boot the application
+	 */
+	public function boot(): void {
+		if ( $this->booted ) {
+			return;
+		}
 
-        $this->booted = true;
-    }
+		$this->registerServices();
+		$this->registerHooks();
 
-    /**
-     * Register services in the container
-     */
-    private function registerServices(): void
-    {
-        // Register self
-        $this->container->instance(self::class, $this);
+		$this->booted = true;
+	}
 
-        // Register core utilities as singletons
-        $this->container->singleton(Helper::class);
-        $this->container->singleton(Cache::class);
-        $this->container->singleton(SyncLogger::class);
+	/**
+	 * Register services in the container
+	 */
+	private function registerServices(): void {
+		// Register self
+		$this->container->instance( self::class, $this );
 
-        // Register API Router
-        $this->container->singleton(Router::class, function (Container $c) {
-            return new Router($c);
-        });
+		// Register core utilities as singletons
+		$this->container->singleton( Helper::class );
+		$this->container->singleton( Cache::class );
+		$this->container->singleton( SyncLogger::class );
 
-        // Register controllers - they will be resolved with dependencies automatically
-        $this->container->bind(\ICT_Platform\Api\Controllers\ProjectController::class);
-        $this->container->bind(\ICT_Platform\Api\Controllers\TimeEntryController::class);
-        $this->container->bind(\ICT_Platform\Api\Controllers\InventoryController::class);
-        $this->container->bind(\ICT_Platform\Api\Controllers\PurchaseOrderController::class);
-        $this->container->bind(\ICT_Platform\Api\Controllers\ResourceController::class);
-        $this->container->bind(\ICT_Platform\Api\Controllers\ReportController::class);
+		// Register API Router
+		$this->container->singleton(
+			Router::class,
+			function ( Container $c ) {
+				return new Router( $c );
+			}
+		);
 
-        // SyncController needs SyncLogger injected
-        $this->container->bind(\ICT_Platform\Api\Controllers\SyncController::class, function (Container $c) {
-            return new \ICT_Platform\Api\Controllers\SyncController(
-                $c->resolve(Helper::class),
-                $c->resolve(Cache::class),
-                $c->resolve(SyncLogger::class)
-            );
-        });
+		// Register controllers - they will be resolved with dependencies automatically
+		$this->container->bind( \ICT_Platform\Api\Controllers\ProjectController::class );
+		$this->container->bind( \ICT_Platform\Api\Controllers\TimeEntryController::class );
+		$this->container->bind( \ICT_Platform\Api\Controllers\InventoryController::class );
+		$this->container->bind( \ICT_Platform\Api\Controllers\PurchaseOrderController::class );
+		$this->container->bind( \ICT_Platform\Api\Controllers\ResourceController::class );
+		$this->container->bind( \ICT_Platform\Api\Controllers\ReportController::class );
 
-        // Allow plugins/themes to register additional services
-        do_action('ict_platform_register_services', $this->container);
-    }
+		// SyncController needs SyncLogger injected
+		$this->container->bind(
+			\ICT_Platform\Api\Controllers\SyncController::class,
+			function ( Container $c ) {
+				return new \ICT_Platform\Api\Controllers\SyncController(
+					$c->resolve( Helper::class ),
+					$c->resolve( Cache::class ),
+					$c->resolve( SyncLogger::class )
+				);
+			}
+		);
 
-    /**
-     * Register WordPress hooks
-     */
-    private function registerHooks(): void
-    {
-        // Register REST API routes
-        add_action('rest_api_init', function () {
-            $router = $this->container->resolve(Router::class);
-            $router->registerRoutes();
-        });
+		// Allow plugins/themes to register additional services
+		do_action( 'ict_platform_register_services', $this->container );
+	}
 
-        // Allow plugins/themes to register additional hooks
-        do_action('ict_platform_register_hooks', $this);
-    }
+	/**
+	 * Register WordPress hooks
+	 */
+	private function registerHooks(): void {
+		// Register REST API routes
+		add_action(
+			'rest_api_init',
+			function () {
+				$router = $this->container->resolve( Router::class );
+				$router->registerRoutes();
+			}
+		);
 
-    /**
-     * Get the container instance
-     *
-     * @return Container
-     */
-    public function getContainer(): Container
-    {
-        return $this->container;
-    }
+		// Allow plugins/themes to register additional hooks
+		do_action( 'ict_platform_register_hooks', $this );
+	}
 
-    /**
-     * Get the plugin name
-     *
-     * @return string
-     */
-    public function getPluginName(): string
-    {
-        return $this->pluginName;
-    }
+	/**
+	 * Get the container instance
+	 *
+	 * @return Container
+	 */
+	public function getContainer(): Container {
+		return $this->container;
+	}
 
-    /**
-     * Get the plugin version
-     *
-     * @return string
-     */
-    public function getVersion(): string
-    {
-        return $this->version;
-    }
+	/**
+	 * Get the plugin name
+	 *
+	 * @return string
+	 */
+	public function getPluginName(): string {
+		return $this->pluginName;
+	}
 
-    /**
-     * Resolve a service from the container
-     *
-     * @param string $abstract Service identifier
-     * @return mixed
-     */
-    public function resolve(string $abstract): mixed
-    {
-        return $this->container->resolve($abstract);
-    }
+	/**
+	 * Get the plugin version
+	 *
+	 * @return string
+	 */
+	public function getVersion(): string {
+		return $this->version;
+	}
 
-    /**
-     * Register a service provider
-     *
-     * @param string $providerClass Provider class name
-     */
-    public function registerProvider(string $providerClass): void
-    {
-        if (class_exists($providerClass)) {
-            $provider = new $providerClass($this->container);
-            if (method_exists($provider, 'register')) {
-                $provider->register();
-            }
-            if (method_exists($provider, 'boot')) {
-                $provider->boot();
-            }
-        }
-    }
+	/**
+	 * Resolve a service from the container
+	 *
+	 * @param string $abstract Service identifier
+	 * @return mixed
+	 */
+	public function resolve( string $abstract ): mixed {
+		return $this->container->resolve( $abstract );
+	}
+
+	/**
+	 * Register a service provider
+	 *
+	 * @param string $providerClass Provider class name
+	 */
+	public function registerProvider( string $providerClass ): void {
+		if ( class_exists( $providerClass ) ) {
+			$provider = new $providerClass( $this->container );
+			if ( method_exists( $provider, 'register' ) ) {
+				$provider->register();
+			}
+			if ( method_exists( $provider, 'boot' ) ) {
+				$provider->boot();
+			}
+		}
+	}
 }

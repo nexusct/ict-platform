@@ -34,130 +34,123 @@ use ICT_Platform\Api\Controllers\ClientPortalController;
  * @package ICT_Platform\Api
  * @since   2.0.0
  */
-class Router
-{
-    /**
-     * API namespace
-     */
-    public const NAMESPACE = 'ict/v1';
+class Router {
 
-    /**
-     * Dependency injection container
-     */
-    private Container $container;
+	/**
+	 * API namespace
+	 */
+	public const NAMESPACE = 'ict/v1';
 
-    /**
-     * Registered controllers
-     *
-     * @var array<string, string>
-     */
-    private array $controllers = [
-        // Core controllers
-        'projects'        => ProjectController::class,
-        'time-entries'    => TimeEntryController::class,
-        'inventory'       => InventoryController::class,
-        'purchase-orders' => PurchaseOrderController::class,
-        'resources'       => ResourceController::class,
-        'sync'            => SyncController::class,
-        'reports'         => ReportController::class,
-        // New feature controllers (v2.1.0)
-        'documents'       => DocumentController::class,
-        'equipment'       => EquipmentController::class,
-        'expenses'        => ExpenseController::class,
-        'signatures'      => SignatureController::class,
-        'voice-notes'     => VoiceNoteController::class,
-        'fleet'           => FleetController::class,
-        'notifications'   => NotificationController::class,
-        'qr-codes'        => QrCodeController::class,
-        'activity'        => ActivityController::class,
-        'weather'         => WeatherController::class,
-        'client-portal'   => ClientPortalController::class,
-    ];
+	/**
+	 * Dependency injection container
+	 */
+	private Container $container;
 
-    /**
-     * Constructor
-     *
-     * @param Container $container DI container
-     */
-    public function __construct(Container $container)
-    {
-        $this->container = $container;
-    }
+	/**
+	 * Registered controllers
+	 *
+	 * @var array<string, string>
+	 */
+	private array $controllers = array(
+		// Core controllers
+		'projects'        => ProjectController::class,
+		'time-entries'    => TimeEntryController::class,
+		'inventory'       => InventoryController::class,
+		'purchase-orders' => PurchaseOrderController::class,
+		'resources'       => ResourceController::class,
+		'sync'            => SyncController::class,
+		'reports'         => ReportController::class,
+		// New feature controllers (v2.1.0)
+		'documents'       => DocumentController::class,
+		'equipment'       => EquipmentController::class,
+		'expenses'        => ExpenseController::class,
+		'signatures'      => SignatureController::class,
+		'voice-notes'     => VoiceNoteController::class,
+		'fleet'           => FleetController::class,
+		'notifications'   => NotificationController::class,
+		'qr-codes'        => QrCodeController::class,
+		'activity'        => ActivityController::class,
+		'weather'         => WeatherController::class,
+		'client-portal'   => ClientPortalController::class,
+	);
 
-    /**
-     * Register all REST API routes
-     */
-    public function registerRoutes(): void
-    {
-        foreach ($this->controllers as $key => $controllerClass) {
-            if (class_exists($controllerClass)) {
-                /** @var AbstractController $controller */
-                $controller = $this->container->resolve($controllerClass);
-                $controller->registerRoutes();
-            }
-        }
-    }
+	/**
+	 * Constructor
+	 *
+	 * @param Container $container DI container
+	 */
+	public function __construct( Container $container ) {
+		$this->container = $container;
+	}
 
-    /**
-     * Get the API namespace
-     */
-    public static function getNamespace(): string
-    {
-        return self::NAMESPACE;
-    }
+	/**
+	 * Register all REST API routes
+	 */
+	public function registerRoutes(): void {
+		foreach ( $this->controllers as $key => $controllerClass ) {
+			if ( class_exists( $controllerClass ) ) {
+				/** @var AbstractController $controller */
+				$controller = $this->container->resolve( $controllerClass );
+				$controller->registerRoutes();
+			}
+		}
+	}
 
-    /**
-     * Check if Divi builder request
-     *
-     * @return bool
-     */
-    public static function isDiviBuilderRequest(): bool
-    {
+	/**
+	 * Get the API namespace
+	 */
+	public static function getNamespace(): string {
+		return self::NAMESPACE;
+	}
+
+	/**
+	 * Check if Divi builder request
+	 *
+	 * @return bool
+	 */
+	public static function isDiviBuilderRequest(): bool {
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-        if (isset($_GET['et_fb']) && '1' === $_GET['et_fb']) {
-            return true;
-        }
+		if ( isset( $_GET['et_fb'] ) && '1' === $_GET['et_fb'] ) {
+			return true;
+		}
 
         // phpcs:ignore WordPress.Security.NonceVerification.Missing
-        if (isset($_POST['action']) && strpos($_POST['action'], 'et_fb_') === 0) {
-            return true;
-        }
+		if ( isset( $_POST['action'] ) && strpos( $_POST['action'], 'et_fb_' ) === 0 ) {
+			return true;
+		}
 
-        if (isset($_SERVER['HTTP_X_DIVI_BUILDER'])) {
-            return true;
-        }
+		if ( isset( $_SERVER['HTTP_X_DIVI_BUILDER'] ) ) {
+			return true;
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    /**
-     * Check if Divi is active
-     *
-     * @return bool
-     */
-    public static function isDiviActive(): bool
-    {
-        return defined('ET_CORE_VERSION') || defined('ET_BUILDER_PLUGIN_DIR');
-    }
+	/**
+	 * Check if Divi is active
+	 *
+	 * @return bool
+	 */
+	public static function isDiviActive(): bool {
+		return defined( 'ET_CORE_VERSION' ) || defined( 'ET_BUILDER_PLUGIN_DIR' );
+	}
 
-    /**
-     * Register a custom controller
-     *
-     * @param string $key             Controller key
-     * @param string $controllerClass Controller class name
-     */
-    public function registerController(string $key, string $controllerClass): void
-    {
-        $this->controllers[$key] = $controllerClass;
-    }
+	/**
+	 * Register a custom controller
+	 *
+	 * @param string $key             Controller key
+	 * @param string $controllerClass Controller class name
+	 */
+	public function registerController( string $key, string $controllerClass ): void {
+		$this->controllers[ $key ] = $controllerClass;
+	}
 
-    /**
-     * Get registered controllers
-     *
-     * @return array<string, string>
-     */
-    public function getControllers(): array
-    {
-        return $this->controllers;
-    }
+	/**
+	 * Get registered controllers
+	 *
+	 * @return array<string, string>
+	 */
+	public function getControllers(): array {
+		return $this->controllers;
+	}
 }

@@ -30,22 +30,22 @@ class ICT_Notification_Manager {
 	 * @var array
 	 */
 	private $notification_types = array(
-		'project_created'        => array( 'email', 'teams' ),
-		'project_updated'        => array( 'email', 'teams' ),
-		'project_completed'      => array( 'email', 'teams', 'sms' ),
-		'time_entry_submitted'   => array( 'email' ),
-		'time_entry_approved'    => array( 'email', 'sms' ),
-		'time_entry_rejected'    => array( 'email', 'sms' ),
-		'low_stock_alert'        => array( 'email', 'teams' ),
-		'po_created'             => array( 'email', 'teams' ),
-		'po_approved'            => array( 'email' ),
-		'po_received'            => array( 'email', 'teams' ),
-		'task_assigned'          => array( 'email', 'sms', 'push' ),
-		'task_due_reminder'      => array( 'email', 'sms', 'push' ),
-		'sync_error'             => array( 'email', 'teams' ),
-		'user_mentioned'         => array( 'email', 'push' ),
-		'schedule_conflict'      => array( 'email', 'sms' ),
-		'overtime_alert'         => array( 'email', 'teams' ),
+		'project_created'      => array( 'email', 'teams' ),
+		'project_updated'      => array( 'email', 'teams' ),
+		'project_completed'    => array( 'email', 'teams', 'sms' ),
+		'time_entry_submitted' => array( 'email' ),
+		'time_entry_approved'  => array( 'email', 'sms' ),
+		'time_entry_rejected'  => array( 'email', 'sms' ),
+		'low_stock_alert'      => array( 'email', 'teams' ),
+		'po_created'           => array( 'email', 'teams' ),
+		'po_approved'          => array( 'email' ),
+		'po_received'          => array( 'email', 'teams' ),
+		'task_assigned'        => array( 'email', 'sms', 'push' ),
+		'task_due_reminder'    => array( 'email', 'sms', 'push' ),
+		'sync_error'           => array( 'email', 'teams' ),
+		'user_mentioned'       => array( 'email', 'push' ),
+		'schedule_conflict'    => array( 'email', 'sms' ),
+		'overtime_alert'       => array( 'email', 'teams' ),
 	);
 
 	/**
@@ -125,7 +125,10 @@ class ICT_Notification_Manager {
 	 */
 	public function send( $type, $recipients, $data, $channels = null ) {
 		if ( ! get_option( 'ict_enable_notifications', true ) ) {
-			return array( 'skipped' => true, 'reason' => 'notifications_disabled' );
+			return array(
+				'skipped' => true,
+				'reason'  => 'notifications_disabled',
+			);
 		}
 
 		$channels = $channels ?? $this->get_channels_for_type( $type );
@@ -184,7 +187,10 @@ class ICT_Notification_Manager {
 				return $this->send_push( $type, $recipients, $data );
 
 			default:
-				return array( 'success' => false, 'error' => 'unknown_channel' );
+				return array(
+					'success' => false,
+					'error'   => 'unknown_channel',
+				);
 		}
 	}
 
@@ -199,7 +205,10 @@ class ICT_Notification_Manager {
 	 */
 	private function send_email( $type, $recipients, $data ) {
 		if ( ! get_option( 'ict_enable_email_notifications', true ) ) {
-			return array( 'success' => false, 'skipped' => true );
+			return array(
+				'success' => false,
+				'skipped' => true,
+			);
 		}
 
 		$email_handler = new ICT_Email_Notification();
@@ -217,7 +226,10 @@ class ICT_Notification_Manager {
 	 */
 	private function send_sms( $type, $recipients, $data ) {
 		if ( ! get_option( 'ict_enable_sms_notifications', false ) ) {
-			return array( 'success' => false, 'skipped' => true );
+			return array(
+				'success' => false,
+				'skipped' => true,
+			);
 		}
 
 		$sms_handler = new ICT_Twilio_SMS_Adapter();
@@ -234,14 +246,20 @@ class ICT_Notification_Manager {
 	 */
 	private function send_teams( $type, $data ) {
 		if ( ! get_option( 'ict_enable_teams_notifications', false ) ) {
-			return array( 'success' => false, 'skipped' => true );
+			return array(
+				'success' => false,
+				'skipped' => true,
+			);
 		}
 
 		$teams_handler = new ICT_Microsoft_Teams_Adapter();
 		$webhook_url   = $this->get_teams_webhook_for_type( $type );
 
 		if ( empty( $webhook_url ) ) {
-			return array( 'success' => false, 'error' => 'no_webhook_configured' );
+			return array(
+				'success' => false,
+				'error'   => 'no_webhook_configured',
+			);
 		}
 
 		$card    = $this->create_teams_card_for_type( $type, $data );
@@ -353,20 +371,20 @@ class ICT_Notification_Manager {
 	 */
 	private function get_notification_title( $type ) {
 		$titles = array(
-			'project_created'        => __( 'New Project Created', 'ict-platform' ),
-			'project_updated'        => __( 'Project Updated', 'ict-platform' ),
-			'project_completed'      => __( 'Project Completed', 'ict-platform' ),
-			'time_entry_submitted'   => __( 'Time Entry Submitted', 'ict-platform' ),
-			'time_entry_approved'    => __( 'Time Entry Approved', 'ict-platform' ),
-			'time_entry_rejected'    => __( 'Time Entry Rejected', 'ict-platform' ),
-			'low_stock_alert'        => __( 'Low Stock Alert', 'ict-platform' ),
-			'po_created'             => __( 'Purchase Order Created', 'ict-platform' ),
-			'po_approved'            => __( 'Purchase Order Approved', 'ict-platform' ),
-			'po_received'            => __( 'Purchase Order Received', 'ict-platform' ),
-			'task_assigned'          => __( 'New Task Assigned', 'ict-platform' ),
-			'task_due_reminder'      => __( 'Task Due Reminder', 'ict-platform' ),
-			'sync_error'             => __( 'Sync Error', 'ict-platform' ),
-			'overtime_alert'         => __( 'Overtime Alert', 'ict-platform' ),
+			'project_created'      => __( 'New Project Created', 'ict-platform' ),
+			'project_updated'      => __( 'Project Updated', 'ict-platform' ),
+			'project_completed'    => __( 'Project Completed', 'ict-platform' ),
+			'time_entry_submitted' => __( 'Time Entry Submitted', 'ict-platform' ),
+			'time_entry_approved'  => __( 'Time Entry Approved', 'ict-platform' ),
+			'time_entry_rejected'  => __( 'Time Entry Rejected', 'ict-platform' ),
+			'low_stock_alert'      => __( 'Low Stock Alert', 'ict-platform' ),
+			'po_created'           => __( 'Purchase Order Created', 'ict-platform' ),
+			'po_approved'          => __( 'Purchase Order Approved', 'ict-platform' ),
+			'po_received'          => __( 'Purchase Order Received', 'ict-platform' ),
+			'task_assigned'        => __( 'New Task Assigned', 'ict-platform' ),
+			'task_due_reminder'    => __( 'Task Due Reminder', 'ict-platform' ),
+			'sync_error'           => __( 'Sync Error', 'ict-platform' ),
+			'overtime_alert'       => __( 'Overtime Alert', 'ict-platform' ),
 		);
 
 		return $titles[ $type ] ?? __( 'ICT Platform Notification', 'ict-platform' );
@@ -381,13 +399,13 @@ class ICT_Notification_Manager {
 	 */
 	private function get_theme_color_for_type( $type ) {
 		$colors = array(
-			'project_created'        => '0076D7',
-			'project_completed'      => '00FF00',
-			'low_stock_alert'        => 'FF0000',
-			'sync_error'             => 'FF0000',
-			'overtime_alert'         => 'FFA500',
-			'time_entry_rejected'    => 'FF0000',
-			'time_entry_approved'    => '00FF00',
+			'project_created'     => '0076D7',
+			'project_completed'   => '00FF00',
+			'low_stock_alert'     => 'FF0000',
+			'sync_error'          => 'FF0000',
+			'overtime_alert'      => 'FFA500',
+			'time_entry_rejected' => 'FF0000',
+			'time_entry_approved' => '00FF00',
 		);
 
 		return $colors[ $type ] ?? '0076D7';
@@ -509,7 +527,7 @@ class ICT_Notification_Manager {
 		$data = array(
 			'title'      => __( 'Time Entry Submitted for Approval', 'ict-platform' ),
 			'message'    => sprintf(
-				__( '%s has submitted a time entry for %s hours.', 'ict-platform' ),
+				__( '%1$s has submitted a time entry for %2$s hours.', 'ict-platform' ),
 				$technician_name,
 				number_format( $time_entry['total_hours'], 2 )
 			),
@@ -583,7 +601,7 @@ class ICT_Notification_Manager {
 		$data = array(
 			'title'   => __( 'Low Stock Alert', 'ict-platform' ),
 			'message' => sprintf(
-				__( '%d items are below reorder level: %s', 'ict-platform' ),
+				__( '%1$d items are below reorder level: %2$s', 'ict-platform' ),
 				count( $items ),
 				implode( ', ', $item_list )
 			),
@@ -606,7 +624,7 @@ class ICT_Notification_Manager {
 		$data = array(
 			'title'   => sprintf( __( 'New Purchase Order: %s', 'ict-platform' ), $po['po_number'] ),
 			'message' => sprintf(
-				__( 'A new purchase order %s has been created for %s.', 'ict-platform' ),
+				__( 'A new purchase order %1$s has been created for %2$s.', 'ict-platform' ),
 				$po['po_number'],
 				ICT_Helper::format_currency( $po['total_amount'] )
 			),
@@ -741,7 +759,7 @@ class ICT_Notification_Manager {
 		global $wpdb;
 		$assigned = $wpdb->get_col(
 			$wpdb->prepare(
-				"SELECT DISTINCT resource_id FROM " . ICT_PROJECT_RESOURCES_TABLE . "
+				'SELECT DISTINCT resource_id FROM ' . ICT_PROJECT_RESOURCES_TABLE . "
 				WHERE project_id = %d AND resource_type = 'user'",
 				$project['id'] ?? 0
 			)
@@ -764,7 +782,7 @@ class ICT_Notification_Manager {
 		global $wpdb;
 		$project_manager = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT project_manager_id FROM " . ICT_PROJECTS_TABLE . " WHERE id = %d",
+				'SELECT project_manager_id FROM ' . ICT_PROJECTS_TABLE . ' WHERE id = %d',
 				$time_entry['project_id'] ?? 0
 			)
 		);
@@ -776,9 +794,11 @@ class ICT_Notification_Manager {
 		}
 
 		// Get users with approval capability
-		$users = get_users( array(
-			'capability' => 'approve_ict_time_entries',
-		) );
+		$users = get_users(
+			array(
+				'capability' => 'approve_ict_time_entries',
+			)
+		);
 
 		foreach ( $users as $user ) {
 			$approvers[] = $user->ID;
@@ -794,9 +814,11 @@ class ICT_Notification_Manager {
 	 * @return array User IDs.
 	 */
 	private function get_inventory_managers() {
-		$users = get_users( array(
-			'capability' => 'manage_ict_inventory',
-		) );
+		$users = get_users(
+			array(
+				'capability' => 'manage_ict_inventory',
+			)
+		);
 
 		return wp_list_pluck( $users, 'ID' );
 	}
@@ -808,9 +830,11 @@ class ICT_Notification_Manager {
 	 * @return array User IDs.
 	 */
 	private function get_po_approvers() {
-		$users = get_users( array(
-			'capability' => 'approve_ict_purchase_orders',
-		) );
+		$users = get_users(
+			array(
+				'capability' => 'approve_ict_purchase_orders',
+			)
+		);
 
 		return wp_list_pluck( $users, 'ID' );
 	}
@@ -822,9 +846,11 @@ class ICT_Notification_Manager {
 	 * @return array User IDs.
 	 */
 	private function get_admins() {
-		$users = get_users( array(
-			'capability' => 'manage_ict_platform',
-		) );
+		$users = get_users(
+			array(
+				'capability' => 'manage_ict_platform',
+			)
+		);
 
 		return wp_list_pluck( $users, 'ID' );
 	}
@@ -838,11 +864,11 @@ class ICT_Notification_Manager {
 	 */
 	public function get_user_preferences( $user_id ) {
 		$defaults = array(
-			'email_enabled'  => true,
-			'sms_enabled'    => false,
-			'push_enabled'   => true,
-			'digest_mode'    => 'instant', // instant, daily, weekly
-			'quiet_hours'    => array(
+			'email_enabled'      => true,
+			'sms_enabled'        => false,
+			'push_enabled'       => true,
+			'digest_mode'        => 'instant', // instant, daily, weekly
+			'quiet_hours'        => array(
 				'enabled' => false,
 				'start'   => '22:00',
 				'end'     => '07:00',

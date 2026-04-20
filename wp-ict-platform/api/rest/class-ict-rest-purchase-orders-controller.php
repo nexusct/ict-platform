@@ -234,9 +234,9 @@ class ICT_REST_Purchase_Orders_Controller extends WP_REST_Controller {
 		$total = (int) $wpdb->get_var( $count_query );
 
 		// Get items
-		$query = "SELECT * FROM $table_name WHERE $where_clause ORDER BY po_date DESC, id DESC LIMIT %d OFFSET %d";
+		$query        = "SELECT * FROM $table_name WHERE $where_clause ORDER BY po_date DESC, id DESC LIMIT %d OFFSET %d";
 		$query_values = array_merge( $where_values, array( $per_page, $offset ) );
-		$items = $wpdb->get_results(
+		$items        = $wpdb->get_results(
 			$wpdb->prepare( $query, ...$query_values ),
 			ARRAY_A
 		);
@@ -344,7 +344,7 @@ class ICT_REST_Purchase_Orders_Controller extends WP_REST_Controller {
 			ARRAY_A
 		);
 
-		$item = $this->prepare_item_for_response( $item );
+		$item               = $this->prepare_item_for_response( $item );
 		$item['line_items'] = $this->get_po_line_items( $po_id );
 
 		return rest_ensure_response(
@@ -447,7 +447,7 @@ class ICT_REST_Purchase_Orders_Controller extends WP_REST_Controller {
 			ARRAY_A
 		);
 
-		$item = $this->prepare_item_for_response( $item );
+		$item               = $this->prepare_item_for_response( $item );
 		$item['line_items'] = $this->get_po_line_items( $id );
 
 		return rest_ensure_response(
@@ -525,10 +525,10 @@ class ICT_REST_Purchase_Orders_Controller extends WP_REST_Controller {
 		$result = $wpdb->update(
 			$table_name,
 			array(
-				'status'       => 'approved',
-				'approved_by'  => get_current_user_id(),
-				'approved_at'  => current_time( 'mysql' ),
-				'updated_at'   => current_time( 'mysql' ),
+				'status'      => 'approved',
+				'approved_by' => get_current_user_id(),
+				'approved_at' => current_time( 'mysql' ),
+				'updated_at'  => current_time( 'mysql' ),
 			),
 			array( 'id' => $id )
 		);
@@ -603,8 +603,8 @@ class ICT_REST_Purchase_Orders_Controller extends WP_REST_Controller {
 	 */
 	public function receive_po( $request ) {
 		global $wpdb;
-		$table_name = ICT_PURCHASE_ORDERS_TABLE;
-		$id         = absint( $request['id'] );
+		$table_name     = ICT_PURCHASE_ORDERS_TABLE;
+		$id             = absint( $request['id'] );
 		$received_items = $request->get_param( 'received_items' );
 
 		// Update inventory for received items
@@ -619,7 +619,7 @@ class ICT_REST_Purchase_Orders_Controller extends WP_REST_Controller {
 			// Get current inventory
 			$inventory = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT * FROM " . ICT_INVENTORY_TABLE . " WHERE id = %d",
+					'SELECT * FROM ' . ICT_INVENTORY_TABLE . ' WHERE id = %d',
 					$inventory_id
 				),
 				ARRAY_A
@@ -775,10 +775,10 @@ class ICT_REST_Purchase_Orders_Controller extends WP_REST_Controller {
 		);
 
 		foreach ( $items as &$item ) {
-			$item['quantity']      = floatval( $item['quantity'] );
-			$item['unit_price']    = floatval( $item['unit_price'] );
-			$item['line_total']    = floatval( $item['line_total'] );
-			$item['inventory_id']  = absint( $item['inventory_id'] );
+			$item['quantity']     = floatval( $item['quantity'] );
+			$item['unit_price']   = floatval( $item['unit_price'] );
+			$item['line_total']   = floatval( $item['line_total'] );
+			$item['inventory_id'] = absint( $item['inventory_id'] );
 		}
 
 		return $items;
@@ -792,7 +792,7 @@ class ICT_REST_Purchase_Orders_Controller extends WP_REST_Controller {
 		$line_order = 0;
 
 		foreach ( $line_items as $item ) {
-			$line_order++;
+			++$line_order;
 
 			$wpdb->insert(
 				$wpdb->prefix . 'ict_po_line_items',
