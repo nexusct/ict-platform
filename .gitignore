@@ -134,3 +134,108 @@ $RECYCLE.BIN/
 *.bak
 *.backup
 *~
+
+# ===== Appended by security hardening rollout 2026-04-19 =====
+# ==========================================================================
+# Nexus Communications Technology - Standard .gitignore
+# Last updated: 2026-04-19 after credential exposure incident
+# ==========================================================================
+# This is the canonical .gitignore template. Copy into every new repo
+# and APPEND (don't overwrite) to any existing .gitignore.
+# ==========================================================================
+
+# ---- Secrets & credentials (NEVER commit) ----
+.env
+.env.*
+!.env.example
+!.env.template
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+*_rsa
+*_rsa.pub
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+secrets/
+credentials/
+private/
+.credentials
+.aws/
+.azure/
+.gcloud/
+gcp-key.json
+service-account*.json
+
+# ---- Runtime config files that may hold secrets ----
+config.js
+config.local.js
+config.private.js
+config.production.js
+config.local.*
+settings.local.*
+local.settings.json
+appsettings.Production.json
+appsettings.Development.json
+
+# ---- Nexus-specific private data ----
+**/pricing-data.private.js
+**/pricing-data.local.js
+**/dealer-pricing.*
+**/internal-margins.*
+**/customer-data.*
+**/*.internal.json
+**/*.private.json
+
+# ---- Database dumps & backups ----
+*.sql
+*.dump
+*.sqlite
+*.sqlite3
+*.db
+backups/
+*.bak
+*-backup-*
+
+# ---- Logs (may leak sensitive data) ----
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ---- Build artifacts ----
+node_modules/
+dist/
+build/
+.next/
+.cache/
+.vite/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+venv/
+.venv/
+env/
+*.egg-info/
+
+# ---- IDE / OS ----
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.ipynb_checkpoints/
+
+# ---- Misc ----
+.tmp/
+tmp/
+temp/
+coverage/
+.nyc_output/
