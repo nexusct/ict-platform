@@ -1,0 +1,87 @@
+# ==========================================================================
+# Nexus Communications Technology - Pre-commit Security Hooks
+# Last updated: 2026-04-19 after credential exposure incident
+# ==========================================================================
+# SETUP (once per machine):
+#   pip install pre-commit
+#
+# SETUP (once per repo):
+#   cp .pre-commit-config.yaml <repo>/
+#   cd <repo>
+#   pre-commit install
+#
+# Manual scan (before important pushes):
+#   pre-commit run --all-files
+# ==========================================================================
+
+repos:
+  # ---- Secret detection ----
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+        name: Detect hardcoded secrets (gitleaks)
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        name: Detect secrets (belt + suspenders)
+        args: ['--baseline', '.secrets.baseline']
+        exclude: package-lock\.json|yarn\.lock|pnpm-lock\.yaml
+
+  # ---- Nexus-specific forbidden strings ----
+  - repo: local
+    hooks:
+      - id: nexus-forbidden-patterns
+        name: Block Nexus-known-bad patterns
+        entry: |
+          bash -c '
+          FAIL=0
+          # Known-bad admin password from the 2026-04-19 incident
+          if git diff --cached | grep -qE "nexus2026"; then
+            echo "❌ BLOCKED: commit contains the string \"nexus2026\" (retired admin password)."
+            FAIL=1
+          fi
+          # Dealer cost marker (pricing-engine.js dealer data)
+          if git diff --cached | grep -qE "const MARGIN = 0\.25"; then
+            echo "❌ BLOCKED: commit contains internal margin constant. Use NexusPricing.init()."
+            FAIL=1
+          fi
+          # Google Maps API key pattern (any AIza... key that is NOT in a .example.* file)
+          if git diff --cached --name-only | grep -vE "\.(example|template)\." | \
+             xargs -I{} git diff --cached -- {} 2>/dev/null | grep -qE "AIza[0-9A-Za-z_-]{35}"; then
+            echo "❌ BLOCKED: commit contains a Google API key. Move to env var / config.local.js."
+            FAIL=1
+          fi
+          # Specifically block the active (rotated 2026-04-19) Google Maps key
+          if git diff --cached | grep -q "AIzaSyAd72xUaF049-dbkwTAfSvsjQhmp9YLDpk"; then
+            echo "❌ BLOCKED: commit contains the live rotated Google Maps key. It belongs in config.js on the server, never in git."
+            FAIL=1
+          fi
+          # AWS access keys
+          if git diff --cached | grep -qE "AKIA[0-9A-Z]{16}"; then
+            echo "❌ BLOCKED: commit contains AWS access key."
+            FAIL=1
+          fi
+          # Private keys
+          if git diff --cached | grep -qE "BEGIN (RSA |OPENSSH |EC |DSA |PGP )?PRIVATE KEY"; then
+            echo "❌ BLOCKED: commit contains a private key."
+            FAIL=1
+          fi
+          exit $FAIL
+          '
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+
+  # ---- File hygiene ----
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+        args: ['--maxkb=5000']
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
