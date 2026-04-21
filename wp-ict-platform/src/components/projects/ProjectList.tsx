@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { deleteProject, syncProjectToZoho } from '../../store/slices/projectsSlice';
 import { showToast } from '../../store/slices/uiSlice';
+import { useConfirm } from '../common/ConfirmDialog';
 import type { Project } from '../../types';
 
 interface ProjectListProps {
@@ -22,9 +23,22 @@ export const ProjectList: React.FC<ProjectListProps> = ({ projects, loading, onE
   const dispatch = useAppDispatch();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
+  
+  const { confirm, ConfirmDialogComponent } = useConfirm({
+    title: 'Delete Project',
+    message: 'Are you sure you want to delete this project? This action cannot be undone.',
+    confirmLabel: 'Delete',
+    cancelLabel: 'Cancel',
+    variant: 'danger',
+  });
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this project?')) {
+    setDeleteTargetId(id);
+    const confirmed = await confirm();
+    
+    if (!confirmed) {
+      setDeleteTargetId(null);
       return;
     }
 
@@ -43,6 +57,8 @@ export const ProjectList: React.FC<ProjectListProps> = ({ projects, loading, onE
           message: 'Failed to delete project',
         })
       );
+    } finally {
+      setDeleteTargetId(null);
     }
   };
 
@@ -226,6 +242,7 @@ export const ProjectList: React.FC<ProjectListProps> = ({ projects, loading, onE
           </tbody>
         </table>
       </div>
+      <ConfirmDialogComponent />
     </div>
   );
 };
