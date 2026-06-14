@@ -608,6 +608,9 @@ class ICT_Field_Media {
 
 		// Save signature image
 		$image_path = $this->save_signature_image( $signature_data, $token );
+		if ( false === $image_path ) {
+			return new WP_Error( 'invalid_signature_image', 'Invalid signature image data', array( 'status' => 400 ) );
+		}
 
 		$data = array(
 			'entity_type'          => sanitize_text_field( $request->get_param( 'entity_type' ) ),
@@ -852,7 +855,19 @@ class ICT_Field_Media {
 			$data = explode( ',', $data )[1];
 		}
 
-		file_put_contents( $file_path, base64_decode( $data ) );
+		$decoded_data = base64_decode( $data, true );
+		if ( false === $decoded_data || empty( $decoded_data ) ) {
+			return false;
+		}
+
+		$png_signature = "\x89PNG\x0D\x0A\x1A\x0A";
+		if ( 0 !== strpos( $decoded_data, $png_signature ) ) {
+			return false;
+		}
+
+		if ( false === file_put_contents( $file_path, $decoded_data ) ) {
+			return false;
+		}
 
 		return $file_path;
 	}
