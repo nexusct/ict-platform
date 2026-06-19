@@ -40,7 +40,7 @@ class NotificationController extends AbstractController
             [
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => [$this, 'getItems'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
                 'args'                => $this->getCollectionParams(),
             ]
         );
@@ -63,7 +63,7 @@ class NotificationController extends AbstractController
             [
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => [$this, 'getItem'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
             ]
         );
 
@@ -74,7 +74,7 @@ class NotificationController extends AbstractController
             [
                 'methods'             => WP_REST_Server::CREATABLE,
                 'callback'            => [$this, 'markAsRead'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
             ]
         );
 
@@ -85,7 +85,7 @@ class NotificationController extends AbstractController
             [
                 'methods'             => WP_REST_Server::CREATABLE,
                 'callback'            => [$this, 'markAllAsRead'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
             ]
         );
 
@@ -96,7 +96,7 @@ class NotificationController extends AbstractController
             [
                 'methods'             => WP_REST_Server::DELETABLE,
                 'callback'            => [$this, 'deleteItem'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
             ]
         );
 
@@ -107,7 +107,7 @@ class NotificationController extends AbstractController
             [
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => [$this, 'getUnreadCount'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
             ]
         );
 
@@ -129,7 +129,7 @@ class NotificationController extends AbstractController
             [
                 'methods'             => WP_REST_Server::CREATABLE,
                 'callback'            => [$this, 'subscribePush'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
             ]
         );
 
@@ -140,7 +140,7 @@ class NotificationController extends AbstractController
             [
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => [$this, 'getPreferences'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
             ]
         );
 
@@ -151,7 +151,7 @@ class NotificationController extends AbstractController
             [
                 'methods'             => WP_REST_Server::EDITABLE,
                 'callback'            => [$this, 'updatePreferences'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
             ]
         );
     }

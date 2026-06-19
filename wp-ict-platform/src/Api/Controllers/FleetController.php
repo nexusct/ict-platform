@@ -82,7 +82,7 @@ class FleetController extends AbstractController
             [
                 'methods'             => WP_REST_Server::CREATABLE,
                 'callback'            => [$this, 'updateLocation'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
             ]
         );
 
@@ -159,7 +159,7 @@ class FleetController extends AbstractController
             [
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => [$this, 'getTypes'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
             ]
         );
     }
