@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { ErrorBoundary } from '../ErrorBoundary';
 
 // Mock the errorLogger
@@ -87,27 +87,42 @@ describe('ErrorBoundary', () => {
     expect(screen.getByText('Technical Details')).toBeInTheDocument();
   });
 
-  it('provides try again button that resets error state', () => {
+  it('provides try again button that resets error state', async () => {
+    const TestComponent: React.FC<{ throwError: boolean }> = ({ throwError }) => {
+      if (throwError) {
+        throw new Error('Test error');
+      }
+      return <div>No error</div>;
+    };
+
+    let throwError = true;
     const { rerender } = render(
       <ErrorBoundary>
-        <ThrowError />
+        <TestComponent throwError={throwError} />
       </ErrorBoundary>
     );
 
     // Error boundary should show error UI
     expect(screen.getByText('Something went wrong')).toBeInTheDocument();
 
-    // Click try again
-    fireEvent.click(screen.getByText('Try Again'));
-
-    // Re-render with a component that doesn't throw
+    // First, update the component to not throw
+    throwError = false;
     rerender(
       <ErrorBoundary>
-        <ThrowError shouldThrow={false} />
+        <TestComponent throwError={throwError} />
       </ErrorBoundary>
     );
 
-    expect(screen.getByText('No error')).toBeInTheDocument();
+    // The error UI should still be shown (error state persists)
+    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+
+    // Now click try again - this resets the error state and re-renders children
+    fireEvent.click(screen.getByText('Try Again'));
+
+    // Now the component should render without error
+    await waitFor(() => {
+      expect(screen.getByText('No error')).toBeInTheDocument();
+    });
   });
 
   it('is accessible with proper ARIA attributes', () => {

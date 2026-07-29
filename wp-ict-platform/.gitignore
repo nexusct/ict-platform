@@ -4,6 +4,7 @@
 
 # Build outputs
 /assets/js/dist
+/assets/js/css
 /assets/css/dist
 *.map
 

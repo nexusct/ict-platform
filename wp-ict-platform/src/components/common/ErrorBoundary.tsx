@@ -21,6 +21,7 @@ interface State {
   hasError: boolean;
   error: Error | null;
   errorInfo: ErrorInfo | null;
+  resetKey: number;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
@@ -30,6 +31,7 @@ export class ErrorBoundary extends Component<Props, State> {
       hasError: false,
       error: null,
       errorInfo: null,
+      resetKey: 0,
     };
   }
 
@@ -45,7 +47,7 @@ export class ErrorBoundary extends Component<Props, State> {
       type: 'react_error',
       message: error.message,
       stack: error.stack,
-      componentStack: errorInfo.componentStack,
+      componentStack: errorInfo.componentStack ?? undefined,
       timestamp: new Date().toISOString(),
     });
 
@@ -54,15 +56,16 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   handleRetry = (): void => {
-    this.setState({
+    this.setState((prevState) => ({
       hasError: false,
       error: null,
       errorInfo: null,
-    });
+      resetKey: prevState.resetKey + 1,
+    }));
   };
 
   render(): ReactNode {
-    const { hasError, error, errorInfo } = this.state;
+    const { hasError, error, errorInfo, resetKey } = this.state;
     const { children, fallback, showDetails } = this.props;
 
     if (hasError) {
@@ -148,7 +151,7 @@ export class ErrorBoundary extends Component<Props, State> {
       );
     }
 
-    return children;
+    return <React.Fragment key={resetKey}>{children}</React.Fragment>;
   }
 }
 
