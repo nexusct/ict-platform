@@ -79,49 +79,77 @@ class ICT_Biometric_Auth {
 	 */
 	public function register_endpoints() {
 		// Registration endpoints
-		register_rest_route( 'ict/v1', '/auth/biometric/register/options', array(
-			'methods'             => 'POST',
-			'callback'            => array( $this, 'get_registration_options' ),
-			'permission_callback' => 'is_user_logged_in',
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/auth/biometric/register/options',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'get_registration_options' ),
+				'permission_callback' => 'is_user_logged_in',
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/auth/biometric/register/verify', array(
-			'methods'             => 'POST',
-			'callback'            => array( $this, 'verify_registration' ),
-			'permission_callback' => 'is_user_logged_in',
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/auth/biometric/register/verify',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'verify_registration' ),
+				'permission_callback' => 'is_user_logged_in',
+			)
+		);
 
 		// Authentication endpoints
-		register_rest_route( 'ict/v1', '/auth/biometric/login/options', array(
-			'methods'             => 'POST',
-			'callback'            => array( $this, 'get_authentication_options' ),
-			'permission_callback' => '__return_true',
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/auth/biometric/login/options',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'get_authentication_options' ),
+				'permission_callback' => '__return_true',
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/auth/biometric/login/verify', array(
-			'methods'             => 'POST',
-			'callback'            => array( $this, 'verify_authentication' ),
-			'permission_callback' => '__return_true',
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/auth/biometric/login/verify',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'verify_authentication' ),
+				'permission_callback' => '__return_true',
+			)
+		);
 
 		// Management endpoints
-		register_rest_route( 'ict/v1', '/auth/biometric/credentials', array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'list_credentials' ),
-			'permission_callback' => 'is_user_logged_in',
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/auth/biometric/credentials',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'list_credentials' ),
+				'permission_callback' => 'is_user_logged_in',
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/auth/biometric/credentials/(?P<id>[a-zA-Z0-9_-]+)', array(
-			'methods'             => 'DELETE',
-			'callback'            => array( $this, 'delete_credential' ),
-			'permission_callback' => 'is_user_logged_in',
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/auth/biometric/credentials/(?P<id>[a-zA-Z0-9_-]+)',
+			array(
+				'methods'             => 'DELETE',
+				'callback'            => array( $this, 'delete_credential' ),
+				'permission_callback' => 'is_user_logged_in',
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/auth/biometric/status', array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'get_biometric_status' ),
-			'permission_callback' => 'is_user_logged_in',
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/auth/biometric/status',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_biometric_status' ),
+				'permission_callback' => 'is_user_logged_in',
+			)
+		);
 	}
 
 	/**
@@ -135,10 +163,13 @@ class ICT_Biometric_Auth {
 		$user = wp_get_current_user();
 
 		if ( ! $user->exists() ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Not authenticated',
-			), 401 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Not authenticated',
+				),
+				401
+			);
 		}
 
 		// Generate challenge
@@ -165,17 +196,17 @@ class ICT_Biometric_Auth {
 		$device_name = $request->get_param( 'device_name' ) ?? 'Mobile Device';
 
 		$options = array(
-			'challenge'        => $this->base64url_encode( $challenge ),
-			'rp'               => array(
+			'challenge'              => $this->base64url_encode( $challenge ),
+			'rp'                     => array(
 				'name' => $this->rp_name,
 				'id'   => $this->rp_id,
 			),
-			'user'             => array(
+			'user'                   => array(
 				'id'          => $this->base64url_encode( (string) $user->ID ),
 				'name'        => $user->user_login,
 				'displayName' => $user->display_name,
 			),
-			'pubKeyCredParams' => array(
+			'pubKeyCredParams'       => array(
 				array(
 					'alg'  => -7, // ES256
 					'type' => 'public-key',
@@ -185,20 +216,23 @@ class ICT_Biometric_Auth {
 					'type' => 'public-key',
 				),
 			),
-			'timeout'          => 60000, // 60 seconds
-			'attestation'      => 'none',
+			'timeout'                => 60000, // 60 seconds
+			'attestation'            => 'none',
 			'authenticatorSelection' => array(
 				'authenticatorAttachment' => 'platform', // Use platform authenticator (TouchID, FaceID, etc.)
 				'userVerification'        => 'required',
 				'residentKey'             => 'preferred',
 			),
-			'excludeCredentials' => $exclude_credentials,
+			'excludeCredentials'     => $exclude_credentials,
 		);
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'options' => $options,
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'options' => $options,
+			),
+			200
+		);
 	}
 
 	/**
@@ -212,20 +246,26 @@ class ICT_Biometric_Auth {
 		$user = wp_get_current_user();
 
 		if ( ! $user->exists() ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Not authenticated',
-			), 401 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Not authenticated',
+				),
+				401
+			);
 		}
 
 		// Get stored challenge
 		$stored_challenge = get_transient( 'ict_webauthn_reg_' . $user->ID );
 
 		if ( ! $stored_challenge ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Registration session expired',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Registration session expired',
+				),
+				400
+			);
 		}
 
 		// Delete challenge
@@ -239,30 +279,39 @@ class ICT_Biometric_Auth {
 		$attestation   = $credential['response']['attestationObject'] ?? '';
 
 		if ( empty( $credential_id ) || empty( $client_data ) || empty( $attestation ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Invalid credential data',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Invalid credential data',
+				),
+				400
+			);
 		}
 
 		// Decode client data
 		$client_data_decoded = json_decode( $this->base64url_decode( $client_data ), true );
 
 		if ( ! $client_data_decoded ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Failed to decode client data',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Failed to decode client data',
+				),
+				400
+			);
 		}
 
 		// Verify challenge
 		$challenge_from_client = $this->base64url_decode( $client_data_decoded['challenge'] );
 
 		if ( ! hash_equals( $stored_challenge, $challenge_from_client ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Challenge verification failed',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Challenge verification failed',
+				),
+				400
+			);
 		}
 
 		// Verify origin
@@ -270,45 +319,60 @@ class ICT_Biometric_Auth {
 		if ( isset( $client_data_decoded['origin'] ) && $client_data_decoded['origin'] !== $expected_origin ) {
 			// Allow localhost for development
 			if ( strpos( $client_data_decoded['origin'], 'localhost' ) === false ) {
-				return new WP_REST_Response( array(
-					'success' => false,
-					'error'   => 'Origin verification failed',
-				), 400 );
+				return new WP_REST_Response(
+					array(
+						'success' => false,
+						'error'   => 'Origin verification failed',
+					),
+					400
+				);
 			}
 		}
 
 		// Parse attestation object and extract public key
 		$attestation_decoded = $this->base64url_decode( $attestation );
-		$public_key_info = $this->parse_attestation( $attestation_decoded );
+		$public_key_info     = $this->parse_attestation( $attestation_decoded );
 
 		if ( ! $public_key_info ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Failed to parse attestation',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Failed to parse attestation',
+				),
+				400
+			);
 		}
 
 		// Store credential
-		$saved = $this->save_credential( $user->ID, array(
-			'credential_id' => $credential_id,
-			'public_key'    => $public_key_info['public_key'],
-			'sign_count'    => $public_key_info['sign_count'] ?? 0,
-			'device_name'   => sanitize_text_field( $device_name ),
-			'created_at'    => current_time( 'mysql' ),
-			'last_used'     => null,
-		) );
+		$saved = $this->save_credential(
+			$user->ID,
+			array(
+				'credential_id' => $credential_id,
+				'public_key'    => $public_key_info['public_key'],
+				'sign_count'    => $public_key_info['sign_count'] ?? 0,
+				'device_name'   => sanitize_text_field( $device_name ),
+				'created_at'    => current_time( 'mysql' ),
+				'last_used'     => null,
+			)
+		);
 
 		if ( ! $saved ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Failed to save credential',
-			), 500 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Failed to save credential',
+				),
+				500
+			);
 		}
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'message' => 'Biometric authentication registered successfully',
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'message' => 'Biometric authentication registered successfully',
+			),
+			200
+		);
 	}
 
 	/**
@@ -322,10 +386,13 @@ class ICT_Biometric_Auth {
 		$username = $request->get_param( 'username' );
 
 		if ( empty( $username ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Username required',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Username required',
+				),
+				400
+			);
 		}
 
 		$user = get_user_by( 'login', $username );
@@ -335,20 +402,26 @@ class ICT_Biometric_Auth {
 		}
 
 		if ( ! $user ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'User not found',
-			), 404 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'User not found',
+				),
+				404
+			);
 		}
 
 		// Get user credentials
 		$credentials = $this->get_user_credentials( $user->ID );
 
 		if ( empty( $credentials ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'No biometric credentials registered',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'No biometric credentials registered',
+				),
+				400
+			);
 		}
 
 		// Generate challenge
@@ -378,11 +451,14 @@ class ICT_Biometric_Auth {
 			'userVerification' => 'required',
 		);
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'options' => $options,
-			'user_id' => $user->ID,
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'options' => $options,
+				'user_id' => $user->ID,
+			),
+			200
+		);
 	}
 
 	/**
@@ -397,73 +473,91 @@ class ICT_Biometric_Auth {
 		$user_id    = $credential['user_id'] ?? 0;
 
 		if ( ! $user_id ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'User ID required',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'User ID required',
+				),
+				400
+			);
 		}
 
 		// Get stored challenge
 		$stored_challenge = get_transient( 'ict_webauthn_auth_' . $user_id );
 
 		if ( ! $stored_challenge ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Authentication session expired',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Authentication session expired',
+				),
+				400
+			);
 		}
 
 		// Delete challenge
 		delete_transient( 'ict_webauthn_auth_' . $user_id );
 
-		$credential_id     = $credential['id'] ?? '';
-		$client_data       = $credential['response']['clientDataJSON'] ?? '';
+		$credential_id      = $credential['id'] ?? '';
+		$client_data        = $credential['response']['clientDataJSON'] ?? '';
 		$authenticator_data = $credential['response']['authenticatorData'] ?? '';
-		$signature         = $credential['response']['signature'] ?? '';
+		$signature          = $credential['response']['signature'] ?? '';
 
 		if ( empty( $credential_id ) || empty( $client_data ) || empty( $authenticator_data ) || empty( $signature ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Invalid credential data',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Invalid credential data',
+				),
+				400
+			);
 		}
 
 		// Get stored credential
 		$stored_credential = $this->get_credential( $user_id, $credential_id );
 
 		if ( ! $stored_credential ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Credential not found',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Credential not found',
+				),
+				400
+			);
 		}
 
 		// Decode client data
 		$client_data_decoded = json_decode( $this->base64url_decode( $client_data ), true );
 
 		if ( ! $client_data_decoded ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Failed to decode client data',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Failed to decode client data',
+				),
+				400
+			);
 		}
 
 		// Verify challenge
 		$challenge_from_client = $this->base64url_decode( $client_data_decoded['challenge'] );
 
 		if ( ! hash_equals( $stored_challenge, $challenge_from_client ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Challenge verification failed',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Challenge verification failed',
+				),
+				400
+			);
 		}
 
 		// Verify signature (simplified)
-		$auth_data_raw   = $this->base64url_decode( $authenticator_data );
-		$client_data_raw = $this->base64url_decode( $client_data );
+		$auth_data_raw    = $this->base64url_decode( $authenticator_data );
+		$client_data_raw  = $this->base64url_decode( $client_data );
 		$client_data_hash = hash( 'sha256', $client_data_raw, true );
-		$signed_data     = $auth_data_raw . $client_data_hash;
-		$signature_raw   = $this->base64url_decode( $signature );
+		$signed_data      = $auth_data_raw . $client_data_hash;
+		$signature_raw    = $this->base64url_decode( $signature );
 
 		// Verify with public key
 		$verified = $this->verify_signature(
@@ -473,10 +567,13 @@ class ICT_Biometric_Auth {
 		);
 
 		if ( ! $verified ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Signature verification failed',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Signature verification failed',
+				),
+				400
+			);
 		}
 
 		// Update sign count and last used
@@ -490,17 +587,20 @@ class ICT_Biometric_Auth {
 		// Generate auth token for API use
 		$token = $this->generate_auth_token( $user_id );
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'message' => 'Authentication successful',
-			'user'    => array(
-				'id'           => $user->ID,
-				'login'        => $user->user_login,
-				'display_name' => $user->display_name,
-				'email'        => $user->user_email,
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'message' => 'Authentication successful',
+				'user'    => array(
+					'id'           => $user->ID,
+					'login'        => $user->user_login,
+					'display_name' => $user->display_name,
+					'email'        => $user->user_email,
+				),
+				'token'   => $token,
 			),
-			'token'   => $token,
-		), 200 );
+			200
+		);
 	}
 
 	/**
@@ -515,19 +615,25 @@ class ICT_Biometric_Auth {
 		$credentials = $this->get_user_credentials( $user_id );
 
 		// Don't expose public key
-		$safe_credentials = array_map( function( $cred ) {
-			return array(
-				'id'          => $cred['credential_id'],
-				'device_name' => $cred['device_name'],
-				'created_at'  => $cred['created_at'],
-				'last_used'   => $cred['last_used'],
-			);
-		}, $credentials );
+		$safe_credentials = array_map(
+			function ( $cred ) {
+				return array(
+					'id'          => $cred['credential_id'],
+					'device_name' => $cred['device_name'],
+					'created_at'  => $cred['created_at'],
+					'last_used'   => $cred['last_used'],
+				);
+			},
+			$credentials
+		);
 
-		return new WP_REST_Response( array(
-			'success'     => true,
-			'credentials' => $safe_credentials,
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success'     => true,
+				'credentials' => $safe_credentials,
+			),
+			200
+		);
 	}
 
 	/**
@@ -544,16 +650,22 @@ class ICT_Biometric_Auth {
 		$deleted = $this->remove_credential( $user_id, $credential_id );
 
 		if ( ! $deleted ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Failed to delete credential',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Failed to delete credential',
+				),
+				400
+			);
 		}
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'message' => 'Credential deleted',
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'message' => 'Credential deleted',
+			),
+			200
+		);
 	}
 
 	/**
@@ -567,12 +679,15 @@ class ICT_Biometric_Auth {
 		$user_id     = get_current_user_id();
 		$credentials = $this->get_user_credentials( $user_id );
 
-		return new WP_REST_Response( array(
-			'success'            => true,
-			'biometric_enabled'  => ! empty( $credentials ),
-			'credential_count'   => count( $credentials ),
-			'can_register'       => $this->can_register_biometric(),
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success'           => true,
+				'biometric_enabled' => ! empty( $credentials ),
+				'credential_count'  => count( $credentials ),
+				'can_register'      => $this->can_register_biometric(),
+			),
+			200
+		);
 	}
 
 	/**
@@ -708,9 +823,12 @@ class ICT_Biometric_Auth {
 	private function remove_credential( $user_id, $credential_id ) {
 		$credentials = $this->get_user_credentials( $user_id );
 
-		$credentials = array_filter( $credentials, function( $cred ) use ( $credential_id ) {
-			return $cred['credential_id'] !== $credential_id;
-		} );
+		$credentials = array_filter(
+			$credentials,
+			function ( $cred ) use ( $credential_id ) {
+				return $cred['credential_id'] !== $credential_id;
+			}
+		);
 
 		return update_user_meta( $user_id, 'ict_webauthn_credentials', array_values( $credentials ) );
 	}

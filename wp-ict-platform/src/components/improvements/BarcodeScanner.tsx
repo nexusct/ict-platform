@@ -41,7 +41,7 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const scanIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const scanIntervalRef = useRef<number | null>(null);
 
   // Request camera permission
   const requestPermission = useCallback(async () => {
@@ -115,7 +115,7 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
         } catch (error) {
           console.error('Barcode detection error:', error);
         }
-      }, 100);
+      }, 100) as unknown as number;
     } else {
       // Fallback: prompt for manual input
       setShowManualInput(true);

@@ -79,7 +79,7 @@ class ICT_Helper {
 		$rounded_minutes = round( $minutes / $interval ) * $interval;
 
 		if ( $rounded_minutes >= 60 ) {
-			$hours++;
+			++$hours;
 			$rounded_minutes = 0;
 		}
 
@@ -90,8 +90,8 @@ class ICT_Helper {
 	 * Check if time entry is overtime.
 	 *
 	 * @since  1.0.0
-	 * @param  int   $technician_id Technician user ID.
-	 * @param  float $hours         Hours worked.
+	 * @param  int    $technician_id Technician user ID.
+	 * @param  float  $hours         Hours worked.
 	 * @param  string $date         Date to check.
 	 * @return bool True if overtime.
 	 */
@@ -103,9 +103,9 @@ class ICT_Helper {
 		// Get total hours for the day
 		$total_hours = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT SUM(total_hours) FROM " . ICT_TIME_ENTRIES_TABLE . "
+				'SELECT SUM(total_hours) FROM ' . ICT_TIME_ENTRIES_TABLE . '
 				WHERE technician_id = %d
-				AND DATE(clock_in) = %s",
+				AND DATE(clock_in) = %s',
 				$technician_id,
 				$date
 			)
@@ -140,8 +140,8 @@ class ICT_Helper {
 
 		global $wpdb;
 		$count = $wpdb->get_var(
-			"SELECT COUNT(*) FROM " . ICT_PROJECTS_TABLE . "
-			WHERE YEAR(created_at) = " . $year
+			'SELECT COUNT(*) FROM ' . ICT_PROJECTS_TABLE . '
+			WHERE YEAR(created_at) = ' . $year
 		);
 
 		$number = str_pad( $count + 1, 4, '0', STR_PAD_LEFT );
@@ -161,8 +161,8 @@ class ICT_Helper {
 
 		global $wpdb;
 		$count = $wpdb->get_var(
-			"SELECT COUNT(*) FROM " . ICT_PURCHASE_ORDERS_TABLE . "
-			WHERE YEAR(created_at) = " . $year
+			'SELECT COUNT(*) FROM ' . ICT_PURCHASE_ORDERS_TABLE . '
+			WHERE YEAR(created_at) = ' . $year
 		);
 
 		$number = str_pad( $count + 1, 4, '0', STR_PAD_LEFT );
@@ -241,7 +241,7 @@ class ICT_Helper {
 		// Check if already queued
 		$existing = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT id FROM " . ICT_SYNC_QUEUE_TABLE . "
+				'SELECT id FROM ' . ICT_SYNC_QUEUE_TABLE . "
 				WHERE entity_type = %s
 				AND entity_id = %d
 				AND status = 'pending'",

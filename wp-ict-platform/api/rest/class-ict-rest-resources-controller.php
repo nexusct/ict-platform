@@ -105,12 +105,12 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 						'type'              => 'string',
 						'sanitize_callback' => 'sanitize_text_field',
 					),
-					'date_from' => array(
+					'date_from'     => array(
 						'required'          => false,
 						'type'              => 'string',
 						'sanitize_callback' => 'sanitize_text_field',
 					),
-					'date_to' => array(
+					'date_to'       => array(
 						'required'          => false,
 						'type'              => 'string',
 						'sanitize_callback' => 'sanitize_text_field',
@@ -128,12 +128,12 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 				'callback'            => array( $this, 'check_conflicts' ),
 				'permission_callback' => array( $this, 'get_items_permissions_check' ),
 				'args'                => array(
-					'resource_type' => array(
+					'resource_type'    => array(
 						'required'          => true,
 						'type'              => 'string',
 						'sanitize_callback' => 'sanitize_text_field',
 					),
-					'resource_id' => array(
+					'resource_id'      => array(
 						'required'          => true,
 						'type'              => 'integer',
 						'sanitize_callback' => 'absint',
@@ -143,12 +143,12 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 						'type'              => 'string',
 						'sanitize_callback' => 'sanitize_text_field',
 					),
-					'allocation_end' => array(
+					'allocation_end'   => array(
 						'required'          => true,
 						'type'              => 'string',
 						'sanitize_callback' => 'sanitize_text_field',
 					),
-					'exclude_id' => array(
+					'exclude_id'       => array(
 						'required'          => false,
 						'type'              => 'integer',
 						'sanitize_callback' => 'absint',
@@ -166,12 +166,12 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 				'callback'            => array( $this, 'get_calendar_events' ),
 				'permission_callback' => array( $this, 'get_items_permissions_check' ),
 				'args'                => array(
-					'start' => array(
+					'start'         => array(
 						'required'          => true,
 						'type'              => 'string',
 						'sanitize_callback' => 'sanitize_text_field',
 					),
-					'end' => array(
+					'end'           => array(
 						'required'          => true,
 						'type'              => 'string',
 						'sanitize_callback' => 'sanitize_text_field',
@@ -236,51 +236,51 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 		$date_to       = $request->get_param( 'date_to' );
 
 		// Base query.
-		$where = array( '1=1' );
+		$where        = array( '1=1' );
 		$query_params = array();
 
 		// Add filters.
 		if ( ! empty( $project_id ) ) {
-			$where[] = 'project_id = %d';
+			$where[]        = 'project_id = %d';
 			$query_params[] = absint( $project_id );
 		}
 
 		if ( ! empty( $resource_type ) ) {
-			$where[] = 'resource_type = %s';
+			$where[]        = 'resource_type = %s';
 			$query_params[] = $resource_type;
 		}
 
 		if ( ! empty( $resource_id ) ) {
-			$where[] = 'resource_id = %d';
+			$where[]        = 'resource_id = %d';
 			$query_params[] = absint( $resource_id );
 		}
 
 		if ( ! empty( $status ) ) {
-			$where[] = 'status = %s';
+			$where[]        = 'status = %s';
 			$query_params[] = $status;
 		}
 
 		if ( ! empty( $date_from ) ) {
-			$where[] = 'allocation_end >= %s';
+			$where[]        = 'allocation_end >= %s';
 			$query_params[] = sanitize_text_field( $date_from );
 		}
 
 		if ( ! empty( $date_to ) ) {
-			$where[] = 'allocation_start <= %s';
+			$where[]        = 'allocation_start <= %s';
 			$query_params[] = sanitize_text_field( $date_to );
 		}
 
 		$where_clause = implode( ' AND ', $where );
 
 		// Get total count.
-		$count_query = "SELECT COUNT(*) FROM " . ICT_PROJECT_RESOURCES_TABLE . " WHERE {$where_clause}";
+		$count_query = 'SELECT COUNT(*) FROM ' . ICT_PROJECT_RESOURCES_TABLE . " WHERE {$where_clause}";
 		if ( ! empty( $query_params ) ) {
 			$count_query = $wpdb->prepare( $count_query, $query_params );
 		}
 		$total_items = (int) $wpdb->get_var( $count_query );
 
 		// Get items.
-		$query = "SELECT * FROM " . ICT_PROJECT_RESOURCES_TABLE . " WHERE {$where_clause} ORDER BY allocation_start DESC LIMIT %d OFFSET %d";
+		$query          = 'SELECT * FROM ' . ICT_PROJECT_RESOURCES_TABLE . " WHERE {$where_clause} ORDER BY allocation_start DESC LIMIT %d OFFSET %d";
 		$query_params[] = $per_page;
 		$query_params[] = $offset;
 
@@ -313,7 +313,7 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 		$id = absint( $request['id'] );
 
 		$result = $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM " . ICT_PROJECT_RESOURCES_TABLE . " WHERE id = %d", $id ),
+			$wpdb->prepare( 'SELECT * FROM ' . ICT_PROJECT_RESOURCES_TABLE . ' WHERE id = %d', $id ),
 			ARRAY_A
 		);
 
@@ -351,7 +351,10 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 			return new WP_Error(
 				'ict_resource_conflict',
 				__( 'Resource allocation conflicts with existing allocations.', 'ict-platform' ),
-				array( 'status' => 400, 'conflicts' => $conflicts )
+				array(
+					'status'    => 400,
+					'conflicts' => $conflicts,
+				)
 			);
 		}
 
@@ -380,7 +383,7 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 			);
 		}
 
-		$id = $wpdb->insert_id;
+		$id   = $wpdb->insert_id;
 		$item = $this->get_item( new WP_REST_Request( 'GET', '/' . $this->rest_base . '/' . $id ) );
 
 		return rest_ensure_response(
@@ -404,7 +407,7 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 		$id = absint( $request['id'] );
 
 		// Check if exists.
-		$exists = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM " . ICT_PROJECT_RESOURCES_TABLE . " WHERE id = %d", $id ) );
+		$exists = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . ICT_PROJECT_RESOURCES_TABLE . ' WHERE id = %d', $id ) );
 		if ( ! $exists ) {
 			return new WP_Error(
 				'ict_resource_not_found',
@@ -416,7 +419,7 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 		// Check for conflicts if dates are being changed.
 		if ( $request->has_param( 'allocation_start' ) || $request->has_param( 'allocation_end' ) ) {
 			$current = $wpdb->get_row(
-				$wpdb->prepare( "SELECT * FROM " . ICT_PROJECT_RESOURCES_TABLE . " WHERE id = %d", $id ),
+				$wpdb->prepare( 'SELECT * FROM ' . ICT_PROJECT_RESOURCES_TABLE . ' WHERE id = %d', $id ),
 				ARRAY_A
 			);
 
@@ -435,7 +438,10 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 				return new WP_Error(
 					'ict_resource_conflict',
 					__( 'Resource allocation conflicts with existing allocations.', 'ict-platform' ),
-					array( 'status' => 400, 'conflicts' => $conflicts )
+					array(
+						'status'    => 400,
+						'conflicts' => $conflicts,
+					)
 				);
 			}
 		}
@@ -536,8 +542,8 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 		global $wpdb;
 
 		$resource_type = $request->get_param( 'resource_type' );
-		$date_from = $request->get_param( 'date_from' ) ?? current_time( 'mysql' );
-		$date_to = $request->get_param( 'date_to' ) ?? date( 'Y-m-d H:i:s', strtotime( '+30 days' ) );
+		$date_from     = $request->get_param( 'date_from' ) ?? current_time( 'mysql' );
+		$date_to       = $request->get_param( 'date_to' ) ?? date( 'Y-m-d H:i:s', strtotime( '+30 days' ) );
 
 		// Get all resources of the specified type.
 		$resources = array();
@@ -555,17 +561,17 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 		}
 
 		// Get allocations for the date range.
-		$where = "allocation_start <= %s AND allocation_end >= %s";
+		$where  = 'allocation_start <= %s AND allocation_end >= %s';
 		$params = array( $date_to, $date_from );
 
 		if ( ! empty( $resource_type ) ) {
-			$where .= " AND resource_type = %s";
+			$where   .= ' AND resource_type = %s';
 			$params[] = $resource_type;
 		}
 
 		$allocations = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_PROJECT_RESOURCES_TABLE . " WHERE {$where} ORDER BY allocation_start",
+				'SELECT * FROM ' . ICT_PROJECT_RESOURCES_TABLE . " WHERE {$where} ORDER BY allocation_start",
 				$params
 			),
 			ARRAY_A
@@ -576,7 +582,7 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 		foreach ( $resources as $resource ) {
 			$resource_allocations = array_filter(
 				$allocations,
-				function( $alloc ) use ( $resource ) {
+				function ( $alloc ) use ( $resource ) {
 					return $alloc['resource_id'] === $resource['id'] && $alloc['resource_type'] === $resource['type'];
 				}
 			);
@@ -619,8 +625,8 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 
 		return rest_ensure_response(
 			array(
-				'success'   => true,
-				'conflicts' => $conflicts,
+				'success'      => true,
+				'conflicts'    => $conflicts,
 				'has_conflict' => ! empty( $conflicts ),
 			)
 		);
@@ -635,21 +641,21 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 	public function get_calendar_events( $request ) {
 		global $wpdb;
 
-		$start = sanitize_text_field( $request->get_param( 'start' ) );
-		$end = sanitize_text_field( $request->get_param( 'end' ) );
+		$start         = sanitize_text_field( $request->get_param( 'start' ) );
+		$end           = sanitize_text_field( $request->get_param( 'end' ) );
 		$resource_type = $request->get_param( 'resource_type' );
 
-		$where = "allocation_start <= %s AND allocation_end >= %s";
+		$where  = 'allocation_start <= %s AND allocation_end >= %s';
 		$params = array( $end, $start );
 
 		if ( ! empty( $resource_type ) ) {
-			$where .= " AND resource_type = %s";
+			$where   .= ' AND resource_type = %s';
 			$params[] = $resource_type;
 		}
 
 		$allocations = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_PROJECT_RESOURCES_TABLE . " WHERE {$where}",
+				'SELECT * FROM ' . ICT_PROJECT_RESOURCES_TABLE . " WHERE {$where}",
 				$params
 			),
 			ARRAY_A
@@ -659,7 +665,7 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 		$events = array();
 		foreach ( $allocations as $allocation ) {
 			$project = $wpdb->get_row(
-				$wpdb->prepare( "SELECT * FROM " . ICT_PROJECTS_TABLE . " WHERE id = %d", $allocation['project_id'] ),
+				$wpdb->prepare( 'SELECT * FROM ' . ICT_PROJECTS_TABLE . ' WHERE id = %d', $allocation['project_id'] ),
 				ARRAY_A
 			);
 
@@ -671,13 +677,13 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 			);
 
 			$events[] = array(
-				'id'                  => $allocation['id'],
-				'title'               => ( $project['project_name'] ?? 'Unknown Project' ) . ' (' . $allocation['allocation_percentage'] . '%)',
-				'start'               => $allocation['allocation_start'],
-				'end'                 => $allocation['allocation_end'],
-				'backgroundColor'     => $color_map[ $allocation['status'] ] ?? '#646970',
-				'borderColor'         => $color_map[ $allocation['status'] ] ?? '#646970',
-				'extendedProps'       => array(
+				'id'              => $allocation['id'],
+				'title'           => ( $project['project_name'] ?? 'Unknown Project' ) . ' (' . $allocation['allocation_percentage'] . '%)',
+				'start'           => $allocation['allocation_start'],
+				'end'             => $allocation['allocation_end'],
+				'backgroundColor' => $color_map[ $allocation['status'] ] ?? '#646970',
+				'borderColor'     => $color_map[ $allocation['status'] ] ?? '#646970',
+				'extendedProps'   => array(
 					'project_id'            => $allocation['project_id'],
 					'resource_type'         => $allocation['resource_type'],
 					'resource_id'           => $allocation['resource_id'],
@@ -706,7 +712,7 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 	 */
 	public function get_technician_skills( $request ) {
 		$user_id = absint( $request['id'] );
-		$skills = get_user_meta( $user_id, 'ict_skills', true );
+		$skills  = get_user_meta( $user_id, 'ict_skills', true );
 
 		if ( empty( $skills ) ) {
 			$skills = array();
@@ -729,7 +735,7 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 	 */
 	public function update_technician_skills( $request ) {
 		$user_id = absint( $request['id'] );
-		$skills = $request->get_param( 'skills' );
+		$skills  = $request->get_param( 'skills' );
 
 		update_user_meta( $user_id, 'ict_skills', $skills );
 
@@ -756,10 +762,10 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 	protected function find_conflicts( $resource_type, $resource_id, $start, $end, $exclude_id = 0 ) {
 		global $wpdb;
 
-		$where = "resource_type = %s AND resource_id = %d AND
+		$where = 'resource_type = %s AND resource_id = %d AND
 		         ((allocation_start BETWEEN %s AND %s) OR
 		          (allocation_end BETWEEN %s AND %s) OR
-		          (allocation_start <= %s AND allocation_end >= %s))";
+		          (allocation_start <= %s AND allocation_end >= %s))';
 
 		$params = array(
 			$resource_type,
@@ -773,13 +779,13 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 		);
 
 		if ( $exclude_id > 0 ) {
-			$where .= " AND id != %d";
+			$where   .= ' AND id != %d';
 			$params[] = $exclude_id;
 		}
 
 		$conflicts = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_PROJECT_RESOURCES_TABLE . " WHERE {$where}",
+				'SELECT * FROM ' . ICT_PROJECT_RESOURCES_TABLE . " WHERE {$where}",
 				$params
 			),
 			ARRAY_A
@@ -825,7 +831,7 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 		}
 
 		return array_map(
-			function( $skill ) {
+			function ( $skill ) {
 				return array(
 					'name'  => sanitize_text_field( $skill['name'] ?? '' ),
 					'level' => sanitize_text_field( $skill['level'] ?? 'beginner' ),
@@ -893,30 +899,30 @@ class ICT_REST_Resources_Controller extends WP_REST_Controller {
 	 */
 	public function get_collection_params() {
 		return array(
-			'per_page' => array(
+			'per_page'      => array(
 				'default'           => 20,
 				'sanitize_callback' => 'absint',
 			),
-			'page' => array(
+			'page'          => array(
 				'default'           => 1,
 				'sanitize_callback' => 'absint',
 			),
-			'project_id' => array(
+			'project_id'    => array(
 				'sanitize_callback' => 'absint',
 			),
 			'resource_type' => array(
 				'sanitize_callback' => 'sanitize_text_field',
 			),
-			'resource_id' => array(
+			'resource_id'   => array(
 				'sanitize_callback' => 'absint',
 			),
-			'status' => array(
+			'status'        => array(
 				'sanitize_callback' => 'sanitize_text_field',
 			),
-			'date_from' => array(
+			'date_from'     => array(
 				'sanitize_callback' => 'sanitize_text_field',
 			),
-			'date_to' => array(
+			'date_to'       => array(
 				'sanitize_callback' => 'sanitize_text_field',
 			),
 		);

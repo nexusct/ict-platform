@@ -203,10 +203,11 @@ const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({
   useEffect(() => {
     if (!state.isOnline || state.queuedActions > 0) {
       setVisible(true);
-    } else {
-      const timer = setTimeout(() => setVisible(false), 3000);
-      return () => clearTimeout(timer);
+      return;
     }
+    
+    const timer = setTimeout(() => setVisible(false), 3000);
+    return () => clearTimeout(timer);
   }, [state.isOnline, state.queuedActions]);
 
   if (!visible && state.isOnline && state.queuedActions === 0) {

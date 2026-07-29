@@ -51,14 +51,14 @@ class ICT_Nexus_Workflow {
 	public static function get_workflow_definition() {
 		return array(
 			// Phase 1: Project Initiation
-			'project_initiation' => array(
-				'id'          => 'project_initiation',
-				'order'       => 1,
-				'name'        => __( 'Project Initiation', 'ict-platform' ),
-				'description' => __( 'Initial phase to establish project foundation and authorization.', 'ict-platform' ),
-				'icon'        => 'play-circle',
-				'color'       => '#6B21A8',
-				'stages'      => array(
+			'project_initiation'     => array(
+				'id'             => 'project_initiation',
+				'order'          => 1,
+				'name'           => __( 'Project Initiation', 'ict-platform' ),
+				'description'    => __( 'Initial phase to establish project foundation and authorization.', 'ict-platform' ),
+				'icon'           => 'play-circle',
+				'color'          => '#6B21A8',
+				'stages'         => array(
 					array(
 						'id'           => 'business_case',
 						'name'         => __( 'Business Case', 'ict-platform' ),
@@ -112,28 +112,28 @@ class ICT_Nexus_Workflow {
 						'template'     => 'project_charter_template',
 					),
 				),
-				'entry_criteria'  => array(
+				'entry_criteria' => array(
 					'Project request received',
 					'Sponsor identified',
 					'Initial budget available',
 				),
-				'exit_criteria'   => array(
+				'exit_criteria'  => array(
 					'Project charter approved',
 					'Initial team assigned',
 					'Kick-off meeting scheduled',
 				),
-				'zoho_crm_stage'  => 'Qualification',
+				'zoho_crm_stage' => 'Qualification',
 			),
 
 			// Phase 2: Project Planning
-			'project_planning' => array(
-				'id'          => 'project_planning',
-				'order'       => 2,
-				'name'        => __( 'Project Planning', 'ict-platform' ),
-				'description' => __( 'Develop detailed project plans and schedules.', 'ict-platform' ),
-				'icon'        => 'calendar',
-				'color'       => '#7C3AED',
-				'stages'      => array(
+			'project_planning'       => array(
+				'id'             => 'project_planning',
+				'order'          => 2,
+				'name'           => __( 'Project Planning', 'ict-platform' ),
+				'description'    => __( 'Develop detailed project plans and schedules.', 'ict-platform' ),
+				'icon'           => 'calendar',
+				'color'          => '#7C3AED',
+				'stages'         => array(
 					array(
 						'id'           => 'gantt_chart',
 						'name'         => __( 'Gantt Chart', 'ict-platform' ),
@@ -186,28 +186,28 @@ class ICT_Nexus_Workflow {
 						'template'     => 'one_page_pm_template',
 					),
 				),
-				'entry_criteria'  => array(
+				'entry_criteria' => array(
 					'Project charter approved',
 					'Initial team in place',
 					'Requirements gathered',
 				),
-				'exit_criteria'   => array(
+				'exit_criteria'  => array(
 					'Project plan approved',
 					'Schedule baselined',
 					'Resources confirmed',
 				),
-				'zoho_crm_stage'  => 'Needs Analysis',
+				'zoho_crm_stage' => 'Needs Analysis',
 			),
 
 			// Phase 3: Procurement
-			'procurement' => array(
-				'id'          => 'procurement',
-				'order'       => 3,
-				'name'        => __( 'Procurement', 'ict-platform' ),
-				'description' => __( 'Manage purchasing and vendor relationships.', 'ict-platform' ),
-				'icon'        => 'shopping-cart',
-				'color'       => '#2563EB',
-				'stages'      => array(
+			'procurement'            => array(
+				'id'                => 'procurement',
+				'order'             => 3,
+				'name'              => __( 'Procurement', 'ict-platform' ),
+				'description'       => __( 'Manage purchasing and vendor relationships.', 'ict-platform' ),
+				'icon'              => 'shopping-cart',
+				'color'             => '#2563EB',
+				'stages'            => array(
 					array(
 						'id'           => 'purchase_order',
 						'name'         => __( 'Purchase Order', 'ict-platform' ),
@@ -259,12 +259,12 @@ class ICT_Nexus_Workflow {
 						'template'     => 'problem_management_template',
 					),
 				),
-				'entry_criteria'  => array(
+				'entry_criteria'    => array(
 					'Budget approved',
 					'Requirements defined',
 					'Vendor list available',
 				),
-				'exit_criteria'   => array(
+				'exit_criteria'     => array(
 					'All POs issued',
 					'Vendors confirmed',
 					'Delivery dates set',
@@ -273,14 +273,14 @@ class ICT_Nexus_Workflow {
 			),
 
 			// Phase 4: Project Tracking
-			'project_tracking' => array(
-				'id'          => 'project_tracking',
-				'order'       => 4,
-				'name'        => __( 'Project Tracking', 'ict-platform' ),
-				'description' => __( 'Monitor project progress and performance.', 'ict-platform' ),
-				'icon'        => 'chart-line',
-				'color'       => '#059669',
-				'stages'      => array(
+			'project_tracking'       => array(
+				'id'             => 'project_tracking',
+				'order'          => 4,
+				'name'           => __( 'Project Tracking', 'ict-platform' ),
+				'description'    => __( 'Monitor project progress and performance.', 'ict-platform' ),
+				'icon'           => 'chart-line',
+				'color'          => '#059669',
+				'stages'         => array(
 					array(
 						'id'           => 'raci_matrix',
 						'name'         => __( 'RACI Matrix', 'ict-platform' ),
@@ -333,28 +333,28 @@ class ICT_Nexus_Workflow {
 						'template'     => 'raid_log_template',
 					),
 				),
-				'entry_criteria'  => array(
+				'entry_criteria' => array(
 					'Project execution started',
 					'Baseline established',
 					'Team mobilized',
 				),
-				'exit_criteria'   => array(
+				'exit_criteria'  => array(
 					'Progress documented',
 					'Issues addressed',
 					'Status reports delivered',
 				),
-				'zoho_crm_stage'  => 'Proposal/Price Quote',
+				'zoho_crm_stage' => 'Proposal/Price Quote',
 			),
 
 			// Phase 5: Change Management
-			'change_management' => array(
-				'id'          => 'change_management',
-				'order'       => 5,
-				'name'        => __( 'Change Management', 'ict-platform' ),
-				'description' => __( 'Control and manage project changes.', 'ict-platform' ),
-				'icon'        => 'exchange-alt',
-				'color'       => '#DC2626',
-				'stages'      => array(
+			'change_management'      => array(
+				'id'               => 'change_management',
+				'order'            => 5,
+				'name'             => __( 'Change Management', 'ict-platform' ),
+				'description'      => __( 'Control and manage project changes.', 'ict-platform' ),
+				'icon'             => 'exchange-alt',
+				'color'            => '#DC2626',
+				'stages'           => array(
 					array(
 						'id'           => 'change_request',
 						'name'         => __( 'ITIL Change Request', 'ict-platform' ),
@@ -395,12 +395,12 @@ class ICT_Nexus_Workflow {
 						'template'     => 'impact_assessment_template',
 					),
 				),
-				'entry_criteria'  => array(
+				'entry_criteria'   => array(
 					'Change requested',
 					'Stakeholders identified',
 					'Current baseline documented',
 				),
-				'exit_criteria'   => array(
+				'exit_criteria'    => array(
 					'Change approved/rejected',
 					'Impact documented',
 					'Baseline updated if approved',
@@ -409,14 +409,14 @@ class ICT_Nexus_Workflow {
 			),
 
 			// Phase 6: Project Execution
-			'project_execution' => array(
-				'id'          => 'project_execution',
-				'order'       => 6,
-				'name'        => __( 'Project Execution', 'ict-platform' ),
-				'description' => __( 'Execute project work and produce deliverables.', 'ict-platform' ),
-				'icon'        => 'cogs',
-				'color'       => '#EA580C',
-				'stages'      => array(
+			'project_execution'      => array(
+				'id'              => 'project_execution',
+				'order'           => 6,
+				'name'            => __( 'Project Execution', 'ict-platform' ),
+				'description'     => __( 'Execute project work and produce deliverables.', 'ict-platform' ),
+				'icon'            => 'cogs',
+				'color'           => '#EA580C',
+				'stages'          => array(
 					array(
 						'id'           => 'execution_plan',
 						'name'         => __( 'Execution Plan', 'ict-platform' ),
@@ -483,14 +483,14 @@ class ICT_Nexus_Workflow {
 			),
 
 			// Phase 7: PM Office
-			'pm_office' => array(
-				'id'          => 'pm_office',
-				'order'       => 7,
-				'name'        => __( 'PMO Office', 'ict-platform' ),
-				'description' => __( 'Project Management Office governance and oversight.', 'ict-platform' ),
-				'icon'        => 'building',
-				'color'       => '#7C3AED',
-				'stages'      => array(
+			'pm_office'              => array(
+				'id'             => 'pm_office',
+				'order'          => 7,
+				'name'           => __( 'PMO Office', 'ict-platform' ),
+				'description'    => __( 'Project Management Office governance and oversight.', 'ict-platform' ),
+				'icon'           => 'building',
+				'color'          => '#7C3AED',
+				'stages'         => array(
 					array(
 						'id'           => 'pmo_action_plan',
 						'name'         => __( 'PMO Action Plan', 'ict-platform' ),
@@ -529,12 +529,12 @@ class ICT_Nexus_Workflow {
 						'template'     => 'pmo_kpi_dashboard_template',
 					),
 				),
-				'entry_criteria'  => array(
+				'entry_criteria' => array(
 					'Project portfolio defined',
 					'PMO structure established',
 					'Reporting requirements set',
 				),
-				'exit_criteria'   => array(
+				'exit_criteria'  => array(
 					'KPIs measured',
 					'Reports delivered',
 					'Governance maintained',
@@ -542,14 +542,14 @@ class ICT_Nexus_Workflow {
 			),
 
 			// Phase 8: Quality Management
-			'quality_management' => array(
-				'id'          => 'quality_management',
-				'order'       => 8,
-				'name'        => __( 'Quality Management', 'ict-platform' ),
-				'description' => __( 'Ensure project deliverables meet quality standards.', 'ict-platform' ),
-				'icon'        => 'check-double',
-				'color'       => '#16A34A',
-				'stages'      => array(
+			'quality_management'     => array(
+				'id'             => 'quality_management',
+				'order'          => 8,
+				'name'           => __( 'Quality Management', 'ict-platform' ),
+				'description'    => __( 'Ensure project deliverables meet quality standards.', 'ict-platform' ),
+				'icon'           => 'check-double',
+				'color'          => '#16A34A',
+				'stages'         => array(
 					array(
 						'id'           => 'scalable_results',
 						'name'         => __( 'Scalable Results', 'ict-platform' ),
@@ -589,12 +589,12 @@ class ICT_Nexus_Workflow {
 						'template'     => 'quality_log_template',
 					),
 				),
-				'entry_criteria'  => array(
+				'entry_criteria' => array(
 					'Quality standards defined',
 					'Inspection criteria set',
 					'QA team assigned',
 				),
-				'exit_criteria'   => array(
+				'exit_criteria'  => array(
 					'Quality metrics met',
 					'Issues resolved',
 					'Sign-off obtained',
@@ -602,14 +602,14 @@ class ICT_Nexus_Workflow {
 			),
 
 			// Phase 9: Costing
-			'costing' => array(
-				'id'          => 'costing',
-				'order'       => 9,
-				'name'        => __( 'Costing', 'ict-platform' ),
-				'description' => __( 'Manage project budget and costs.', 'ict-platform' ),
-				'icon'        => 'dollar-sign',
-				'color'       => '#CA8A04',
-				'stages'      => array(
+			'costing'                => array(
+				'id'                => 'costing',
+				'order'             => 9,
+				'name'              => __( 'Costing', 'ict-platform' ),
+				'description'       => __( 'Manage project budget and costs.', 'ict-platform' ),
+				'icon'              => 'dollar-sign',
+				'color'             => '#CA8A04',
+				'stages'            => array(
 					array(
 						'id'           => 'cost_benefit_analysis',
 						'name'         => __( 'Cost Benefits Analysis', 'ict-platform' ),
@@ -650,12 +650,12 @@ class ICT_Nexus_Workflow {
 						'template'     => 'earned_value_template',
 					),
 				),
-				'entry_criteria'  => array(
+				'entry_criteria'    => array(
 					'Scope defined',
 					'Resources estimated',
 					'Baseline approved',
 				),
-				'exit_criteria'   => array(
+				'exit_criteria'     => array(
 					'Budget tracked',
 					'Variances explained',
 					'Forecasts updated',
@@ -664,14 +664,14 @@ class ICT_Nexus_Workflow {
 			),
 
 			// Phase 10: Risk Management
-			'risk_management' => array(
-				'id'          => 'risk_management',
-				'order'       => 10,
-				'name'        => __( 'Risk Management', 'ict-platform' ),
-				'description' => __( 'Identify, assess, and mitigate project risks.', 'ict-platform' ),
-				'icon'        => 'exclamation-triangle',
-				'color'       => '#DC2626',
-				'stages'      => array(
+			'risk_management'        => array(
+				'id'             => 'risk_management',
+				'order'          => 10,
+				'name'           => __( 'Risk Management', 'ict-platform' ),
+				'description'    => __( 'Identify, assess, and mitigate project risks.', 'ict-platform' ),
+				'icon'           => 'exclamation-triangle',
+				'color'          => '#DC2626',
+				'stages'         => array(
 					array(
 						'id'           => 'incident_priority',
 						'name'         => __( 'Incident Priority', 'ict-platform' ),
@@ -712,12 +712,12 @@ class ICT_Nexus_Workflow {
 						'template'     => 'issue_resolution_template',
 					),
 				),
-				'entry_criteria'  => array(
+				'entry_criteria' => array(
 					'Risk assessment needed',
 					'Risk team assigned',
 					'Risk tolerance defined',
 				),
-				'exit_criteria'   => array(
+				'exit_criteria'  => array(
 					'Risks identified',
 					'Mitigation plans in place',
 					'Monitoring active',
@@ -725,14 +725,14 @@ class ICT_Nexus_Workflow {
 			),
 
 			// Phase 11: Task Management
-			'task_management' => array(
-				'id'          => 'task_management',
-				'order'       => 11,
-				'name'        => __( 'Task Management', 'ict-platform' ),
-				'description' => __( 'Manage and track project tasks.', 'ict-platform' ),
-				'icon'        => 'tasks',
-				'color'       => '#0891B2',
-				'stages'      => array(
+			'task_management'        => array(
+				'id'                 => 'task_management',
+				'order'              => 11,
+				'name'               => __( 'Task Management', 'ict-platform' ),
+				'description'        => __( 'Manage and track project tasks.', 'ict-platform' ),
+				'icon'               => 'tasks',
+				'color'              => '#0891B2',
+				'stages'             => array(
 					array(
 						'id'           => 'single_project_tasks',
 						'name'         => __( 'Single Project Tasks', 'ict-platform' ),
@@ -773,12 +773,12 @@ class ICT_Nexus_Workflow {
 						'template'     => 'multi_project_task_template',
 					),
 				),
-				'entry_criteria'  => array(
+				'entry_criteria'     => array(
 					'Work breakdown complete',
 					'Resources assigned',
 					'Dependencies mapped',
 				),
-				'exit_criteria'   => array(
+				'exit_criteria'      => array(
 					'Tasks tracked',
 					'Progress reported',
 					'Blockers resolved',
@@ -787,14 +787,14 @@ class ICT_Nexus_Workflow {
 			),
 
 			// Phase 12: Project Timeline
-			'project_timeline' => array(
-				'id'          => 'project_timeline',
-				'order'       => 12,
-				'name'        => __( 'Project Timeline', 'ict-platform' ),
-				'description' => __( 'Manage project schedule and milestones.', 'ict-platform' ),
-				'icon'        => 'clock',
-				'color'       => '#4F46E5',
-				'stages'      => array(
+			'project_timeline'       => array(
+				'id'             => 'project_timeline',
+				'order'          => 12,
+				'name'           => __( 'Project Timeline', 'ict-platform' ),
+				'description'    => __( 'Manage project schedule and milestones.', 'ict-platform' ),
+				'icon'           => 'clock',
+				'color'          => '#4F46E5',
+				'stages'         => array(
 					array(
 						'id'           => 'milestone_template',
 						'name'         => __( 'Milestone Template', 'ict-platform' ),
@@ -822,12 +822,12 @@ class ICT_Nexus_Workflow {
 						'template'     => 'production_schedule_template',
 					),
 				),
-				'entry_criteria'  => array(
+				'entry_criteria' => array(
 					'Scope finalized',
 					'Resources confirmed',
 					'Dependencies identified',
 				),
-				'exit_criteria'   => array(
+				'exit_criteria'  => array(
 					'Schedule baselined',
 					'Milestones set',
 					'Resources scheduled',
@@ -835,14 +835,14 @@ class ICT_Nexus_Workflow {
 			),
 
 			// Phase 13: PM Essentials
-			'pm_essentials' => array(
-				'id'          => 'pm_essentials',
-				'order'       => 13,
-				'name'        => __( 'PM Essentials', 'ict-platform' ),
-				'description' => __( 'Essential project management tools and trackers.', 'ict-platform' ),
-				'icon'        => 'clipboard-list',
-				'color'       => '#0D9488',
-				'stages'      => array(
+			'pm_essentials'          => array(
+				'id'             => 'pm_essentials',
+				'order'          => 13,
+				'name'           => __( 'PM Essentials', 'ict-platform' ),
+				'description'    => __( 'Essential project management tools and trackers.', 'ict-platform' ),
+				'icon'           => 'clipboard-list',
+				'color'          => '#0D9488',
+				'stages'         => array(
 					array(
 						'id'           => 'multiple_project_tracker',
 						'name'         => __( 'Multiple Project Tracker', 'ict-platform' ),
@@ -883,12 +883,12 @@ class ICT_Nexus_Workflow {
 						'template'     => 'project_pipeline_template',
 					),
 				),
-				'entry_criteria'  => array(
+				'entry_criteria' => array(
 					'Projects defined',
 					'PM processes established',
 					'Tools configured',
 				),
-				'exit_criteria'   => array(
+				'exit_criteria'  => array(
 					'Projects tracked',
 					'Scope controlled',
 					'Pipeline managed',
@@ -897,13 +897,13 @@ class ICT_Nexus_Workflow {
 
 			// Phase 14: Stakeholder Management
 			'stakeholder_management' => array(
-				'id'          => 'stakeholder_management',
-				'order'       => 14,
-				'name'        => __( 'Stakeholder Management', 'ict-platform' ),
-				'description' => __( 'Manage stakeholder relationships and communications.', 'ict-platform' ),
-				'icon'        => 'users',
-				'color'       => '#BE185D',
-				'stages'      => array(
+				'id'             => 'stakeholder_management',
+				'order'          => 14,
+				'name'           => __( 'Stakeholder Management', 'ict-platform' ),
+				'description'    => __( 'Manage stakeholder relationships and communications.', 'ict-platform' ),
+				'icon'           => 'users',
+				'color'          => '#BE185D',
+				'stages'         => array(
 					array(
 						'id'           => 'communication_template',
 						'name'         => __( 'Communication Template', 'ict-platform' ),
@@ -944,12 +944,12 @@ class ICT_Nexus_Workflow {
 						'template'     => 'project_closure_meeting_template',
 					),
 				),
-				'entry_criteria'  => array(
+				'entry_criteria' => array(
 					'Stakeholders identified',
 					'Communication needs assessed',
 					'Channels established',
 				),
-				'exit_criteria'   => array(
+				'exit_criteria'  => array(
 					'Communications delivered',
 					'Stakeholders informed',
 					'Feedback collected',
@@ -958,14 +958,14 @@ class ICT_Nexus_Workflow {
 			),
 
 			// Phase 15: Project Closure
-			'project_closure' => array(
-				'id'          => 'project_closure',
-				'order'       => 15,
-				'name'        => __( 'Project Closure', 'ict-platform' ),
-				'description' => __( 'Formally close the project and document outcomes.', 'ict-platform' ),
-				'icon'        => 'flag-checkered',
-				'color'       => '#14B8A6',
-				'stages'      => array(
+			'project_closure'        => array(
+				'id'             => 'project_closure',
+				'order'          => 15,
+				'name'           => __( 'Project Closure', 'ict-platform' ),
+				'description'    => __( 'Formally close the project and document outcomes.', 'ict-platform' ),
+				'icon'           => 'flag-checkered',
+				'color'          => '#14B8A6',
+				'stages'         => array(
 					array(
 						'id'           => 'final_deliverables',
 						'name'         => __( 'Final Deliverables', 'ict-platform' ),
@@ -1019,12 +1019,12 @@ class ICT_Nexus_Workflow {
 						'template'     => 'team_release_template',
 					),
 				),
-				'entry_criteria'  => array(
+				'entry_criteria' => array(
 					'All deliverables complete',
 					'Testing passed',
 					'Client acceptance obtained',
 				),
-				'exit_criteria'   => array(
+				'exit_criteria'  => array(
 					'Project closed',
 					'Team released',
 					'Documentation archived',
@@ -1073,9 +1073,12 @@ class ICT_Nexus_Workflow {
 	 */
 	public static function get_required_stages( $phase_id ) {
 		$stages = self::get_phase_stages( $phase_id );
-		return array_filter( $stages, function( $stage ) {
-			return $stage['required'];
-		});
+		return array_filter(
+			$stages,
+			function ( $stage ) {
+				return $stage['required'];
+			}
+		);
 	}
 
 	/**
@@ -1123,16 +1126,21 @@ class ICT_Nexus_Workflow {
 
 		foreach ( $workflow as $phase_id => $phase ) {
 			$summary[] = array(
-				'id'          => $phase_id,
-				'order'       => $phase['order'],
-				'name'        => $phase['name'],
-				'description' => $phase['description'],
-				'icon'        => $phase['icon'],
-				'color'       => $phase['color'],
-				'stage_count' => count( $phase['stages'] ),
-				'required_stages' => count( array_filter( $phase['stages'], function( $s ) {
-					return $s['required'];
-				})),
+				'id'              => $phase_id,
+				'order'           => $phase['order'],
+				'name'            => $phase['name'],
+				'description'     => $phase['description'],
+				'icon'            => $phase['icon'],
+				'color'           => $phase['color'],
+				'stage_count'     => count( $phase['stages'] ),
+				'required_stages' => count(
+					array_filter(
+						$phase['stages'],
+						function ( $s ) {
+							return $s['required'];
+						}
+					)
+				),
 			);
 		}
 
@@ -1177,7 +1185,7 @@ class ICT_Nexus_Workflow {
 				if ( ! in_array( $stage['id'], $completed_stages, true ) ) {
 					$result['valid']    = false;
 					$result['errors'][] = sprintf(
-						__( 'Required stage "%s" not completed in phase "%s"', 'ict-platform' ),
+						__( 'Required stage "%1$s" not completed in phase "%2$s"', 'ict-platform' ),
 						$stage['name'],
 						$from_def['name']
 					);
@@ -1235,7 +1243,7 @@ class ICT_Nexus_Workflow {
 
 		foreach ( $stages as $stage ) {
 			if ( in_array( $stage['id'], $completed_stages, true ) ) {
-				$completed_count++;
+				++$completed_count;
 			}
 		}
 
@@ -1253,7 +1261,7 @@ class ICT_Nexus_Workflow {
 			return 0.0;
 		}
 
-		$total_phases = count( self::PHASES );
+		$total_phases     = count( self::PHASES );
 		$total_completion = array_sum( $phase_completions );
 
 		return round( $total_completion / $total_phases, 2 );

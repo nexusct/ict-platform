@@ -71,14 +71,14 @@ class ICT_Sync_Queue_Processor {
 
 				$result = $this->process_item( $item );
 
-				$results['processed']++;
+				++$results['processed'];
 
 				if ( $result['success'] ) {
-					$results['succeeded']++;
+					++$results['succeeded'];
 				} elseif ( $result['skipped'] ) {
-					$results['skipped']++;
+					++$results['skipped'];
 				} else {
-					$results['failed']++;
+					++$results['failed'];
 				}
 			}
 		}
@@ -113,7 +113,7 @@ class ICT_Sync_Queue_Processor {
 
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM " . ICT_SYNC_QUEUE_TABLE . "
+				'SELECT * FROM ' . ICT_SYNC_QUEUE_TABLE . "
 				WHERE status = 'pending'
 				AND attempts < max_attempts
 				AND (scheduled_at IS NULL OR scheduled_at <= NOW())
@@ -161,14 +161,17 @@ class ICT_Sync_Queue_Processor {
 				array( '%d' )
 			);
 
-			return array( 'success' => false, 'skipped' => true );
+			return array(
+				'success' => false,
+				'skipped' => true,
+			);
 		}
 
 		// Process sync
 		$start_time = microtime( true );
 
 		try {
-			$result = $this->sync_entity( $item );
+			$result   = $this->sync_entity( $item );
 			$duration = round( ( microtime( true ) - $start_time ) * 1000 );
 
 			// Update queue status
@@ -185,19 +188,24 @@ class ICT_Sync_Queue_Processor {
 			);
 
 			// Log success
-			ICT_Helper::log_sync( array(
-				'entity_type'   => $item->entity_type,
-				'entity_id'     => $item->entity_id,
-				'direction'     => 'outbound',
-				'zoho_service'  => $item->zoho_service,
-				'action'        => $item->action,
-				'status'        => 'success',
-				'request_data'  => $item->payload,
-				'response_data' => $result,
-				'duration_ms'   => $duration,
-			) );
+			ICT_Helper::log_sync(
+				array(
+					'entity_type'   => $item->entity_type,
+					'entity_id'     => $item->entity_id,
+					'direction'     => 'outbound',
+					'zoho_service'  => $item->zoho_service,
+					'action'        => $item->action,
+					'status'        => 'success',
+					'request_data'  => $item->payload,
+					'response_data' => $result,
+					'duration_ms'   => $duration,
+				)
+			);
 
-			return array( 'success' => true, 'result' => $result );
+			return array(
+				'success' => true,
+				'result'  => $result,
+			);
 
 		} catch ( Exception $e ) {
 			$duration = round( ( microtime( true ) - $start_time ) * 1000 );
@@ -222,19 +230,24 @@ class ICT_Sync_Queue_Processor {
 			);
 
 			// Log error
-			ICT_Helper::log_sync( array(
-				'entity_type'   => $item->entity_type,
-				'entity_id'     => $item->entity_id,
-				'direction'     => 'outbound',
-				'zoho_service'  => $item->zoho_service,
-				'action'        => $item->action,
-				'status'        => 'error',
-				'request_data'  => $item->payload,
-				'error_message' => $e->getMessage(),
-				'duration_ms'   => $duration,
-			) );
+			ICT_Helper::log_sync(
+				array(
+					'entity_type'   => $item->entity_type,
+					'entity_id'     => $item->entity_id,
+					'direction'     => 'outbound',
+					'zoho_service'  => $item->zoho_service,
+					'action'        => $item->action,
+					'status'        => 'error',
+					'request_data'  => $item->payload,
+					'error_message' => $e->getMessage(),
+					'duration_ms'   => $duration,
+				)
+			);
 
-			return array( 'success' => false, 'error' => $e->getMessage() );
+			return array(
+				'success' => false,
+				'error'   => $e->getMessage(),
+			);
 		}
 	}
 
@@ -439,7 +452,7 @@ class ICT_Sync_Queue_Processor {
 		global $wpdb;
 
 		return (int) $wpdb->get_var(
-			"SELECT COUNT(*) FROM " . ICT_SYNC_QUEUE_TABLE . "
+			'SELECT COUNT(*) FROM ' . ICT_SYNC_QUEUE_TABLE . "
 			WHERE status = 'pending' AND attempts < max_attempts"
 		);
 	}

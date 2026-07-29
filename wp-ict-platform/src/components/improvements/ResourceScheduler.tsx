@@ -31,7 +31,7 @@ interface Assignment {
   priority: 'low' | 'normal' | 'high' | 'urgent';
 }
 
-interface TimeSlot {
+export interface TimeSlot {
   date: Date;
   hour: number;
   isAvailable: boolean;
@@ -53,12 +53,12 @@ const ResourceScheduler: React.FC<ResourceSchedulerProps> = ({
   assignments,
   startDate = new Date(),
   daysToShow = 7,
-  onAssignmentCreate,
+  onAssignmentCreate: _onAssignmentCreate,
   onAssignmentUpdate,
-  onAssignmentDelete,
+  onAssignmentDelete: _onAssignmentDelete,
 }) => {
-  const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [_selectedResource, _setSelectedResource] = useState<Resource | null>(null);
+  const [_selectedDate, _setSelectedDate] = useState<Date | null>(null);
   const [viewMode, setViewMode] = useState<'week' | 'day'>('week');
   const [filterType, setFilterType] = useState<string>('all');
   const [showConflicts, setShowConflicts] = useState(true);
@@ -267,7 +267,7 @@ const ResourceScheduler: React.FC<ResourceSchedulerProps> = ({
               {/* Resource info */}
               <div
                 className="ict-scheduler-resource-cell"
-                onClick={() => setSelectedResource(resource)}
+                onClick={() => _setSelectedResource(resource)}
               >
                 <div className="ict-scheduler-resource-info">
                   <div className="ict-scheduler-resource-avatar">
@@ -314,7 +314,7 @@ const ResourceScheduler: React.FC<ResourceSchedulerProps> = ({
                     className={`ict-scheduler-assignment-cell ${isWeekend ? 'weekend' : ''}`}
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop(resource.id, date)}
-                    onClick={() => setSelectedDate(date)}
+                    onClick={() => _setSelectedDate(date)}
                   >
                     {cellAssignments.map((assignment) => {
                       const isConflict = conflicts.includes(assignment);

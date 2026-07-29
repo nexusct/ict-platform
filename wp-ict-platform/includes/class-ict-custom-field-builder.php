@@ -117,81 +117,129 @@ class ICT_Custom_Field_Builder {
 	 */
 	public function register_endpoints() {
 		// Field definitions
-		register_rest_route( 'ict/v1', '/custom-fields', array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'get_field_definitions' ),
-			'permission_callback' => array( $this, 'can_view_fields' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/custom-fields',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_field_definitions' ),
+				'permission_callback' => array( $this, 'can_view_fields' ),
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/custom-fields', array(
-			'methods'             => 'POST',
-			'callback'            => array( $this, 'create_field' ),
-			'permission_callback' => array( $this, 'can_manage_fields' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/custom-fields',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'create_field' ),
+				'permission_callback' => array( $this, 'can_manage_fields' ),
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/custom-fields/(?P<id>\d+)', array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'get_field' ),
-			'permission_callback' => array( $this, 'can_view_fields' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/custom-fields/(?P<id>\d+)',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_field' ),
+				'permission_callback' => array( $this, 'can_view_fields' ),
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/custom-fields/(?P<id>\d+)', array(
-			'methods'             => 'PUT',
-			'callback'            => array( $this, 'update_field' ),
-			'permission_callback' => array( $this, 'can_manage_fields' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/custom-fields/(?P<id>\d+)',
+			array(
+				'methods'             => 'PUT',
+				'callback'            => array( $this, 'update_field' ),
+				'permission_callback' => array( $this, 'can_manage_fields' ),
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/custom-fields/(?P<id>\d+)', array(
-			'methods'             => 'DELETE',
-			'callback'            => array( $this, 'delete_field' ),
-			'permission_callback' => array( $this, 'can_manage_fields' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/custom-fields/(?P<id>\d+)',
+			array(
+				'methods'             => 'DELETE',
+				'callback'            => array( $this, 'delete_field' ),
+				'permission_callback' => array( $this, 'can_manage_fields' ),
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/custom-fields/reorder', array(
-			'methods'             => 'POST',
-			'callback'            => array( $this, 'reorder_fields' ),
-			'permission_callback' => array( $this, 'can_manage_fields' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/custom-fields/reorder',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'reorder_fields' ),
+				'permission_callback' => array( $this, 'can_manage_fields' ),
+			)
+		);
 
 		// Field values
-		register_rest_route( 'ict/v1', '/custom-fields/values/(?P<entity_type>[a-z_]+)/(?P<entity_id>\d+)', array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'get_field_values' ),
-			'permission_callback' => '__return_true',
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/custom-fields/values/(?P<entity_type>[a-z_]+)/(?P<entity_id>\d+)',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_field_values' ),
+				'permission_callback' => '__return_true',
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/custom-fields/values/(?P<entity_type>[a-z_]+)/(?P<entity_id>\d+)', array(
-			'methods'             => 'POST',
-			'callback'            => array( $this, 'save_field_values' ),
-			'permission_callback' => '__return_true',
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/custom-fields/values/(?P<entity_type>[a-z_]+)/(?P<entity_id>\d+)',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'save_field_values' ),
+				'permission_callback' => '__return_true',
+			)
+		);
 
 		// Field types reference
-		register_rest_route( 'ict/v1', '/custom-fields/types', array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'get_field_types' ),
-			'permission_callback' => '__return_true',
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/custom-fields/types',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_field_types' ),
+				'permission_callback' => '__return_true',
+			)
+		);
 
 		// Entity types reference
-		register_rest_route( 'ict/v1', '/custom-fields/entity-types', array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'get_entity_types' ),
-			'permission_callback' => '__return_true',
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/custom-fields/entity-types',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_entity_types' ),
+				'permission_callback' => '__return_true',
+			)
+		);
 
 		// Field groups
-		register_rest_route( 'ict/v1', '/custom-fields/groups', array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'get_field_groups' ),
-			'permission_callback' => array( $this, 'can_view_fields' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/custom-fields/groups',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_field_groups' ),
+				'permission_callback' => array( $this, 'can_view_fields' ),
+			)
+		);
 
-		register_rest_route( 'ict/v1', '/custom-fields/groups', array(
-			'methods'             => 'POST',
-			'callback'            => array( $this, 'create_field_group' ),
-			'permission_callback' => array( $this, 'can_manage_fields' ),
-		) );
+		register_rest_route(
+			'ict/v1',
+			'/custom-fields/groups',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'create_field_group' ),
+				'permission_callback' => array( $this, 'can_manage_fields' ),
+			)
+		);
 	}
 
 	/**
@@ -227,11 +275,11 @@ class ICT_Custom_Field_Builder {
 		$entity_type = $request->get_param( 'entity_type' );
 		$table       = $wpdb->prefix . 'ict_custom_fields';
 
-		$where = "1=1";
+		$where  = '1=1';
 		$values = array();
 
 		if ( $entity_type && in_array( $entity_type, $this->entity_types, true ) ) {
-			$where .= " AND entity_type = %s";
+			$where   .= ' AND entity_type = %s';
 			$values[] = $entity_type;
 		}
 
@@ -245,15 +293,18 @@ class ICT_Custom_Field_Builder {
 
 		// Decode JSON settings
 		foreach ( $fields as &$field ) {
-			$field['settings'] = json_decode( $field['settings'], true ) ?? array();
-			$field['options']  = json_decode( $field['options'], true ) ?? array();
+			$field['settings']         = json_decode( $field['settings'], true ) ?? array();
+			$field['options']          = json_decode( $field['options'], true ) ?? array();
 			$field['validation_rules'] = json_decode( $field['validation_rules'], true ) ?? array();
 		}
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'fields'  => $fields,
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'fields'  => $fields,
+			),
+			200
+		);
 	}
 
 	/**
@@ -275,20 +326,26 @@ class ICT_Custom_Field_Builder {
 		);
 
 		if ( ! $field ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Field not found',
-			), 404 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Field not found',
+				),
+				404
+			);
 		}
 
-		$field['settings'] = json_decode( $field['settings'], true ) ?? array();
-		$field['options']  = json_decode( $field['options'], true ) ?? array();
+		$field['settings']         = json_decode( $field['settings'], true ) ?? array();
+		$field['options']          = json_decode( $field['options'], true ) ?? array();
 		$field['validation_rules'] = json_decode( $field['validation_rules'], true ) ?? array();
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'field'   => $field,
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'field'   => $field,
+			),
+			200
+		);
 	}
 
 	/**
@@ -307,27 +364,36 @@ class ICT_Custom_Field_Builder {
 		$required = array( 'entity_type', 'field_name', 'field_label', 'field_type' );
 		foreach ( $required as $req ) {
 			if ( empty( $params[ $req ] ) ) {
-				return new WP_REST_Response( array(
-					'success' => false,
-					'error'   => "Missing required field: {$req}",
-				), 400 );
+				return new WP_REST_Response(
+					array(
+						'success' => false,
+						'error'   => "Missing required field: {$req}",
+					),
+					400
+				);
 			}
 		}
 
 		// Validate entity type
 		if ( ! in_array( $params['entity_type'], $this->entity_types, true ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Invalid entity type',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Invalid entity type',
+				),
+				400
+			);
 		}
 
 		// Validate field type
 		if ( ! isset( $this->field_types[ $params['field_type'] ] ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Invalid field type',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Invalid field type',
+				),
+				400
+			);
 		}
 
 		// Generate unique field key
@@ -380,19 +446,25 @@ class ICT_Custom_Field_Builder {
 		$result = $wpdb->insert( $table, $data );
 
 		if ( ! $result ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Failed to create field',
-			), 500 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Failed to create field',
+				),
+				500
+			);
 		}
 
 		$field_id = $wpdb->insert_id;
 
-		return new WP_REST_Response( array(
-			'success'  => true,
-			'field_id' => $field_id,
-			'field'    => array_merge( $data, array( 'id' => $field_id ) ),
-		), 201 );
+		return new WP_REST_Response(
+			array(
+				'success'  => true,
+				'field_id' => $field_id,
+				'field'    => array_merge( $data, array( 'id' => $field_id ) ),
+			),
+			201
+		);
 	}
 
 	/**
@@ -416,10 +488,13 @@ class ICT_Custom_Field_Builder {
 		);
 
 		if ( ! $field ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Field not found',
-			), 404 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Field not found',
+				),
+				404
+			);
 		}
 
 		$data = array(
@@ -428,9 +503,16 @@ class ICT_Custom_Field_Builder {
 
 		// Update allowed fields
 		$allowed = array(
-			'field_name', 'field_label', 'description', 'placeholder',
-			'default_value', 'field_group', 'is_required', 'is_active',
-			'show_in_list', 'show_in_form',
+			'field_name',
+			'field_label',
+			'description',
+			'placeholder',
+			'default_value',
+			'field_group',
+			'is_required',
+			'is_active',
+			'show_in_list',
+			'show_in_form',
 		);
 
 		foreach ( $allowed as $key ) {
@@ -458,10 +540,13 @@ class ICT_Custom_Field_Builder {
 
 		$wpdb->update( $table, $data, array( 'id' => $field_id ) );
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'message' => 'Field updated',
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'message' => 'Field updated',
+			),
+			200
+		);
 	}
 
 	/**
@@ -484,10 +569,13 @@ class ICT_Custom_Field_Builder {
 		);
 
 		if ( ! $field ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Field not found',
-			), 404 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Field not found',
+				),
+				404
+			);
 		}
 
 		// Delete field values
@@ -497,10 +585,13 @@ class ICT_Custom_Field_Builder {
 		// Delete field
 		$wpdb->delete( $table, array( 'id' => $field_id ) );
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'message' => 'Field deleted',
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'message' => 'Field deleted',
+			),
+			200
+		);
 	}
 
 	/**
@@ -525,10 +616,13 @@ class ICT_Custom_Field_Builder {
 			);
 		}
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'message' => 'Fields reordered',
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'message' => 'Fields reordered',
+			),
+			200
+		);
 	}
 
 	/**
@@ -545,10 +639,13 @@ class ICT_Custom_Field_Builder {
 		$entity_id   = $request->get_param( 'entity_id' );
 
 		if ( ! in_array( $entity_type, $this->entity_types, true ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Invalid entity type',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Invalid entity type',
+				),
+				400
+			);
 		}
 
 		// Get field definitions
@@ -592,14 +689,17 @@ class ICT_Custom_Field_Builder {
 			);
 		}
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'entity'  => array(
-				'type' => $entity_type,
-				'id'   => $entity_id,
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'entity'  => array(
+					'type' => $entity_type,
+					'id'   => $entity_id,
+				),
+				'values'  => $values,
 			),
-			'values'  => $values,
-		), 200 );
+			200
+		);
 	}
 
 	/**
@@ -618,10 +718,13 @@ class ICT_Custom_Field_Builder {
 		$values      = $params['values'] ?? array();
 
 		if ( ! in_array( $entity_type, $this->entity_types, true ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Invalid entity type',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Invalid entity type',
+				),
+				400
+			);
 		}
 
 		$fields_table = $wpdb->prefix . 'ict_custom_fields';
@@ -706,16 +809,22 @@ class ICT_Custom_Field_Builder {
 		}
 
 		if ( ! empty( $errors ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'errors'  => $errors,
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'errors'  => $errors,
+				),
+				400
+			);
 		}
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'message' => 'Values saved',
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'message' => 'Values saved',
+			),
+			200
+		);
 	}
 
 	/**
@@ -779,7 +888,7 @@ class ICT_Custom_Field_Builder {
 
 			case 'select':
 			case 'radio':
-				$options = json_decode( $field->options, true ) ?? array();
+				$options      = json_decode( $field->options, true ) ?? array();
 				$valid_values = array_column( $options, 'value' );
 				if ( ! in_array( $value, $valid_values, true ) ) {
 					return __( 'Invalid selection', 'ict-platform' );
@@ -789,7 +898,7 @@ class ICT_Custom_Field_Builder {
 			case 'multiselect':
 			case 'checkbox':
 				if ( is_array( $value ) ) {
-					$options = json_decode( $field->options, true ) ?? array();
+					$options      = json_decode( $field->options, true ) ?? array();
 					$valid_values = array_column( $options, 'value' );
 					foreach ( $value as $v ) {
 						if ( ! in_array( $v, $valid_values, true ) ) {
@@ -829,17 +938,20 @@ class ICT_Custom_Field_Builder {
 
 		foreach ( $this->field_types as $type => $label ) {
 			$types[] = array(
-				'value' => $type,
-				'label' => $label,
-				'icon'  => $this->get_field_type_icon( $type ),
+				'value'       => $type,
+				'label'       => $label,
+				'icon'        => $this->get_field_type_icon( $type ),
 				'has_options' => in_array( $type, array( 'select', 'multiselect', 'radio', 'checkbox' ), true ),
 			);
 		}
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'types'   => $types,
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'types'   => $types,
+			),
+			200
+		);
 	}
 
 	/**
@@ -886,18 +998,39 @@ class ICT_Custom_Field_Builder {
 	 */
 	public function get_entity_types( $request ) {
 		$types = array(
-			array( 'value' => 'project', 'label' => __( 'Project', 'ict-platform' ) ),
-			array( 'value' => 'time_entry', 'label' => __( 'Time Entry', 'ict-platform' ) ),
-			array( 'value' => 'inventory_item', 'label' => __( 'Inventory Item', 'ict-platform' ) ),
-			array( 'value' => 'purchase_order', 'label' => __( 'Purchase Order', 'ict-platform' ) ),
-			array( 'value' => 'user', 'label' => __( 'User', 'ict-platform' ) ),
-			array( 'value' => 'task', 'label' => __( 'Task', 'ict-platform' ) ),
+			array(
+				'value' => 'project',
+				'label' => __( 'Project', 'ict-platform' ),
+			),
+			array(
+				'value' => 'time_entry',
+				'label' => __( 'Time Entry', 'ict-platform' ),
+			),
+			array(
+				'value' => 'inventory_item',
+				'label' => __( 'Inventory Item', 'ict-platform' ),
+			),
+			array(
+				'value' => 'purchase_order',
+				'label' => __( 'Purchase Order', 'ict-platform' ),
+			),
+			array(
+				'value' => 'user',
+				'label' => __( 'User', 'ict-platform' ),
+			),
+			array(
+				'value' => 'task',
+				'label' => __( 'Task', 'ict-platform' ),
+			),
 		);
 
-		return new WP_REST_Response( array(
-			'success'      => true,
-			'entity_types' => $types,
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success'      => true,
+				'entity_types' => $types,
+			),
+			200
+		);
 	}
 
 	/**
@@ -908,17 +1041,23 @@ class ICT_Custom_Field_Builder {
 	 * @return WP_REST_Response Response.
 	 */
 	public function get_field_groups( $request ) {
-		$groups = get_option( 'ict_custom_field_groups', array(
-			'default' => array(
-				'label' => __( 'General', 'ict-platform' ),
-				'order' => 0,
-			),
-		) );
+		$groups = get_option(
+			'ict_custom_field_groups',
+			array(
+				'default' => array(
+					'label' => __( 'General', 'ict-platform' ),
+					'order' => 0,
+				),
+			)
+		);
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'groups'  => $groups,
-		), 200 );
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'groups'  => $groups,
+			),
+			200
+		);
 	}
 
 	/**
@@ -935,10 +1074,13 @@ class ICT_Custom_Field_Builder {
 		$group_label = sanitize_text_field( $params['label'] ?? '' );
 
 		if ( empty( $group_key ) || empty( $group_label ) ) {
-			return new WP_REST_Response( array(
-				'success' => false,
-				'error'   => 'Group key and label are required',
-			), 400 );
+			return new WP_REST_Response(
+				array(
+					'success' => false,
+					'error'   => 'Group key and label are required',
+				),
+				400
+			);
 		}
 
 		$groups = get_option( 'ict_custom_field_groups', array() );
@@ -950,13 +1092,16 @@ class ICT_Custom_Field_Builder {
 
 		update_option( 'ict_custom_field_groups', $groups );
 
-		return new WP_REST_Response( array(
-			'success' => true,
-			'group'   => array(
-				'key'   => $group_key,
-				'label' => $group_label,
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'group'   => array(
+					'key'   => $group_key,
+					'label' => $group_label,
+				),
 			),
-		), 201 );
+			201
+		);
 	}
 
 	/**
@@ -971,7 +1116,7 @@ class ICT_Custom_Field_Builder {
 		// Replace field references with values
 		$expression = preg_replace_callback(
 			'/\{([a-z_]+)\}/',
-			function( $matches ) use ( $field_values ) {
+			function ( $matches ) use ( $field_values ) {
 				$key = $matches[1];
 				return isset( $field_values[ $key ] ) ? floatval( $field_values[ $key ] ) : 0;
 			},

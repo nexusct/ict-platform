@@ -109,7 +109,7 @@ class ICT_QuoteWerks_Webhook {
 			return false;
 		}
 
-		$payload = $request->get_body();
+		$payload            = $request->get_body();
 		$expected_signature = hash_hmac( 'sha256', $payload, $this->secret_key );
 
 		return hash_equals( $expected_signature, $signature );
@@ -175,7 +175,7 @@ class ICT_QuoteWerks_Webhook {
 		// Find project
 		$project_id = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT id FROM " . ICT_PROJECTS_TABLE . " WHERE quotewerks_id = %s",
+				'SELECT id FROM ' . ICT_PROJECTS_TABLE . ' WHERE quotewerks_id = %s',
 				$quote_id
 			)
 		);
@@ -235,7 +235,7 @@ class ICT_QuoteWerks_Webhook {
 		// Find project
 		$project_id = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT id FROM " . ICT_PROJECTS_TABLE . " WHERE quotewerks_id = %s",
+				'SELECT id FROM ' . ICT_PROJECTS_TABLE . ' WHERE quotewerks_id = %s',
 				$quote_id
 			)
 		);

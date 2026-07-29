@@ -9,7 +9,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Icon } from './Icon';
-import type { ResourceConflict, ProjectResource } from '../../types';
+import type { ResourceConflict } from '../../types';
 
 interface ConflictResolutionProps {
   conflicts: ResourceConflict[];

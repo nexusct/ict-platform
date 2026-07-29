@@ -69,8 +69,8 @@ class ICT_Nexus_Workflow_Engine {
 
 		// Initialize workflow state
 		$initial_state = array(
-			'current_phase'      => 'project_initiation',
-			'phase_history'      => array(
+			'current_phase'    => 'project_initiation',
+			'phase_history'    => array(
 				array(
 					'phase'     => 'project_initiation',
 					'action'    => 'started',
@@ -78,12 +78,12 @@ class ICT_Nexus_Workflow_Engine {
 					'user_id'   => get_current_user_id(),
 				),
 			),
-			'completed_phases'   => array(),
-			'completed_stages'   => array(),
-			'stage_data'         => array(),
-			'workflow_started'   => current_time( 'mysql' ),
-			'workflow_updated'   => current_time( 'mysql' ),
-			'overall_progress'   => 0,
+			'completed_phases' => array(),
+			'completed_stages' => array(),
+			'stage_data'       => array(),
+			'workflow_started' => current_time( 'mysql' ),
+			'workflow_updated' => current_time( 'mysql' ),
+			'overall_progress' => 0,
 		);
 
 		// Save workflow state
@@ -117,14 +117,14 @@ class ICT_Nexus_Workflow_Engine {
 
 		// Ensure all keys exist
 		$defaults = array(
-			'current_phase'      => 'project_initiation',
-			'phase_history'      => array(),
-			'completed_phases'   => array(),
-			'completed_stages'   => array(),
-			'stage_data'         => array(),
-			'workflow_started'   => null,
-			'workflow_updated'   => null,
-			'overall_progress'   => 0,
+			'current_phase'    => 'project_initiation',
+			'phase_history'    => array(),
+			'completed_phases' => array(),
+			'completed_stages' => array(),
+			'stage_data'       => array(),
+			'workflow_started' => null,
+			'workflow_updated' => null,
+			'overall_progress' => 0,
 		);
 
 		return wp_parse_args( $state, $defaults );
@@ -178,13 +178,13 @@ class ICT_Nexus_Workflow_Engine {
 		// Add completion status for each stage
 		$stages = array();
 		foreach ( $phase_def['stages'] as $stage ) {
-			$stage_key = $state['current_phase'] . ':' . $stage['id'];
+			$stage_key          = $state['current_phase'] . ':' . $stage['id'];
 			$stage['completed'] = in_array( $stage_key, $state['completed_stages'], true );
-			$stage['data'] = isset( $state['stage_data'][ $stage_key ] ) ? $state['stage_data'][ $stage_key ] : null;
-			$stages[] = $stage;
+			$stage['data']      = isset( $state['stage_data'][ $stage_key ] ) ? $state['stage_data'][ $stage_key ] : null;
+			$stages[]           = $stage;
 		}
 
-		$phase_def['stages'] = $stages;
+		$phase_def['stages']                = $stages;
 		$phase_def['completion_percentage'] = ICT_Nexus_Workflow::calculate_phase_completion(
 			$state['current_phase'],
 			$this->get_phase_completed_stages( $state['current_phase'] )
@@ -206,7 +206,7 @@ class ICT_Nexus_Workflow_Engine {
 			return array();
 		}
 
-		$prefix = $phase_id . ':';
+		$prefix    = $phase_id . ':';
 		$completed = array();
 
 		foreach ( $state['completed_stages'] as $stage_key ) {
@@ -233,7 +233,7 @@ class ICT_Nexus_Workflow_Engine {
 		}
 
 		$current_phase = $state['current_phase'];
-		$phase_def = ICT_Nexus_Workflow::get_phase( $current_phase );
+		$phase_def     = ICT_Nexus_Workflow::get_phase( $current_phase );
 
 		// Verify stage exists in current phase
 		$stage_exists = false;
@@ -247,7 +247,7 @@ class ICT_Nexus_Workflow_Engine {
 		if ( ! $stage_exists ) {
 			return new WP_Error(
 				'invalid_stage',
-				sprintf( __( 'Stage "%s" does not exist in phase "%s".', 'ict-platform' ), $stage_id, $current_phase )
+				sprintf( __( 'Stage "%1$s" does not exist in phase "%2$s".', 'ict-platform' ), $stage_id, $current_phase )
 			);
 		}
 
@@ -308,7 +308,7 @@ class ICT_Nexus_Workflow_Engine {
 		}
 
 		$current_phase = $state['current_phase'];
-		$stage_key = $current_phase . ':' . $stage_id;
+		$stage_key     = $current_phase . ':' . $stage_id;
 
 		// Check if completed
 		$index = array_search( $stage_key, $state['completed_stages'], true );
@@ -356,7 +356,7 @@ class ICT_Nexus_Workflow_Engine {
 		}
 
 		$current_phase = $state['current_phase'];
-		$next_phase = ICT_Nexus_Workflow::get_next_phase( $current_phase );
+		$next_phase    = ICT_Nexus_Workflow::get_next_phase( $current_phase );
 
 		if ( ! $next_phase ) {
 			return new WP_Error( 'no_next_phase', __( 'Already at the final phase.', 'ict-platform' ) );
@@ -365,7 +365,7 @@ class ICT_Nexus_Workflow_Engine {
 		// Validate transition
 		if ( ! $force ) {
 			$completed_stages = $this->get_phase_completed_stages( $current_phase );
-			$validation = ICT_Nexus_Workflow::validate_phase_transition( $current_phase, $next_phase, $completed_stages );
+			$validation       = ICT_Nexus_Workflow::validate_phase_transition( $current_phase, $next_phase, $completed_stages );
 
 			if ( ! $validation['valid'] ) {
 				return new WP_Error(
@@ -425,7 +425,7 @@ class ICT_Nexus_Workflow_Engine {
 		}
 
 		$current_phase = $state['current_phase'];
-		$prev_phase = ICT_Nexus_Workflow::get_previous_phase( $current_phase );
+		$prev_phase    = ICT_Nexus_Workflow::get_previous_phase( $current_phase );
 
 		if ( ! $prev_phase ) {
 			return new WP_Error( 'no_prev_phase', __( 'Already at the first phase.', 'ict-platform' ) );
@@ -495,14 +495,14 @@ class ICT_Nexus_Workflow_Engine {
 
 		// If moving forward, validate all intermediate phases
 		if ( ! $force && $target_def['order'] > $current_def['order'] ) {
-			$phases = ICT_Nexus_Workflow::get_phase_ids();
+			$phases    = ICT_Nexus_Workflow::get_phase_ids();
 			$start_idx = array_search( $current_phase, $phases, true );
-			$end_idx = array_search( $target_phase, $phases, true );
+			$end_idx   = array_search( $target_phase, $phases, true );
 
 			for ( $i = $start_idx; $i < $end_idx; $i++ ) {
-				$phase_id = $phases[ $i ];
+				$phase_id         = $phases[ $i ];
 				$completed_stages = $this->get_phase_completed_stages( $phase_id );
-				$validation = ICT_Nexus_Workflow::validate_phase_transition(
+				$validation       = ICT_Nexus_Workflow::validate_phase_transition(
 					$phase_id,
 					$phases[ $i + 1 ],
 					$completed_stages
@@ -512,7 +512,7 @@ class ICT_Nexus_Workflow_Engine {
 					return new WP_Error(
 						'transition_blocked',
 						sprintf(
-							__( 'Cannot skip to %s. Blocked at %s: %s', 'ict-platform' ),
+							__( 'Cannot skip to %1$s. Blocked at %2$s: %3$s', 'ict-platform' ),
 							$target_def['name'],
 							ICT_Nexus_Workflow::get_phase( $phase_id )['name'],
 							implode( ' ', $validation['errors'] )
@@ -534,11 +534,11 @@ class ICT_Nexus_Workflow_Engine {
 
 		// Add to history
 		$state['phase_history'][] = array(
-			'phase'       => $current_phase,
-			'action'      => 'phase_jumped_from',
-			'target'      => $target_phase,
-			'timestamp'   => current_time( 'mysql' ),
-			'user_id'     => get_current_user_id(),
+			'phase'     => $current_phase,
+			'action'    => 'phase_jumped_from',
+			'target'    => $target_phase,
+			'timestamp' => current_time( 'mysql' ),
+			'user_id'   => get_current_user_id(),
 		);
 
 		$state['phase_history'][] = array(
@@ -567,18 +567,18 @@ class ICT_Nexus_Workflow_Engine {
 	 * @return float Progress percentage (0-100).
 	 */
 	private function calculate_overall_progress( $state ) {
-		$phases = ICT_Nexus_Workflow::get_phase_ids();
-		$total_stages = 0;
+		$phases           = ICT_Nexus_Workflow::get_phase_ids();
+		$total_stages     = 0;
 		$completed_stages = 0;
 
 		foreach ( $phases as $phase_id ) {
-			$phase_stages = ICT_Nexus_Workflow::get_phase_stages( $phase_id );
+			$phase_stages  = ICT_Nexus_Workflow::get_phase_stages( $phase_id );
 			$total_stages += count( $phase_stages );
 
 			foreach ( $phase_stages as $stage ) {
 				$stage_key = $phase_id . ':' . $stage['id'];
 				if ( in_array( $stage_key, $state['completed_stages'], true ) ) {
-					$completed_stages++;
+					++$completed_stages;
 				}
 			}
 		}
@@ -602,11 +602,11 @@ class ICT_Nexus_Workflow_Engine {
 			return array();
 		}
 
-		$phases = ICT_Nexus_Workflow::get_phase_ids();
+		$phases  = ICT_Nexus_Workflow::get_phase_ids();
 		$summary = array();
 
 		foreach ( $phases as $phase_id ) {
-			$phase_def = ICT_Nexus_Workflow::get_phase( $phase_id );
+			$phase_def        = ICT_Nexus_Workflow::get_phase( $phase_id );
 			$completed_stages = $this->get_phase_completed_stages( $phase_id );
 
 			$summary[] = array(
@@ -650,14 +650,14 @@ class ICT_Nexus_Workflow_Engine {
 			if ( ! empty( $entry['user_id'] ) ) {
 				$user = get_user_by( 'id', $entry['user_id'] );
 				if ( $user ) {
-					$entry['user_name'] = $user->display_name;
+					$entry['user_name']  = $user->display_name;
 					$entry['user_email'] = $user->user_email;
 				}
 			}
 
 			// Add phase name
 			if ( ! empty( $entry['phase'] ) ) {
-				$phase_def = ICT_Nexus_Workflow::get_phase( $entry['phase'] );
+				$phase_def           = ICT_Nexus_Workflow::get_phase( $entry['phase'] );
 				$entry['phase_name'] = $phase_def ? $phase_def['name'] : $entry['phase'];
 			}
 
@@ -691,16 +691,18 @@ class ICT_Nexus_Workflow_Engine {
 
 		// Queue sync operation
 		if ( class_exists( 'ICT_Helper' ) && method_exists( 'ICT_Helper', 'queue_sync' ) ) {
-			ICT_Helper::queue_sync( array(
-				'entity_type'  => 'project',
-				'entity_id'    => $this->project_id,
-				'action'       => 'update',
-				'zoho_service' => 'crm',
-				'priority'     => 3,
-				'payload'      => array(
-					'stage' => $crm_stage,
-				),
-			) );
+			ICT_Helper::queue_sync(
+				array(
+					'entity_type'  => 'project',
+					'entity_id'    => $this->project_id,
+					'action'       => 'update',
+					'zoho_service' => 'crm',
+					'priority'     => 3,
+					'payload'      => array(
+						'stage' => $crm_stage,
+					),
+				)
+			);
 		}
 	}
 
@@ -718,14 +720,14 @@ class ICT_Nexus_Workflow_Engine {
 
 		// Keep history but reset progress
 		$reset_state = array(
-			'current_phase'      => 'project_initiation',
-			'phase_history'      => $state['phase_history'],
-			'completed_phases'   => array(),
-			'completed_stages'   => array(),
-			'stage_data'         => array(),
-			'workflow_started'   => $state['workflow_started'],
-			'workflow_updated'   => current_time( 'mysql' ),
-			'overall_progress'   => 0,
+			'current_phase'    => 'project_initiation',
+			'phase_history'    => $state['phase_history'],
+			'completed_phases' => array(),
+			'completed_stages' => array(),
+			'stage_data'       => array(),
+			'workflow_started' => $state['workflow_started'],
+			'workflow_updated' => current_time( 'mysql' ),
+			'overall_progress' => 0,
 		);
 
 		// Add reset to history
@@ -814,7 +816,7 @@ class ICT_Nexus_Workflow_Engine {
 		}
 
 		$current_phase = $state['current_phase'];
-		$next_phase = ICT_Nexus_Workflow::get_next_phase( $current_phase );
+		$next_phase    = ICT_Nexus_Workflow::get_next_phase( $current_phase );
 
 		if ( ! $next_phase ) {
 			return array(
@@ -825,7 +827,7 @@ class ICT_Nexus_Workflow_Engine {
 		}
 
 		$completed_stages = $this->get_phase_completed_stages( $current_phase );
-		$validation = ICT_Nexus_Workflow::validate_phase_transition( $current_phase, $next_phase, $completed_stages );
+		$validation       = ICT_Nexus_Workflow::validate_phase_transition( $current_phase, $next_phase, $completed_stages );
 
 		$next_phase_def = ICT_Nexus_Workflow::get_phase( $next_phase );
 
@@ -860,7 +862,7 @@ class ICT_Nexus_Workflow_Engine {
 		$checklist = array();
 
 		foreach ( $phase_def['stages'] as $stage ) {
-			$stage_key = $state['current_phase'] . ':' . $stage['id'];
+			$stage_key    = $state['current_phase'] . ':' . $stage['id'];
 			$is_completed = in_array( $stage_key, $state['completed_stages'], true );
 
 			$item = array(
@@ -878,7 +880,7 @@ class ICT_Nexus_Workflow_Engine {
 				$item['completed_by'] = $state['stage_data'][ $stage_key ]['completed_by'] ?? null;
 
 				if ( ! empty( $item['completed_by'] ) ) {
-					$user = get_user_by( 'id', $item['completed_by'] );
+					$user                      = get_user_by( 'id', $item['completed_by'] );
 					$item['completed_by_name'] = $user ? $user->display_name : __( 'Unknown', 'ict-platform' );
 				}
 			}

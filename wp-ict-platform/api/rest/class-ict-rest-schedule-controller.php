@@ -97,9 +97,9 @@ class ICT_REST_Schedule_Controller extends WP_REST_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_events( $request ) {
-		$user_id = get_current_user_id();
+		$user_id    = get_current_user_id();
 		$start_date = $request->get_param( 'start_date' );
-		$end_date = $request->get_param( 'end_date' );
+		$end_date   = $request->get_param( 'end_date' );
 
 		// Get events from various sources
 		$events = array();
@@ -172,7 +172,7 @@ class ICT_REST_Schedule_Controller extends WP_REST_Controller {
 	 */
 	public function get_my_schedule( $request ) {
 		$user_id = get_current_user_id();
-		$date = $request->get_param( 'date' ) ?: current_time( 'Y-m-d' );
+		$date    = $request->get_param( 'date' ) ?: current_time( 'Y-m-d' );
 
 		$events = $this->get_events_for_date( $user_id, $date );
 
@@ -196,18 +196,18 @@ class ICT_REST_Schedule_Controller extends WP_REST_Controller {
 	private function get_project_events( $user_id, $start_date = null, $end_date = null ) {
 		global $wpdb;
 
-		$where = "WHERE 1=1";
+		$where  = 'WHERE 1=1';
 		$params = array();
 
 		if ( $start_date && $end_date ) {
-			$where .= " AND (start_date BETWEEN %s AND %s OR end_date BETWEEN %s AND %s)";
+			$where .= ' AND (start_date BETWEEN %s AND %s OR end_date BETWEEN %s AND %s)';
 			$params = array( $start_date, $end_date, $start_date, $end_date );
 		}
 
 		$projects = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT id, name, start_date, end_date, client_name
-				FROM " . ICT_PROJECTS_TABLE . "
+				'SELECT id, name, start_date, end_date, client_name
+				FROM ' . ICT_PROJECTS_TABLE . "
 				$where
 				AND status != 'cancelled'
 				ORDER BY start_date ASC",
@@ -258,11 +258,11 @@ class ICT_REST_Schedule_Controller extends WP_REST_Controller {
 	private function get_task_events( $user_id, $start_date = null, $end_date = null ) {
 		global $wpdb;
 
-		$where = "WHERE 1=1";
+		$where  = 'WHERE 1=1';
 		$params = array();
 
 		if ( $start_date && $end_date ) {
-			$where .= " AND due_date BETWEEN %s AND %s";
+			$where .= ' AND due_date BETWEEN %s AND %s';
 			$params = array( $start_date, $end_date );
 		}
 
@@ -290,14 +290,14 @@ class ICT_REST_Schedule_Controller extends WP_REST_Controller {
 				}
 
 				$events[] = array(
-					'id'          => 'task_' . $task['id'],
-					'title'       => $task['title'],
-					'start'       => $task['due_date'] . ' 09:00:00',
-					'end'         => $task['due_date'] . ' 17:00:00',
-					'type'        => 'task',
-					'task_id'     => $task['id'],
-					'project_id'  => $task['project_id'],
-					'color'       => $color,
+					'id'         => 'task_' . $task['id'],
+					'title'      => $task['title'],
+					'start'      => $task['due_date'] . ' 09:00:00',
+					'end'        => $task['due_date'] . ' 17:00:00',
+					'type'       => 'task',
+					'task_id'    => $task['id'],
+					'project_id' => $task['project_id'],
+					'color'      => $color,
 				);
 			}
 		}
@@ -316,24 +316,24 @@ class ICT_REST_Schedule_Controller extends WP_REST_Controller {
 	private function get_scheduled_time_entries( $user_id, $start_date = null, $end_date = null ) {
 		global $wpdb;
 
-		$where = "WHERE user_id = %d";
+		$where  = 'WHERE user_id = %d';
 		$params = array( $user_id );
 
 		if ( $start_date && $end_date ) {
-			$where .= " AND clock_in BETWEEN %s AND %s";
+			$where   .= ' AND clock_in BETWEEN %s AND %s';
 			$params[] = $start_date;
 			$params[] = $end_date;
 		} else {
 			// Get upcoming week by default
-			$where .= " AND clock_in >= %s";
+			$where   .= ' AND clock_in >= %s';
 			$params[] = current_time( 'mysql' );
 		}
 
 		$time_entries = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT te.*, p.name AS project_name
-				FROM " . ICT_TIME_ENTRIES_TABLE . " te
-				LEFT JOIN " . ICT_PROJECTS_TABLE . " p ON te.project_id = p.id
+				'SELECT te.*, p.name AS project_name
+				FROM ' . ICT_TIME_ENTRIES_TABLE . ' te
+				LEFT JOIN ' . ICT_PROJECTS_TABLE . " p ON te.project_id = p.id
 				$where
 				AND te.clock_out IS NULL
 				ORDER BY te.clock_in ASC
@@ -346,13 +346,13 @@ class ICT_REST_Schedule_Controller extends WP_REST_Controller {
 		$events = array();
 		foreach ( $time_entries as $entry ) {
 			$events[] = array(
-				'id'          => 'time_entry_' . $entry['id'],
-				'title'       => 'Clocked In: ' . $entry['project_name'],
-				'start'       => $entry['clock_in'],
-				'end'         => $entry['clock_out'] ?: date( 'Y-m-d H:i:s', strtotime( $entry['clock_in'] ) + ( 8 * HOUR_IN_SECONDS ) ),
-				'type'        => 'time_entry',
-				'project_id'  => $entry['project_id'],
-				'color'       => '#10b981',
+				'id'         => 'time_entry_' . $entry['id'],
+				'title'      => 'Clocked In: ' . $entry['project_name'],
+				'start'      => $entry['clock_in'],
+				'end'        => $entry['clock_out'] ?: date( 'Y-m-d H:i:s', strtotime( $entry['clock_in'] ) + ( 8 * HOUR_IN_SECONDS ) ),
+				'type'       => 'time_entry',
+				'project_id' => $entry['project_id'],
+				'color'      => '#10b981',
 			);
 		}
 
@@ -368,7 +368,7 @@ class ICT_REST_Schedule_Controller extends WP_REST_Controller {
 	 */
 	private function get_events_for_date( $user_id, $date ) {
 		$start_date = $date . ' 00:00:00';
-		$end_date = $date . ' 23:59:59';
+		$end_date   = $date . ' 23:59:59';
 
 		return $this->get_events(
 			new WP_REST_Request(
