@@ -283,7 +283,14 @@ const PurchaseOrderForm: React.FC<PurchaseOrderFormProps> = ({
         <div className="alert alert--error">
           <span className="alert__icon">❌</span>
           <span>{error}</span>
-          <button onClick={() => dispatch(clearError())} className="alert__close">×</button>
+          <button 
+            onClick={() => dispatch(clearError())} 
+            className="alert__close"
+            type="button"
+            aria-label="Close error message"
+          >
+            ×
+          </button>
         </div>
       )}
 
@@ -291,7 +298,14 @@ const PurchaseOrderForm: React.FC<PurchaseOrderFormProps> = ({
         <div className="alert alert--error">
           <span className="alert__icon">⚠️</span>
           <span>{validationError}</span>
-          <button onClick={() => setValidationError('')} className="alert__close">×</button>
+          <button 
+            onClick={() => setValidationError('')} 
+            className="alert__close"
+            type="button"
+            aria-label="Close validation error"
+          >
+            ×
+          </button>
         </div>
       )}
 

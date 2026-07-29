@@ -63,7 +63,14 @@ const ReportsDashboard: React.FC = () => {
         <div className="alert alert--error">
           <span className="alert__icon">❌</span>
           <span>Error loading dashboard: {error}</span>
-          <button onClick={() => dispatch(clearError())} className="alert__close">×</button>
+          <button 
+            onClick={() => dispatch(clearError())} 
+            className="alert__close"
+            type="button"
+            aria-label="Close error message"
+          >
+            ×
+          </button>
         </div>
         <button onClick={handleRefresh} className="btn btn-primary">
           Retry
