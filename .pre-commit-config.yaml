@@ -54,11 +54,6 @@ repos:
             echo "❌ BLOCKED: commit contains a Google API key. Move to env var / config.local.js."
             FAIL=1
           fi
-          # Specifically block the active (rotated 2026-04-19) Google Maps key
-          if git diff --cached | grep -q "AIzaSyAd72xUaF049-dbkwTAfSvsjQhmp9YLDpk"; then
-            echo "❌ BLOCKED: commit contains the live rotated Google Maps key. It belongs in config.js on the server, never in git."
-            FAIL=1
-          fi
           # AWS access keys
           if git diff --cached | grep -qE "AKIA[0-9A-Z]{16}"; then
             echo "❌ BLOCKED: commit contains AWS access key."
