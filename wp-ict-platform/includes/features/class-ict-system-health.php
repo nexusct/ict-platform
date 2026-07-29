@@ -389,7 +389,7 @@ class ICT_System_Health {
 		// Optimize tables
 		if ( in_array( 'tables', $actions, true ) ) {
 			$tables = $wpdb->get_col(
-				"SHOW TABLES LIKE '{$wpdb->prefix}ict_%'"
+				$wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $wpdb->prefix . 'ict_' ) . '%' )
 			);
 
 			foreach ( $tables as $table ) {
@@ -521,7 +521,7 @@ class ICT_System_Health {
 
 		try {
 			$result = $wpdb->get_var( 'SELECT 1' );
-			$tables = $wpdb->get_col( "SHOW TABLES LIKE '{$wpdb->prefix}ict_%'" );
+			$tables = $wpdb->get_col( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $wpdb->prefix . 'ict_' ) . '%' ) );
 
 			return array(
 				'name'    => 'Database',
