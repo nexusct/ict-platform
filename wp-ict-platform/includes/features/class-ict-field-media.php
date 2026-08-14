@@ -262,7 +262,7 @@ class ICT_Field_Media {
 
 		$notes = ! empty( $values )
 			? $wpdb->get_results( $wpdb->prepare( $query, $values ) )
-			: $wpdb->get_results( $query );
+			: $wpdb->get_results( $wpdb->prepare( $query, array() ) );
 
 		return rest_ensure_response( $notes );
 	}
@@ -407,7 +407,7 @@ class ICT_Field_Media {
 
 		$photos = ! empty( $values )
 			? $wpdb->get_results( $wpdb->prepare( $query, $values ) )
-			: $wpdb->get_results( $query );
+			: $wpdb->get_results( $wpdb->prepare( $query, array() ) );
 
 		foreach ( $photos as $photo ) {
 			$photo->url           = $this->get_file_url( $photo->file_path );
@@ -584,7 +584,7 @@ class ICT_Field_Media {
 
 		$signatures = ! empty( $values )
 			? $wpdb->get_results( $wpdb->prepare( $query, $values ) )
-			: $wpdb->get_results( $query );
+			: $wpdb->get_results( $wpdb->prepare( $query, array() ) );
 
 		foreach ( $signatures as $sig ) {
 			$sig->signature_image_url = $this->get_file_url( $sig->signature_image_path );
@@ -852,7 +852,22 @@ class ICT_Field_Media {
 			$data = explode( ',', $data )[1];
 		}
 
-		file_put_contents( $file_path, base64_decode( $data ) );
+		// Validate base64 format before decoding
+		if ( ! preg_match( '/^[A-Za-z0-9+\/=]+$/', $data ) ) {
+			return false;
+		}
+
+		$decoded = base64_decode( $data, true );
+		if ( $decoded === false ) {
+			return false;
+		}
+
+		// Verify the decoded data is actually a valid image
+		if ( ! getimagesizefromstring( $decoded ) ) {
+			return false;
+		}
+
+		file_put_contents( $file_path, $decoded );
 
 		return $file_path;
 	}

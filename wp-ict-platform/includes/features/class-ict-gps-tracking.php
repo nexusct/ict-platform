@@ -591,7 +591,7 @@ class ICT_GPS_Tracking {
 
 		$geofences = ! empty( $values )
 			? $wpdb->get_results( $wpdb->prepare( $query, $values ) )
-			: $wpdb->get_results( $query );
+			: $wpdb->get_results( $wpdb->prepare( $query, array() ) );
 
 		foreach ( $geofences as &$fence ) {
 			if ( $fence->polygon_coords ) {
@@ -1063,7 +1063,7 @@ class ICT_GPS_Tracking {
 
 		$geofences = ! empty( $values )
 			? $wpdb->get_results( $wpdb->prepare( $query, $values ) )
-			: $wpdb->get_results( $query );
+			: $wpdb->get_results( $wpdb->prepare( $query, array() ) );
 
 		foreach ( $geofences as $fence ) {
 			$is_within = false;

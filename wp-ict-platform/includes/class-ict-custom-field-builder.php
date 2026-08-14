@@ -979,19 +979,97 @@ class ICT_Custom_Field_Builder {
 		);
 
 		// Sanitize expression (only allow numbers, operators, and parentheses)
-		$expression = preg_replace( '/[^0-9+\-*\/().%]/', '', $expression );
+		$expression = preg_replace( '/[^0-9+\-*\/().%\s]/', '', $expression );
 
 		if ( empty( $expression ) ) {
 			return 0;
 		}
 
-		// Evaluate expression safely
+		// Evaluate expression safely using mathematical parser instead of eval()
 		try {
-			// Use eval carefully with sanitized expression
-			$result = @eval( "return {$expression};" );
+			$result = $this->safe_math_eval( $expression );
 			return is_numeric( $result ) ? $result : 0;
 		} catch ( Exception $e ) {
 			return 0;
 		}
+	}
+
+	/**
+	 * Safely evaluate mathematical expression without using eval().
+	 *
+	 * @since  1.1.0
+	 * @param  string $expression Mathematical expression.
+	 * @return float Calculated result.
+	 * @throws Exception If expression is invalid.
+	 */
+	private function safe_math_eval( $expression ) {
+		// Remove all whitespace
+		$expression = str_replace( ' ', '', $expression );
+
+		// Validate expression contains only allowed characters
+		if ( ! preg_match( '/^[0-9+\-*\/().%]+$/', $expression ) ) {
+			throw new Exception( 'Invalid expression' );
+		}
+
+		// Check for balanced parentheses
+		if ( substr_count( $expression, '(' ) !== substr_count( $expression, ')' ) ) {
+			throw new Exception( 'Unbalanced parentheses' );
+		}
+
+		// Use BCMath or basic arithmetic parser
+		return $this->parse_math_expression( $expression );
+	}
+
+	/**
+	 * Parse and calculate mathematical expression.
+	 *
+	 * @since  1.1.0
+	 * @param  string $expression Mathematical expression.
+	 * @return float Calculated result.
+	 */
+	private function parse_math_expression( $expression ) {
+		// Handle parentheses first (recursively)
+		while ( strpos( $expression, '(' ) !== false ) {
+			$expression = preg_replace_callback(
+				'/\(([^()]+)\)/',
+				function( $matches ) {
+					return $this->parse_math_expression( $matches[1] );
+				},
+				$expression
+			);
+		}
+
+		// Handle multiplication, division, and modulo (left to right)
+		$expression = preg_replace_callback(
+			'/(-?\d+\.?\d*)([*\/%])(-?\d+\.?\d*)/',
+			function( $matches ) {
+				$a = floatval( $matches[1] );
+				$op = $matches[2];
+				$b = floatval( $matches[3] );
+
+				switch ( $op ) {
+					case '*':
+						return $a * $b;
+					case '/':
+						return $b != 0 ? $a / $b : 0;
+					case '%':
+						return $b != 0 ? fmod( $a, $b ) : 0;
+				}
+				return 0;
+			},
+			$expression
+		);
+
+		// Handle addition and subtraction (left to right)
+		while ( preg_match( '/(-?\d+\.?\d*)([+\-])(-?\d+\.?\d*)/', $expression, $matches ) ) {
+			$a = floatval( $matches[1] );
+			$op = $matches[2];
+			$b = floatval( $matches[3] );
+
+			$result = ( $op === '+' ) ? $a + $b : $a - $b;
+			$expression = str_replace( $matches[0], $result, $expression );
+		}
+
+		return floatval( $expression );
 	}
 }

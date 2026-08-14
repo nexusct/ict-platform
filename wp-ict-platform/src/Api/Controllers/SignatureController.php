@@ -392,8 +392,18 @@ class SignatureController extends AbstractController
                 return null;
             }
 
-            $data = base64_decode($base64_data);
+            // Validate base64 format before decoding
+            if (!preg_match('/^[A-Za-z0-9+\/=]+$/', $base64_data)) {
+                return null;
+            }
+
+            $data = base64_decode($base64_data, true);
             if ($data === false) {
+                return null;
+            }
+
+            // Verify the decoded data is actually a valid image
+            if (!getimagesizefromstring($data)) {
                 return null;
             }
 

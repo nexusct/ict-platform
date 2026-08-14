@@ -313,7 +313,7 @@ npm run lint
 - **Sync Orchestration**: ✅ Full workflow testing available
 - **Documentation**: ✅ Deployment checklist, troubleshooting guide, launch guide
 - **Error Handling**: ✅ Retry logic, rate limiting, comprehensive logging
-- **Security**: ✅ OAuth 2.0, JWT tokens, encrypted credentials, webhook signature verification
+- **Security**: ✅ OAuth 2.0, JWT tokens, encrypted credentials, webhook signature verification, SQL injection prevention, XSS protection, secure input validation
 
 ## 🤝 Contributing
 
@@ -336,11 +336,25 @@ This project is licensed under the GPL v2 or later - see the LICENSE file for de
 - Zoho Developer Platform
 - All contributors and testers
 
+## 🔒 Security
+
+Security is a top priority. This project follows industry best practices:
+
+- **Secure Coding**: SQL injection prevention, XSS protection, input validation
+- **No Code Injection**: No use of `eval()` or similar dangerous functions
+- **Encrypted Credentials**: All API keys and secrets encrypted with AES-256-CBC
+- **Pre-commit Hooks**: Automated secret scanning with gitleaks and detect-secrets
+- **Regular Audits**: Continuous security review and updates
+
+**Report Security Issues**: Do not open public issues. Email **office@nexusct.com** with details.
+
+See [SECURITY.md](SECURITY.md) for complete security policy and incident history.
+
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/ict-platform/issues)
-- **Documentation**: [Wiki](https://github.com/yourusername/ict-platform/wiki)
-- **Email**: support@example.com
+- **Issues**: [GitHub Issues](https://github.com/nexusct/ict-platform/issues)
+- **Documentation**: See `docs/` directory
+- **Security**: office@nexusct.com (for security vulnerabilities only)
 
 ---
 

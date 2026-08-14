@@ -558,19 +558,20 @@ class ICT_Profitability {
 
 		$type = $request->get_param( 'type' );
 
-		$where  = '1=1';
+		$where  = array( '1=1' );
 		$values = array();
 
 		if ( $type ) {
-			$where   .= ' AND rate_type = %s';
-			$values[] = $type;
+			$where[]  = 'rate_type = %s';
+			$values[] = sanitize_text_field( $type );
 		}
 
-		$query = "SELECT * FROM {$this->rates_table} WHERE {$where} ORDER BY rate_type, reference_id";
+		$where_clause = implode( ' AND ', $where );
+		$query        = "SELECT * FROM {$this->rates_table} WHERE {$where_clause} ORDER BY rate_type, reference_id";
 
 		$rates = ! empty( $values )
 			? $wpdb->get_results( $wpdb->prepare( $query, $values ) )
-			: $wpdb->get_results( $query );
+			: $wpdb->get_results( $wpdb->prepare( $query, array() ) );
 
 		return rest_ensure_response( $rates );
 	}
@@ -648,7 +649,7 @@ class ICT_Profitability {
 
 		$costs = ! empty( $values )
 			? $wpdb->get_results( $wpdb->prepare( $query, $values ) )
-			: $wpdb->get_results( $query );
+			: $wpdb->get_results( $wpdb->prepare( $query, array() ) );
 
 		return rest_ensure_response( $costs );
 	}

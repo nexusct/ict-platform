@@ -197,11 +197,9 @@ class ICT_Project_Templates {
 		$where_clause = implode( ' AND ', $where );
 		$query        = "SELECT * FROM {$this->table_name} WHERE {$where_clause} ORDER BY name ASC";
 
-		if ( ! empty( $values ) ) {
-			$query = $wpdb->prepare( $query, $values );
-		}
-
-		$templates = $wpdb->get_results( $query );
+		$templates = ! empty( $values )
+			? $wpdb->get_results( $wpdb->prepare( $query, $values ) )
+			: $wpdb->get_results( $wpdb->prepare( $query, array() ) );
 
 		foreach ( $templates as &$template ) {
 			$template->template_data = json_decode( $template->template_data, true );

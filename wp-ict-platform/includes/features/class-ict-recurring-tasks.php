@@ -252,7 +252,7 @@ class ICT_Recurring_Tasks {
 
 		$templates = ! empty( $values )
 			? $wpdb->get_results( $wpdb->prepare( $query, $values ) )
-			: $wpdb->get_results( $query );
+			: $wpdb->get_results( $wpdb->prepare( $query, array() ) );
 
 		foreach ( $templates as $template ) {
 			$template->checklist   = json_decode( $template->checklist, true );

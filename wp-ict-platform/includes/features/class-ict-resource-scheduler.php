@@ -320,7 +320,7 @@ class ICT_Resource_Scheduler {
 
 		$schedules = ! empty( $values )
 			? $wpdb->get_results( $wpdb->prepare( $query, $values ) )
-			: $wpdb->get_results( $query );
+			: $wpdb->get_results( $wpdb->prepare( $query, array() ) );
 
 		return rest_ensure_response( $schedules );
 	}

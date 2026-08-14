@@ -375,7 +375,7 @@ class ICT_KPI_Tracker {
 
 		$kpis = ! empty( $values )
 			? $wpdb->get_results( $wpdb->prepare( $query, $values ) )
-			: $wpdb->get_results( $query );
+			: $wpdb->get_results( $wpdb->prepare( $query, array() ) );
 
 		// Get latest values
 		foreach ( $kpis as $kpi ) {
