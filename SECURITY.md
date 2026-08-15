@@ -47,7 +47,7 @@ Hooks will run automatically on every commit.
 
 This repository follows secure coding practices:
 
-- **SQL Injection Prevention**: All database queries use WordPress `$wpdb->prepare()` with proper parameterization
+- **SQL Injection Prevention**: All database queries that include user input use WordPress `$wpdb->prepare()` with proper parameterization
 - **XSS Prevention**: All user-facing output is properly escaped using `esc_html()`, `esc_attr()`, `esc_url()`, etc.
 - **No eval()**: Mathematical expressions are parsed safely without `eval()` to prevent code injection
 - **Input Validation**: All base64-encoded data is validated before decoding and use
