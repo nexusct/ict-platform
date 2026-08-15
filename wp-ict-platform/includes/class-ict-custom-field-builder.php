@@ -1004,7 +1004,7 @@ class ICT_Custom_Field_Builder {
 	 */
 	private function safe_math_eval( $expression ) {
 		// Remove all whitespace
-		$expression = str_replace( ' ', '', $expression );
+		$expression = preg_replace( '/\s+/', '', $expression );
 
 		// Validate expression contains only allowed characters
 		if ( ! preg_match( '/^[0-9+\-*\/().%]+$/', $expression ) ) {
