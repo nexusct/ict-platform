@@ -1123,4 +1123,162 @@ class ICT_Custom_Field_Builder {
 
 		return $tokens;
 	}
+
+	/**
+	 * Safely evaluate mathematical expressions without using eval().
+	 *
+	 * @since  1.0.0
+	 * @param  string $expression Mathematical expression.
+	 * @return float|int Result of calculation.
+	 * @throws Exception If expression is invalid.
+	 */
+	private function safe_math_eval( $expression ) {
+		// Remove all whitespace
+		$expression = str_replace( ' ', '', $expression );
+
+		// Validate: only allow numbers, operators, parentheses, and decimal points
+		if ( ! preg_match( '/^[0-9+\-*\/().%]+$/', $expression ) ) {
+			throw new Exception( 'Invalid expression' );
+		}
+
+		// Check for balanced parentheses
+		if ( substr_count( $expression, '(' ) !== substr_count( $expression, ')' ) ) {
+			throw new Exception( 'Unbalanced parentheses' );
+		}
+
+		// Use bc_math for safe calculation if available, otherwise use manual parsing
+		if ( function_exists( 'bcadd' ) && ! strpos( $expression, '(' ) && ! strpos( $expression, '%' ) ) {
+			return $this->bc_calculate( $expression );
+		}
+
+		// Fall back to manual recursive descent parser
+		return $this->parse_expression( $expression );
+	}
+
+	/**
+	 * Calculate expression using BC Math (for simple expressions without parentheses).
+	 *
+	 * @since  1.0.0
+	 * @param  string $expression Mathematical expression.
+	 * @return float Result.
+	 */
+	private function bc_calculate( $expression ) {
+		// Handle order of operations: *, /, then +, -
+		// Split by + and - (lower precedence)
+		$terms = preg_split( '/([\+\-])/', $expression, -1, PREG_SPLIT_DELIM_CAPTURE );
+		$result = $this->bc_multiply_divide( $terms[0] );
+
+		for ( $i = 1; $i < count( $terms ); $i += 2 ) {
+			$operator = $terms[ $i ];
+			$term_value = $this->bc_multiply_divide( $terms[ $i + 1 ] );
+
+			if ( $operator === '+' ) {
+				$result = bcadd( (string) $result, (string) $term_value, 10 );
+			} else {
+				$result = bcsub( (string) $result, (string) $term_value, 10 );
+			}
+		}
+
+		return (float) $result;
+	}
+
+	/**
+	 * Handle multiplication and division for BC Math.
+	 *
+	 * @since  1.0.0
+	 * @param  string $term Term to evaluate.
+	 * @return float Result.
+	 */
+	private function bc_multiply_divide( $term ) {
+		$factors = preg_split( '/([\*\/])/', $term, -1, PREG_SPLIT_DELIM_CAPTURE );
+		$result = (float) $factors[0];
+
+		for ( $i = 1; $i < count( $factors ); $i += 2 ) {
+			$operator = $factors[ $i ];
+			$factor_value = (float) $factors[ $i + 1 ];
+
+			if ( $operator === '*' ) {
+				$result = (float) bcmul( (string) $result, (string) $factor_value, 10 );
+			} else {
+				if ( $factor_value != 0 ) {
+					$result = (float) bcdiv( (string) $result, (string) $factor_value, 10 );
+				} else {
+					return 0;
+				}
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Parse and evaluate mathematical expression using recursive descent parser.
+	 *
+	 * @since  1.0.0
+	 * @param  string $expression Mathematical expression.
+	 * @return float Result.
+	 * @throws Exception If expression is invalid.
+	 */
+	private function parse_expression( $expression ) {
+		$pos = 0;
+		$length = strlen( $expression );
+
+		$parse_number = function() use ( $expression, &$pos, $length ) {
+			$start = $pos;
+			while ( $pos < $length && ( ctype_digit( $expression[ $pos ] ) || $expression[ $pos ] === '.' ) ) {
+				$pos++;
+			}
+			return (float) substr( $expression, $start, $pos - $start );
+		};
+
+		$parse_factor = function() use ( $expression, &$pos, $length, $parse_number, &$parse_expression_inner ) {
+			if ( $pos < $length && $expression[ $pos ] === '(' ) {
+				$pos++;
+				$result = $parse_expression_inner();
+				if ( $pos < $length && $expression[ $pos ] === ')' ) {
+					$pos++;
+				}
+				return $result;
+			}
+			return $parse_number();
+		};
+
+		$parse_term = function() use ( $expression, &$pos, $length, &$parse_factor ) {
+			$result = $parse_factor();
+
+			while ( $pos < $length && in_array( $expression[ $pos ], array( '*', '/', '%' ), true ) ) {
+				$op = $expression[ $pos++ ];
+				$right = $parse_factor();
+
+				if ( $op === '*' ) {
+					$result *= $right;
+				} elseif ( $op === '/' ) {
+					$result = $right != 0 ? $result / $right : 0;
+				} else {
+					$result = $right != 0 ? fmod( $result, $right ) : 0;
+				}
+			}
+
+			return $result;
+		};
+
+		$parse_expression_inner = function() use ( $expression, &$pos, $length, &$parse_term ) {
+			$result = $parse_term();
+
+			while ( $pos < $length && in_array( $expression[ $pos ], array( '+', '-' ), true ) ) {
+				$op = $expression[ $pos++ ];
+				$right = $parse_term();
+
+				if ( $op === '+' ) {
+					$result += $right;
+				} else {
+					$result -= $right;
+				}
+			}
+
+			return $result;
+		};
+
+		return $parse_expression_inner();
+	}
 }
