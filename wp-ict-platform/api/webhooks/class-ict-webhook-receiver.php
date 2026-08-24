@@ -171,9 +171,11 @@ class ICT_Webhook_Receiver {
 	 * @return bool True if signature is valid.
 	 */
 	protected function verify_signature( $service, $body, $headers ) {
-		// If no secret is configured, skip verification (development mode)
+		// If no secret is configured, log a warning and reject the webhook.
+		// Configure a secret for each service to enable signature verification.
 		if ( ! isset( $this->secrets[ $service ] ) ) {
-			return true;
+			error_log( "ICT Platform: Webhook received for service '{$service}' but no signing secret is configured. Request rejected." );
+			return false;
 		}
 
 		// Get signature from headers (different header names per service)

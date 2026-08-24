@@ -47,7 +47,7 @@ class ExpenseController extends AbstractController
                 [
                     'methods'             => WP_REST_Server::CREATABLE,
                     'callback'            => [$this, 'createItem'],
-                    'permission_callback' => '__return_true',
+                    'permission_callback' => 'is_user_logged_in',
                 ],
             ]
         );
@@ -115,7 +115,7 @@ class ExpenseController extends AbstractController
             [
                 'methods'             => WP_REST_Server::CREATABLE,
                 'callback'            => [$this, 'uploadReceipt'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
             ]
         );
 
@@ -126,7 +126,7 @@ class ExpenseController extends AbstractController
             [
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => [$this, 'getMyExpenses'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
             ]
         );
 
@@ -148,7 +148,7 @@ class ExpenseController extends AbstractController
             [
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => [$this, 'getCategories'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
             ]
         );
 
