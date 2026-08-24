@@ -1,17 +1,7 @@
 name: CI/CD Pipeline
 
 on:
-  push:
-    branches:
-      - main
-      - develop
-    paths-ignore:
-      - '**.md' # Ignore markdown changes for CI
-  pull_request:
-    branches:
-      - main
-      - develop
-    types: [opened, synchronize, reopened]
+  workflow_dispatch:
 
 jobs:
   build-and-test:
