@@ -985,13 +985,143 @@ class ICT_Custom_Field_Builder {
 			return 0;
 		}
 
-		// Evaluate expression safely without eval
-		try {
-			$result = $this->safe_math_eval( $expression );
-			return is_numeric( $result ) ? $result : 0;
-		} catch ( Exception $e ) {
+		$result = $this->evaluate_expression( $expression );
+		return is_numeric( $result ) ? $result : 0;
+	}
+
+	/**
+	 * Evaluate sanitized arithmetic expression.
+	 *
+	 * @since  1.1.0
+	 * @param  string $expression Arithmetic expression.
+	 * @return float|int
+	 */
+	private function evaluate_expression( $expression ) {
+		$tokens = $this->tokenize_expression( $expression );
+
+		if ( empty( $tokens ) ) {
 			return 0;
 		}
+
+		$output     = array();
+		$operators  = array();
+		$precedence = array( '+' => 1, '-' => 1, '*' => 2, '/' => 2, '%' => 2 );
+		$previous   = null;
+
+		foreach ( $tokens as $token ) {
+			if ( is_numeric( $token ) ) {
+				$output[] = (float) $token;
+				$previous = 'number';
+				continue;
+			}
+
+			if ( '(' === $token ) {
+				$operators[] = $token;
+				$previous    = '(';
+				continue;
+			}
+
+			if ( ')' === $token ) {
+				while ( ! empty( $operators ) && '(' !== end( $operators ) ) {
+					$output[] = array_pop( $operators );
+				}
+
+				if ( empty( $operators ) || '(' !== end( $operators ) ) {
+					return 0;
+				}
+
+				array_pop( $operators );
+				$previous = ')';
+				continue;
+			}
+
+			if ( '-' === $token && ( null === $previous || in_array( $previous, array( 'operator', '(' ), true ) ) ) {
+				$output[] = 0.0;
+			}
+
+			while ( ! empty( $operators ) && isset( $precedence[ end( $operators ) ] ) && $precedence[ end( $operators ) ] >= $precedence[ $token ] ) {
+				$output[] = array_pop( $operators );
+			}
+
+			$operators[] = $token;
+			$previous    = 'operator';
+		}
+
+		while ( ! empty( $operators ) ) {
+			$operator = array_pop( $operators );
+			if ( '(' === $operator || ')' === $operator ) {
+				return 0;
+			}
+			$output[] = $operator;
+		}
+
+		$stack = array();
+
+		foreach ( $output as $token ) {
+			if ( is_float( $token ) || is_int( $token ) ) {
+				$stack[] = $token;
+				continue;
+			}
+
+			if ( count( $stack ) < 2 ) {
+				return 0;
+			}
+
+			$right = array_pop( $stack );
+			$left  = array_pop( $stack );
+
+			switch ( $token ) {
+				case '+':
+					$stack[] = $left + $right;
+					break;
+				case '-':
+					$stack[] = $left - $right;
+					break;
+				case '*':
+					$stack[] = $left * $right;
+					break;
+				case '/':
+					if ( 0.0 === (float) $right ) {
+						return 0;
+					}
+					$stack[] = $left / $right;
+					break;
+				case '%':
+					if ( 0.0 === (float) $right ) {
+						return 0;
+					}
+					$stack[] = fmod( $left, $right );
+					break;
+				default:
+					return 0;
+			}
+		}
+
+		if ( 1 !== count( $stack ) || ! is_numeric( $stack[0] ) ) {
+			return 0;
+		}
+
+		return $stack[0];
+	}
+
+	/**
+	 * Tokenize a sanitized arithmetic expression.
+	 *
+	 * @since  1.1.0
+	 * @param  string $expression Arithmetic expression.
+	 * @return array
+	 */
+	private function tokenize_expression( $expression ) {
+		if ( ! preg_match_all( '/\d+(?:\.\d+)?|[()+\-*\/%]/', $expression, $matches ) ) {
+			return array();
+		}
+
+		$tokens = $matches[0];
+		if ( implode( '', $tokens ) !== $expression ) {
+			return array();
+		}
+
+		return $tokens;
 	}
 
 	/**

@@ -342,7 +342,7 @@ class ICT_REST_Health_Controller extends WP_REST_Controller {
 		);
 
 		foreach ( $tables as $name => $table_name ) {
-			$exists = $wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'" ) === $table_name;
+			$exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) ) ) === $table_name;
 
 			if ( $exists ) {
 				$count = $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name}" );

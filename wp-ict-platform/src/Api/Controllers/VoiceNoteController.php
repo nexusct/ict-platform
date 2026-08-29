@@ -54,7 +54,7 @@ class VoiceNoteController extends AbstractController
                 [
                     'methods'             => WP_REST_Server::CREATABLE,
                     'callback'            => [$this, 'createItem'],
-                    'permission_callback' => '__return_true',
+                    'permission_callback' => 'is_user_logged_in',
                 ],
             ]
         );
@@ -84,7 +84,7 @@ class VoiceNoteController extends AbstractController
             [
                 'methods'             => WP_REST_Server::CREATABLE,
                 'callback'            => [$this, 'uploadAudio'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
             ]
         );
 
@@ -128,7 +128,7 @@ class VoiceNoteController extends AbstractController
             [
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => [$this, 'getMyVoiceNotes'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
             ]
         );
     }

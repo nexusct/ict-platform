@@ -47,7 +47,7 @@ class WeatherController extends AbstractController
             [
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => [$this, 'getCurrentWeather'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
             ]
         );
 
@@ -58,7 +58,7 @@ class WeatherController extends AbstractController
             [
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => [$this, 'getForecast'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
             ]
         );
 
@@ -91,7 +91,7 @@ class WeatherController extends AbstractController
             [
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => [$this, 'checkWorkSafety'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => 'is_user_logged_in',
             ]
         );
 
